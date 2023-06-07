@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -15,21 +16,22 @@ import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +40,7 @@ import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
-import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
+import kotlinx.coroutines.CoroutineScope
 import java.util.Date
 
 object TrainDestination : NavigationDestination {
@@ -76,14 +78,13 @@ object DataSaver : Saver<Data, Bundle> {
 @Composable
 fun TrainScreen(
     modifier: Modifier = Modifier,
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory))
 {
-    val trainUiState by viewModel.trainUiState.collectAsState()
-
-
-
+    val currentQuestion = viewModel.currentQuestion
+    val currentProgress = viewModel.trainUiScore.toFloat()
     Scaffold(topBar = {
         LearnAllTopAppBar(
             title = "Train",
@@ -91,21 +92,19 @@ fun TrainScreen(
             navigateUp = navigateBack
         )
     }
-    ){
-        if(trainUiState.dataList.isNotEmpty()){
+    )
+    {
+        if(viewModel.trainUiState.dataList.isNotEmpty()){
 
-            var currentQuestion : Data? by remember(DataSaver){ mutableStateOf(null) }
-            var count by remember { mutableStateOf(0) }
-            val ontamere : (Int) -> Unit = {value -> count += value}
-            LaunchedEffect(count){
-                currentQuestion = trainUiState.dataList[count]
 
-            }
-            currentQuestion?.let { it1 ->
-                TrainBody(
-                    it1,ontamere)
-            }
-
+            TrainBody(
+                currentQuestion = currentQuestion,
+                onCheckData = { viewModel.compareData() },
+                trainUiState = viewModel.trainUiState,
+                onValueChange = {
+                        updatedUiState -> viewModel.updateUiState(updatedUiState) },
+                progressFactor = currentProgress
+            )
         }else{
             Text(text = "loading...")
         }
@@ -118,11 +117,13 @@ fun TrainScreen(
 fun TrainBody(
     currentQuestion: Data,
     //dataList : List<Data>,
-   // trainUiState: StateFlow<TrainUiState>,
-    //onValueChange: (DataUiState) -> Unit,
-    onClick: (Int) -> Unit,
+    trainUiState:TrainUiState,
+    onValueChange: (TrainUiState) -> Unit,
+    onCheckData: () -> Unit,
+    progressFactor: Float,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+
 ) {
     Column(
         modifier = modifier
@@ -130,6 +131,13 @@ fun TrainBody(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
+        LinearProgressIndicator(
+            progress = progressFactor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -174,13 +182,13 @@ fun TrainBody(
             ) {
                 //Spacer(modifier = Modifier.height(100.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {  },
-                    label = { "Recto" },
+                    value = trainUiState.answer,
+                    onValueChange = { onValueChange(trainUiState.copy(answer = it)) },
+                    label = {  Text("Recto") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = enabled,
                     // shape = false
-                    // singleLine = true,
+                     singleLine = true,
 
                 )
 
@@ -196,7 +204,7 @@ fun TrainBody(
             )
         {
             Button(
-                onClick = {onClick.invoke(1)},
+                onClick = onCheckData,
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
             //   enabled = dataUiState.actionEnabled,
                 modifier = Modifier.fillMaxWidth()

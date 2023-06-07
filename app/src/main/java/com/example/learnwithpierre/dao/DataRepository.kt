@@ -23,7 +23,7 @@ interface DataRepository {
     /**
      * Retrieve all the Datas from the the given data source.
      */
-    fun getAllDataStream(): Flow<List<Data>>
+    fun getAllDataStream(): Flow<MutableList<Data>>
 
     /**
      * Retrieve an Data from the given data source that matches with the [id].

@@ -33,7 +33,7 @@ interface DataDao {
 
 
     @Query("SELECT * from data ORDER BY recto ASC")
-    fun getAllData(): Flow<List<Data>>
+    fun getAllData(): Flow<MutableList<Data>>
 
 
 }

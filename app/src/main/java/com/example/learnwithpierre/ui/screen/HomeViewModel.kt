@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HomeViewModel(datasRepository: DataRepository) : ViewModel() {
+class HomeViewModel(dataRepository: DataRepository) : ViewModel() {
     val homeUiState: StateFlow<HomeUiState> =
-        datasRepository.getAllDataStream().map { HomeUiState(it) }
+        dataRepository.getAllDataStream().map { HomeUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),

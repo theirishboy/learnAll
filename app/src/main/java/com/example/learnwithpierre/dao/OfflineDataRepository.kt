@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 class OfflineDataRepository(private val dataDao: DataDao) : DataRepository {
 
-    override fun getAllDataStream(): Flow<List<Data>> = dataDao.getAllData()
+    override fun getAllDataStream(): Flow<MutableList<Data>> = dataDao.getAllData()
 
     override fun getDataStream(id: Int): Flow<Data?> = dataDao.getDataById(id)
 

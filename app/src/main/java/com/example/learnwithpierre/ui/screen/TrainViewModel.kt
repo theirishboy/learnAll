@@ -1,6 +1,5 @@
 package com.example.learnwithpierre.ui.screen
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,53 +7,53 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.dao.DataRepository
-import com.example.learnwithpierre.ui.manageData.DataUiState
-import com.example.learnwithpierre.ui.manageData.isValid
-import com.example.learnwithpierre.ui.manageData.toDataUiState
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.util.Date
 
-class TrainViewModel(dataRepository: DataRepository) : ViewModel() {
-    val trainUiState: StateFlow<TrainUiState> =
-        dataRepository.getAllDataStream().map { TrainUiState(it) }
-        .stateIn(
-                scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = TrainUiState()
-            )
-    var dataUiState by mutableStateOf(DataUiState())
+class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
+
+
+
+    var trainUiState by mutableStateOf(TrainUiState(answer = ""))
         private set
 
-    /*fun updateUiState(listData : MutableList<Data>){
-        dataUiState = listData.last().toDataUiState()
-        listData.removeLast()
-    }*/
-    /*fun updateUiState(itemDetails: ItemDetails) {
-        itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
-    }*/
+    var trainUiScore by mutableStateOf(0.0)
+        private set
 
+    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"porn",1, Date("01/02/2022")))
 
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
+    init {
+        viewModelScope.launch {
+          trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
+            currentQuestion = trainUiState.dataList.last()
+        }
     }
-    fun compareData(newDataUiState: DataUiState,answer : String) {
-        if(newDataUiState.verso != answer){
-            println("gg")
+
+    fun compareData() {
+        viewModelScope.launch {
+            if(trainUiState.answer!= trainUiState.dataList.last().recto ){
+                println("null")
+            }
+            trainUiState.dataList.removeLast()
+            currentQuestion = trainUiState.dataList.last()
+            trainUiScore += 0.1
+
+            //dataRepository.updateData()
         }
 
+
+    }
+   fun updateUiState(trainUiState: TrainUiState) {
+        this.trainUiState = TrainUiState(dataList =  trainUiState.dataList, answer = trainUiState.answer)
     }
 }
 
 /**
  * Ui State for trainScreen
  */
-data class TrainUiState(val dataList: List<Data> = listOf())
+data class TrainUiState(val dataList: MutableList<Data> = arrayListOf(), var answer: String)
 
-data class DataDetails(val id : Int = 0,
-                       val recto: String = "",
-                       val verso: String = "",
 
-)
