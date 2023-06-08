@@ -1,37 +1,26 @@
 package com.example.learnwithpierre.ui.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.SaverScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,48 +29,21 @@ import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
-import kotlinx.coroutines.CoroutineScope
 import java.util.Date
 
 object TrainDestination : NavigationDestination {
     override val route = "trainScreen"
     override val titleRes: Int = R.string.app_name
 }
-// Custom saver for CustomClass
-object DataSaver : Saver<Data, Bundle> {
-    override fun SaverScope.save(value: Data): Bundle {
-        val bundle = Bundle()
-        bundle.putInt("id", value.id)
-        bundle.putString("recto", value.recto)
-        bundle.putString("verso", value.verso)
-        bundle.putBoolean("isRecto", value.isRecto)
-        bundle.putString("category", value.category)
-        bundle.putInt("score", value.score)
-        bundle.putLong("dateModification", value.dateModification.time)
-        return bundle
-    }
 
-    override fun restore(value: Bundle): Data {
-        return Data(
-            id = value.getInt("id"),
-            recto = value.getString("recto") ?: "",
-            verso = value.getString("verso") ?: "",
-            isRecto = value.getBoolean("isRecto"),
-            category = value.getString("category") ?: "",
-            score = value.getInt("score"),
-            dateModification = Date(value.getLong("dateModification"))
-        )
-    }
-}
-
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TrainScreen(
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
-    viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory))
+    viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory)
+)
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
@@ -103,7 +65,8 @@ fun TrainScreen(
                 trainUiState = viewModel.trainUiState,
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
-                progressFactor = currentProgress
+                progressFactor = currentProgress,
+                modifier = modifier
             )
         }else{
             Text(text = "loading...")
@@ -113,6 +76,7 @@ fun TrainScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrainBody(
     currentQuestion: Data,
@@ -124,120 +88,111 @@ fun TrainBody(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 
+
+    ) { Column(
+    modifier = modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+    verticalArrangement = Arrangement.spacedBy(32.dp)
 ) {
-    Column(
-        modifier = modifier
+    LinearProgressIndicator(
+        progress = progressFactor,
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
-    ) {
-        LinearProgressIndicator(
-            progress = progressFactor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-                .clip(RoundedCornerShape(4.dp))
-        )
+            .height(16.dp)
+            .clip(RoundedCornerShape(4.dp)),
+    )
+    Column(modifier.weight(0.3f)) {
+        Text(text = " A quoi correspond  ? :",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ))
+        Spacer(modifier = modifier.height(8.dp))
         Card(
             modifier = modifier
                 .fillMaxWidth()
-                .weight(1f),
-            elevation = 10.dp,
+                .weight(0.5f),
             shape = RoundedCornerShape(20.dp),
 
             ) {
-            Column(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFFF518A0),
-                                Color(0xFFB232BD)
-                            )
-                        )
-                    )
-                    .padding(all = 32.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = currentQuestion.recto,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
+            Text(
+                text = currentQuestion.recto,
+                modifier = Modifier.padding(16.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
-            }
-        }
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(1f),
-            elevation = 10.dp,
-            shape = RoundedCornerShape(20.dp),
-
-            ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center, modifier = modifier.weight(1f)
-            ) {
-                //Spacer(modifier = Modifier.height(100.dp))
-                OutlinedTextField(
-                    value = trainUiState.answer,
-                    onValueChange = { onValueChange(trainUiState.copy(answer = it)) },
-                    label = {  Text("Recto") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = enabled,
-                    // shape = false
-                     singleLine = true,
-
-                )
-
-            }
-        }
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(0.2f),
-            elevation = 10.dp,
-            shape = RoundedCornerShape(20.dp),
 
             )
-        {
-            Button(
-                onClick = onCheckData,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
-            //   enabled = dataUiState.actionEnabled,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("test")
-            }
-
-
         }
     }
+    Column(modifier.weight(1f),verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(text = " Votre réponse :",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ))
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .weight(1f),
+            shape = RoundedCornerShape(20.dp),
+
+            ) {
+            Column  (
+                modifier = Modifier.padding(16.dp)
+            ) {
+                //Spacer(modifier = Modifier.height(100.dp))
+                BasicTextField(
+                    value = trainUiState.answer,
+                    onValueChange = { onValueChange(trainUiState.copy(answer = it)) },
+                    singleLine = false,
+                    textStyle = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
 
 
-
-}
-@Composable
-fun CounterButton(onClick: (Int) -> Unit) {
-    Button(onClick = { onClick.invoke(1) }) {
-        Text("Increment")
+            }
+        }
+        Button(
+            onClick = onCheckData,
+            //   enabled = dataUiState.actionEnabled,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Valider")
+        }
+        
     }
+
+
+
+
 }
-/*@Preview(showBackground = true)
+
+
+
+
+}
+
+@Preview(showBackground = true)
 @Composable
 private fun TrainScreenPreview() {
-    LearnWithPierreTheme() {
-        TrainBody(
-            Data(1,"salut","connard",true,"",0, Date("01/02/2023"))
-         /*   dataUiState = DataUiState(
-                recto = "Item name",
-                verso = "10.00",
-            ),
-            onValueChange = {},
-            onSaveClick = {}
-        */)
-    }
-}*/
+
+    val currentQuestion =Data(1,"salut","connard",true,"",0, Date("01/02/2023"))
+    val trainUiState = TrainUiState(answer = "J'aim:e le jambon d'uibvrergene et surtout du pinard et encore du pinard")
+
+    TrainBody(
+        currentQuestion = currentQuestion,
+        trainUiState = trainUiState,
+        onValueChange = {},
+        onCheckData = {},
+        progressFactor = 0.5f,
+        modifier = Modifier,
+        enabled = true
+    )
+}

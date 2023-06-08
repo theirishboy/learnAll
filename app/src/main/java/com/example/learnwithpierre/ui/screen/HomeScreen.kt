@@ -5,32 +5,29 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
-
 import com.example.learnwithpierre.ui.AppViewModelProvider
-import com.example.learnwithpierre.ui.manageData.DataUiState
 import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
+import com.example.learnwithpierre.ui.manageData.DataUiState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import kotlinx.coroutines.CoroutineScope
@@ -47,10 +44,9 @@ fun HomeScreen(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navigateBack: () -> Unit,
     navigateToTraining: () -> Unit,
-    canNavigateBack: Boolean = true,
     viewModel: DataEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    var selectedItem by remember { mutableStateOf(0) }
+    val selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Songs", "Practice", "Playlists")
     Scaffold(
        /* topBar = {

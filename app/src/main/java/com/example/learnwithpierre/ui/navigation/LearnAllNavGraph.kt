@@ -23,8 +23,9 @@ fun LearnAllNavHost(
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToTraining = { navController.navigate(TrainDestination.route) }
+                modifier = modifier,
+                navigateBack = { navController.popBackStack() }
+                , navigateToTraining = { navController.navigate(TrainDestination.route)}
             )
         }
         composable(route = TrainDestination.route) {

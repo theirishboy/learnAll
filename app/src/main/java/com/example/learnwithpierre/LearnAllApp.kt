@@ -3,12 +3,15 @@ package com.example.learnwithpierre
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnwithpierre.ui.navigation.LearnAllNavHost
@@ -21,6 +24,7 @@ fun LearnAllApp(navController: NavHostController = rememberNavController()) {
 /**
  * App bar to display title and conditionally display the back navigation.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LearnAllTopAppBar(
     title: String,
@@ -29,7 +33,7 @@ fun LearnAllTopAppBar(
     navigateUp: () -> Unit = {}
 ) {
     if (canNavigateBack) {
-        TopAppBar(
+        CenterAlignedTopAppBar(
             title = { Text(title) },
             modifier = modifier,
             navigationIcon = {
@@ -42,6 +46,11 @@ fun LearnAllTopAppBar(
             }
         )
     } else {
-        TopAppBar(title = { Text(title) }, modifier = modifier)
+        CenterAlignedTopAppBar(title = { Text(title) }, modifier = modifier)
     }
+}
+@Preview
+@Composable
+private fun TopAppBarPreview(modifier: Modifier = Modifier){
+    LearnAllTopAppBar(title = "Bonjour", canNavigateBack = true)
 }

@@ -40,6 +40,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
             trainUiState.dataList.removeLast()
             currentQuestion = trainUiState.dataList.last()
             trainUiScore += 0.1
+            trainUiState.answer = ""
 
             //dataRepository.updateData()
         }
