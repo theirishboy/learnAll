@@ -1,5 +1,6 @@
 package com.example.learnwithpierre.ui.screen
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,6 +24,9 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var trainUiScore by mutableStateOf(0.0)
         private set
 
+    var showAnswerPopUp by mutableStateOf(0)
+        private set
+
     var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, Date("01/02/2022")))
 
     init {
@@ -34,8 +38,14 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     fun compareData() {
         viewModelScope.launch {
-            if(trainUiState.answer!= trainUiState.dataList.last().recto ){
-                println("null")
+            if(trainUiState.answer == trainUiState.dataList.last().verso ){
+                showAnswerPopUp = 1
+
+                Log.d("test bonne réponse","vrai")
+            }else{
+                showAnswerPopUp = 2
+                Log.d("test mauvaise réponse","false")
+
             }
             trainUiState.dataList.removeLast()
             currentQuestion = trainUiState.dataList.last()
@@ -50,11 +60,14 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
    fun updateUiState(trainUiState: TrainUiState) {
         this.trainUiState = TrainUiState(dataList =  trainUiState.dataList, answer = trainUiState.answer)
     }
+
+    fun nextQuestion() {
+        showAnswerPopUp = 0
+    }
 }
 
 /**
  * Ui State for trainScreen
  */
 data class TrainUiState(val dataList: MutableList<Data> = arrayListOf(), var answer: String)
-
 
