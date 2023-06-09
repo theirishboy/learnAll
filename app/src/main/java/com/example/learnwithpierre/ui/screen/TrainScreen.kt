@@ -1,6 +1,8 @@
 package com.example.learnwithpierre.ui.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +13,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,8 +41,9 @@ object TrainDestination : NavigationDestination {
     override val titleRes: Int = R.string.app_name
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
 fun TrainScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
@@ -47,17 +53,14 @@ fun TrainScreen(
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
-    Scaffold(topBar = {
-        LearnAllTopAppBar(
-            title = "Train",
-            canNavigateBack = canNavigateBack,
-            navigateUp = navigateBack
-        )
-    }
-    )
-    {
-        if(viewModel.trainUiState.dataList.isNotEmpty()){
-
+    Scaffold(
+        topBar = {
+            LearnAllTopAppBar(
+                title = "Train",
+                canNavigateBack = canNavigateBack,
+                navigateUp = navigateBack,
+            )
+        } , content = {
 
             TrainBody(
                 currentQuestion = currentQuestion,
@@ -66,12 +69,11 @@ fun TrainScreen(
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
-                modifier = modifier
+                modifier = modifier.padding(top = 50.dp)
             )
-        }else{
-            Text(text = "loading...")
-        }
-    }
+        })
+
+
 
 
 }
@@ -80,7 +82,6 @@ fun TrainScreen(
 @Composable
 fun TrainBody(
     currentQuestion: Data,
-    //dataList : List<Data>,
     trainUiState:TrainUiState,
     onValueChange: (TrainUiState) -> Unit,
     onCheckData: () -> Unit,
@@ -89,90 +90,99 @@ fun TrainBody(
     enabled: Boolean = true,
 
 
-    ) { Column(
-    modifier = modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(32.dp)
-) {
-    LinearProgressIndicator(
-        progress = progressFactor,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(16.dp)
-            .clip(RoundedCornerShape(4.dp)),
+    ) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = progressFactor,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
-    Column(modifier.weight(0.3f)) {
-        Text(text = " A quoi correspond  ? :",
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            ))
-        Spacer(modifier = modifier.height(8.dp))
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(0.5f),
-            shape = RoundedCornerShape(20.dp),
 
-            ) {
-            Text(
-                text = currentQuestion.recto,
-                modifier = Modifier.padding(16.dp),
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(5.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    )
+    {
+        LinearProgressIndicator(
+            modifier = Modifier
+                .semantics(mergeDescendants = true) {}
+                .padding(7.dp)
+                .fillMaxWidth(),
+            progress = animatedProgress,
+        )
+        Column(Modifier.weight(0.3f)) {
+
+            Text(text = " A quoi correspond  ? :",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
-                )
+                ))
 
-            )
-        }
-    }
-    Column(modifier.weight(1f),verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text = " Votre réponse :",
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            ))
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(1f),
-            shape = RoundedCornerShape(20.dp),
+            Spacer(modifier = Modifier.height(8.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.5f),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
 
-            ) {
-            Column  (
-                modifier = Modifier.padding(16.dp)
-            ) {
-                //Spacer(modifier = Modifier.height(100.dp))
-                BasicTextField(
-                    value = trainUiState.answer,
-                    onValueChange = { onValueChange(trainUiState.copy(answer = it)) },
-                    singleLine = false,
-                    textStyle = TextStyle(
+                ) {
+                Text(
+                    text = currentQuestion.recto,
+                    modifier = Modifier.padding(16.dp),
+                    style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                    )
+
                 )
-
-
-
             }
         }
-        Button(
-            onClick = onCheckData,
-            //   enabled = dataUiState.actionEnabled,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Valider")
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(text = " Votre réponse :",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.8f),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
+
+
+                ) {
+                Column  (
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    BasicTextField(
+                        value = trainUiState.answer,
+                        onValueChange = { onValueChange(trainUiState.copy(answer = it)) },
+                        singleLine = false,
+                        textStyle = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+
+
+                }
+            }
+            Button(
+                onClick = onCheckData,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Valider")
+            }
+
         }
-        
+
+
+
+
     }
-
-
-
-
-}
 
 
 
@@ -181,10 +191,10 @@ fun TrainBody(
 
 @Preview(showBackground = true)
 @Composable
-private fun TrainScreenPreview() {
+private fun TrainBodyPreview() {
 
     val currentQuestion =Data(1,"salut","connard",true,"",0, Date("01/02/2023"))
-    val trainUiState = TrainUiState(answer = "J'aim:e le jambon d'uibvrergene et surtout du pinard et encore du pinard")
+    val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
 
     TrainBody(
         currentQuestion = currentQuestion,
@@ -195,4 +205,31 @@ private fun TrainScreenPreview() {
         modifier = Modifier,
         enabled = true
     )
+}
+
+@Preview
+@Composable
+private fun TrainScreenPreview(){
+
+    val currentQuestion =Data(1,"salut","connard",true,"",0, Date("01/02/2023"))
+    val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
+
+    Scaffold(
+        topBar = {
+            LearnAllTopAppBar(
+                title = "Train",
+                canNavigateBack = true,
+                navigateUp = {},
+            )
+        } , content = {innerPadding->
+            TrainBody(
+                currentQuestion = currentQuestion,
+                trainUiState = trainUiState,
+                onValueChange = {},
+                onCheckData = {},
+                progressFactor = 0.5f,
+                modifier = Modifier.padding(innerPadding),
+                enabled = true
+            )
+        })
 }

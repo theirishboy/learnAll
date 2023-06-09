@@ -23,7 +23,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var trainUiScore by mutableStateOf(0.0)
         private set
 
-    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"porn",1, Date("01/02/2022")))
+    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, Date("01/02/2022")))
 
     init {
         viewModelScope.launch {
