@@ -4,8 +4,11 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.compose.md_theme_light_primary
+import com.example.compose.md_theme_light_tertiary
 import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.dao.DataRepository
 import kotlinx.coroutines.flow.filterNotNull
@@ -16,15 +19,11 @@ import java.util.Date
 
 class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
-
-
     var trainUiState by mutableStateOf(TrainUiState(answer = ""))
         private set
-
     var trainUiScore by mutableStateOf(0.0)
         private set
-
-    var showAnswerPopUp by mutableStateOf(0)
+    var showAnswerPopUp by mutableStateOf(AnswerState.NOTSHOW)
         private set
 
     var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, Date("01/02/2022")))
@@ -39,18 +38,11 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     fun compareData() {
         viewModelScope.launch {
             if(trainUiState.answer == trainUiState.dataList.last().verso ){
-                showAnswerPopUp = 1
-
-                Log.d("test bonne réponse","vrai")
+                showAnswerPopUp = AnswerState.TRUE
             }else{
-                showAnswerPopUp = 2
-                Log.d("test mauvaise réponse","false")
-
+                showAnswerPopUp = AnswerState.FALSE
             }
-            trainUiState.dataList.removeLast()
-            currentQuestion = trainUiState.dataList.last()
-            trainUiScore += 0.1
-            trainUiState.answer = ""
+
 
             //dataRepository.updateData()
         }
@@ -62,7 +54,12 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     }
 
     fun nextQuestion() {
-        showAnswerPopUp = 0
+        showAnswerPopUp = AnswerState.NOTSHOW
+        trainUiScore += 0.1
+        trainUiState.answer = ""
+        trainUiState.dataList.removeLast()
+        currentQuestion = trainUiState.dataList.last()
+
     }
 }
 
@@ -70,4 +67,9 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
  * Ui State for trainScreen
  */
 data class TrainUiState(val dataList: MutableList<Data> = arrayListOf(), var answer: String)
+data class AnswerUiState(val checkAnswer : String, val answerState: AnswerState, val answerColor : Color)
 
+enum class AnswerState(val message: String, val color: Color){
+    NOTSHOW("NOTSHOW",md_theme_light_tertiary),TRUE("vrai",md_theme_light_primary),FALSE("fausse",md_theme_light_tertiary);
+
+}

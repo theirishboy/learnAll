@@ -1,16 +1,12 @@
 package com.example.learnwithpierre.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
@@ -29,6 +25,7 @@ import com.example.learnwithpierre.R
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
 import com.example.learnwithpierre.ui.manageData.DataUiState
+import com.example.learnwithpierre.ui.manageData.SaveState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import kotlinx.coroutines.CoroutineScope
@@ -48,21 +45,15 @@ fun HomeScreen(
     viewModel: DataEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Songs", "Practice", "Playlists")
+    val items = listOf("Save","Train","Data")
+    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
+    val saveState = viewModel.saveUiState
     Scaffold(
-       /* topBar = {
-           LearnAllTopAppBar(
-                title = "Save",
-                canNavigateBack = canNavigateBack,
-                navigateUp = onNavigateUp
-            )
-        },*/
-
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = { Icon(Icons.Filled.Favorite, contentDescription = item) },
+                        icon = {R.drawable.baseline_download_24},
                         label = { Text(item) },
                         selected = selectedItem == index,
                         onClick = navigateToTraining
@@ -81,17 +72,26 @@ fun HomeScreen(
 
                 }
             },
-            modifier = modifier.padding(innerPadding)
+            saveState = saveState,
+            modifier = modifier.padding(innerPadding),
         )
     }
+
 }
+
+
+
+
 @Composable
-fun SaveBody(dataUiState: DataUiState,
-             onValueChange: (DataUiState) -> Unit,
-             onSaveClick: () -> Unit,
-             modifier: Modifier = Modifier,
-            // dataList : List<Data>
-) {
+fun SaveBody(
+    dataUiState: DataUiState,
+    onValueChange: (DataUiState) -> Unit,
+    onSaveClick: () -> Unit,
+    saveState: SaveState,
+    modifier: Modifier = Modifier,
+
+
+    ){
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -101,18 +101,20 @@ fun SaveBody(dataUiState: DataUiState,
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,modifier = modifier
                 .fillMaxWidth()
-                .weight(1f)) {
+                .weight(0.8f)) {
             Text(text = "Sauvegarder vos données")
         }
         Row(modifier = modifier.weight(1f)){
             //Spacer(modifier = Modifier.height(100.dp))
-            SaveForm(dataUiState = dataUiState, onValueChange = onValueChange)
+            SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState)
 
         }
+
+
         Button(
             onClick = onSaveClick,
             enabled = dataUiState.actionEnabled,
-             modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
         }
@@ -127,13 +129,16 @@ fun SaveBody(dataUiState: DataUiState,
 fun SaveForm( dataUiState: DataUiState,
               modifier: Modifier = Modifier,
               onValueChange: (DataUiState) -> Unit = {},
-              enabled: Boolean = true){
+              enabled: Boolean = true,
+              saveState: SaveState){
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         OutlinedTextField(
             value = dataUiState.category,
             onValueChange = { onValueChange(dataUiState.copy(category = it)) },
             label = { Text("Category") },
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             enabled = enabled,
             singleLine = true
         )
@@ -141,7 +146,9 @@ fun SaveForm( dataUiState: DataUiState,
             value = dataUiState.recto,
             onValueChange = { onValueChange(dataUiState.copy(recto = it)) },
             label = { Text("Recto") },
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             enabled = enabled,
             singleLine = true
         )
@@ -149,10 +156,13 @@ fun SaveForm( dataUiState: DataUiState,
             value = dataUiState.verso,
             onValueChange = { onValueChange(dataUiState.copy(verso = it)) },
             label = { Text("Verso") },
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             enabled = enabled,
             singleLine = true
         )
+        Text(text = saveState.message)
 
     }
 
@@ -168,7 +178,8 @@ private fun ItemEntryScreenPreview() {
                 verso = "10.00",
             ),
             onValueChange = {},
-            onSaveClick = {}
+            onSaveClick = {},
+            saveState = SaveState.SHOWSUCCESS
         )
     }
 }
