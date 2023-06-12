@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
@@ -40,7 +40,6 @@ import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
 import com.example.learnwithpierre.ui.manageData.DataUiState
 import com.example.learnwithpierre.ui.manageData.SaveState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
-import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -61,6 +60,7 @@ fun HomeScreen(
     val items = listOf("Save","Train","Data")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
     val saveState = viewModel.saveUiState
+    val dataEntryUiState by viewModel.dataEntryUiState.collectAsState()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -87,6 +87,7 @@ fun HomeScreen(
             },
             saveState = saveState,
             modifier = modifier.padding(innerPadding),
+            categories = dataEntryUiState.categories
         )
     }
 
@@ -102,6 +103,7 @@ fun SaveBody(
     onSaveClick: () -> Unit,
     saveState: SaveState,
     modifier: Modifier = Modifier,
+    categories: List<String>,
 
 
     ){
@@ -127,7 +129,7 @@ fun SaveBody(
             }
             Row(modifier = modifier.weight(1f)){
                 //Spacer(modifier = Modifier.height(100.dp))
-                SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState)
+                SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState, categories = categories)
 
             }}
 
@@ -147,35 +149,33 @@ fun SaveBody(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SaveForm( dataUiState: DataUiState,
-              modifier: Modifier = Modifier,
-              onValueChange: (DataUiState) -> Unit = {},
-              enabled: Boolean = true,
-              saveState: SaveState){
+fun SaveForm(dataUiState: DataUiState,
+             modifier: Modifier = Modifier,
+             onValueChange: (DataUiState) -> Unit = {},
+             enabled: Boolean = true,
+             saveState: SaveState,
+             categories: List<String>
+){
     var active by remember {
         mutableStateOf(false) }
-    var text by remember {
-        mutableStateOf("")
-    }
     var items = remember {
         mutableStateListOf("Jean","eude","ken")
     }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
-            query = text ,
-            onQueryChange = { text = it } ,
-            onSearch = {
-                items.add(text)
+            query = dataUiState.category ,
+            onQueryChange = {  onValueChange(dataUiState.copy(category = it)) } ,
+            onSearch = { items.add(dataUiState.category)
                 active = false}, active = active ,
             onActiveChange = { active = it },
-            placeholder = { Text(text = "Search")},
+            placeholder = { Text(text = "Catégorie")},
             leadingIcon = {Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")},
             trailingIcon = {
                 if(active) {
                     Icon(
                         modifier = Modifier.clickable {
-                            text = ""
+                            onValueChange(dataUiState.copy(category = ""))
 
                         },
 
@@ -184,25 +184,27 @@ fun SaveForm( dataUiState: DataUiState,
                 }
             }
         ) {
-            items.forEach {
-                Row(modifier = Modifier.padding(14.dp)) {
+            categories.forEach {
+                Row(modifier = Modifier.padding(14.dp)
+                    .fillMaxWidth()
+                    .clickable {  onValueChange(dataUiState.copy(category = it)) ; active = false }) {
                     Icon(modifier = Modifier.padding(end = 10.dp),
                         imageVector = Icons.Default.Search, contentDescription = "history Icon")
                     Text(text = it)
-                    
+
                 }
             }
         }
-        OutlinedTextField(
-            value = dataUiState.category,
-            onValueChange = { onValueChange(dataUiState.copy(category = it)) },
-            label = { Text("Category") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            enabled = enabled,
-            singleLine = true
-        )
+        /* OutlinedTextField(
+             value = dataUiState.category,
+             onValueChange = { onValueChange(dataUiState.copy(category = it)) },
+             label = { Text("Category") },
+             modifier = Modifier
+                 .fillMaxWidth()
+                 .weight(1f),
+             enabled = enabled,
+             singleLine = true
+         )*/
         OutlinedTextField(
             value = dataUiState.recto,
             onValueChange = { onValueChange(dataUiState.copy(recto = it)) },
@@ -230,7 +232,7 @@ fun SaveForm( dataUiState: DataUiState,
 
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 private fun ItemEntryScreenPreview() {
     LearnWithPierreTheme() {
@@ -244,4 +246,4 @@ private fun ItemEntryScreenPreview() {
             saveState = SaveState.SHOWSUCCESS
         )
     }
-}
+}*/

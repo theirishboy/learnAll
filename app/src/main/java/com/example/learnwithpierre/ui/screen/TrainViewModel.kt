@@ -67,7 +67,6 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
  * Ui State for trainScreen
  */
 data class TrainUiState(val dataList: MutableList<Data> = arrayListOf(), var answer: String)
-data class AnswerUiState(val checkAnswer : String, val answerState: AnswerState, val answerColor : Color)
 
 enum class AnswerState(val message: String, val color: Color){
     NOTSHOW("NOTSHOW",md_theme_light_tertiary),TRUE("vrai",md_theme_light_primary),FALSE("fausse",md_theme_light_tertiary);

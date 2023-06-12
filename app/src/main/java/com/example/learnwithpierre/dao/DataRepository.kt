@@ -46,4 +46,7 @@ interface DataRepository {
     suspend fun updateData(Data: Data)
 
     fun getRandomData():Flow<List<Data>>
+
+    fun getCategories(): Flow<MutableList<String>>
+
 }

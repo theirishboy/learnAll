@@ -15,4 +15,7 @@ class OfflineDataRepository(private val dataDao: DataDao) : DataRepository {
     override suspend fun updateData(Data: Data) = dataDao.update(Data)
 
     override fun getRandomData(): Flow<List<Data>>  = dataDao.getRandomData()
+
+    override fun getCategories(): Flow<MutableList<String>> = dataDao.getCategories()
+
 }

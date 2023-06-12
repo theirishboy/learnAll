@@ -35,5 +35,8 @@ interface DataDao {
     @Query("SELECT * from data ORDER BY recto ASC")
     fun getAllData(): Flow<MutableList<Data>>
 
+    @Query("SELECT DISTINCT category from data")
+    fun getCategories(): Flow<MutableList<String>>
+
 
 }

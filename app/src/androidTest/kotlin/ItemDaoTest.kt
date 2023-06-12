@@ -92,6 +92,14 @@ class ItemDaoTest {
         assertEquals(allItems[0], item1)
         assertEquals(allItems[1], item2)
     }
+    @Test
+    @Throws(Exception::class)
+    fun getCategories() = runBlocking {
+        addTwoItemsToDb()
+        val allItems = dataDao.getCategories().first()
+        assertEquals(allItems[0], "fruit")
+     //   assertEquals(allItems[1], item2)
+    }
 
 
 
