@@ -1,23 +1,36 @@
 package com.example.learnwithpierre.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,7 +66,7 @@ fun HomeScreen(
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = {R.drawable.baseline_download_24},
+                        icon = {Icon(painter = painterResource(id = icons[index]), contentDescription ="" )},
                         label = { Text(item) },
                         selected = selectedItem == index,
                         onClick = navigateToTraining
@@ -92,24 +105,31 @@ fun SaveBody(
 
 
     ){
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,modifier = modifier
-                .fillMaxWidth()
-                .weight(0.8f)) {
-            Text(text = "Sauvegarder vos données")
-        }
-        Row(modifier = modifier.weight(1f)){
-            //Spacer(modifier = Modifier.height(100.dp))
-            SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState)
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .weight(0.5f),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp)){
 
-        }
 
+            Row(verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,modifier = modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)) {
+                Text(text = "ajouter une carte")
+            }
+            Row(modifier = modifier.weight(1f)){
+                //Spacer(modifier = Modifier.height(100.dp))
+                SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState)
+
+            }}
 
         Button(
             onClick = onSaveClick,
@@ -125,13 +145,54 @@ fun SaveBody(
     }
 
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SaveForm( dataUiState: DataUiState,
               modifier: Modifier = Modifier,
               onValueChange: (DataUiState) -> Unit = {},
               enabled: Boolean = true,
               saveState: SaveState){
+    var active by remember {
+        mutableStateOf(false) }
+    var text by remember {
+        mutableStateOf("")
+    }
+    var items = remember {
+        mutableStateListOf("Jean","eude","ken")
+    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        SearchBar(
+            modifier = Modifier.fillMaxWidth(),
+            query = text ,
+            onQueryChange = { text = it } ,
+            onSearch = {
+                items.add(text)
+                active = false}, active = active ,
+            onActiveChange = { active = it },
+            placeholder = { Text(text = "Search")},
+            leadingIcon = {Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")},
+            trailingIcon = {
+                if(active) {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            text = ""
+
+                        },
+
+                        imageVector = Icons.Default.Close, contentDescription = "Close Icon"
+                    )
+                }
+            }
+        ) {
+            items.forEach {
+                Row(modifier = Modifier.padding(14.dp)) {
+                    Icon(modifier = Modifier.padding(end = 10.dp),
+                        imageVector = Icons.Default.Search, contentDescription = "history Icon")
+                    Text(text = it)
+                    
+                }
+            }
+        }
         OutlinedTextField(
             value = dataUiState.category,
             onValueChange = { onValueChange(dataUiState.copy(category = it)) },
@@ -150,7 +211,7 @@ fun SaveForm( dataUiState: DataUiState,
                 .fillMaxWidth()
                 .weight(1f),
             enabled = enabled,
-            singleLine = true
+            singleLine = false
         )
         OutlinedTextField(
             value = dataUiState.verso,
@@ -158,9 +219,10 @@ fun SaveForm( dataUiState: DataUiState,
             label = { Text("Verso") },
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .align(Alignment.CenterHorizontally),
             enabled = enabled,
-            singleLine = true
+            singleLine = false
         )
         Text(text = saveState.message)
 
