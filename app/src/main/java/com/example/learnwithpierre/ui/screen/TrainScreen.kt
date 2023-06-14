@@ -57,6 +57,9 @@ fun TrainScreen(
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
+    if(currentProgress == 0.5f){
+        navigateBack()
+    }
     Scaffold(
         topBar = {
             LearnAllTopAppBar(

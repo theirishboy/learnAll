@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
@@ -40,6 +45,7 @@ import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
 import com.example.learnwithpierre.ui.manageData.DataUiState
 import com.example.learnwithpierre.ui.manageData.SaveState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
+import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -179,20 +185,27 @@ fun SaveForm(dataUiState: DataUiState,
 
                         },
 
-                        imageVector = Icons.Default.Close, contentDescription = "Close Icon"
+                        imageVector = Icons.Default.Close, contentDescription = "add Icon"
                     )
                 }
             }
         ) {
-            categories.forEach {
+            LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+            items(items = categories, key = {it}) {
                 Row(modifier = Modifier.padding(14.dp)
                     .fillMaxWidth()
-                    .clickable {  onValueChange(dataUiState.copy(category = it)) ; active = false }) {
-                    Icon(modifier = Modifier.padding(end = 10.dp),
-                        imageVector = Icons.Default.Search, contentDescription = "history Icon")
+                    .clickable {
+                        onValueChange(dataUiState.copy(category = it)); active = false
+                    }) {
+                    Icon(
+                        modifier = Modifier.padding(end = 10.dp),
+                        imageVector = Icons.Default.Search, contentDescription = "history Icon"
+                    )
                     Text(text = it)
 
                 }
+            }
             }
         }
         /* OutlinedTextField(
@@ -210,8 +223,8 @@ fun SaveForm(dataUiState: DataUiState,
             onValueChange = { onValueChange(dataUiState.copy(recto = it)) },
             label = { Text("Recto") },
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
+                .fillMaxWidth(),
+              //  .weight(1f),
             enabled = enabled,
             singleLine = false
         )
@@ -221,7 +234,7 @@ fun SaveForm(dataUiState: DataUiState,
             label = { Text("Verso") },
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                //.weight(1f)
                 .align(Alignment.CenterHorizontally),
             enabled = enabled,
             singleLine = false
@@ -232,18 +245,19 @@ fun SaveForm(dataUiState: DataUiState,
 
 }
 
-/*@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun ItemEntryScreenPreview() {
     LearnWithPierreTheme() {
         SaveBody(
             dataUiState = DataUiState(
-                recto = "Item name",
-                verso = "10.00",
+                recto = "Item name et si on met un item name vraiement long pour avoir un test en condition reelzeaeazeazeaze",
+                verso = "10.00 et bas ça a l'air pas mal tout ca, vraiment même les longs textes sont corrects",
             ),
             onValueChange = {},
             onSaveClick = {},
-            saveState = SaveState.SHOWSUCCESS
-        )
+            saveState = SaveState.SHOWSUCCESS,
+            modifier = Modifier,
+            categories = listOf("Litterature moderne","roman"))
     }
-}*/
+}
