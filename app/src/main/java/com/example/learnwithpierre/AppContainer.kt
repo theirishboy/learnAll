@@ -1,4 +1,4 @@
-package com.example.learnwithpierre.dao
+package com.example.learnwithpierre
 
 /*
  * Copyright (C) 2022 The Android Open Source Project
@@ -16,6 +16,9 @@ package com.example.learnwithpierre.dao
  * limitations under the License.
  */
 import android.content.Context
+import com.example.learnwithpierre.dao.DataDatabase
+import com.example.learnwithpierre.dao.DataRepository
+import com.example.learnwithpierre.dao.OfflineDataRepository
 
 /**
  * App container for Dependency injection.

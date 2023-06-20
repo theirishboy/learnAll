@@ -1,8 +1,6 @@
 package com.example.learnwithpierre
 
 import android.app.Application
-import com.example.learnwithpierre.dao.AppContainer
-import com.example.learnwithpierre.dao.AppDataContainer
 
 class LearnApplication : Application() {
 
