@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -93,7 +95,7 @@ fun HomeScreen(
             },
             saveState = saveState,
             modifier = modifier.padding(innerPadding),
-            categories = dataEntryUiState.categories
+            categories = dataEntryUiState.filterCategories
         )
     }
 
@@ -164,36 +166,33 @@ fun SaveForm(dataUiState: DataUiState,
 ){
     var active by remember {
         mutableStateOf(false) }
-    var items = remember {
-        mutableStateListOf("Jean","eude","ken")
-    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
-            query = dataUiState.category ,
+            query = dataUiState.category,
             onQueryChange = {  onValueChange(dataUiState.copy(category = it)) } ,
-            onSearch = { items.add(dataUiState.category)
-                active = false}, active = active ,
+            onSearch = {active = false}, active = active ,
             onActiveChange = { active = it },
             placeholder = { Text(text = "Catégorie")},
             leadingIcon = {Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")},
             trailingIcon = {
                 if(active) {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            onValueChange(dataUiState.copy(category = ""))
+                        Icon(
+                            modifier = Modifier.clickable {
+                                onValueChange(dataUiState.copy(category = ""))
 
-                        },
-
-                        imageVector = Icons.Default.Close, contentDescription = "add Icon"
-                    )
+                            },
+                            imageVector = Icons.Default.Close, contentDescription = "add Icon"
+                        )
                 }
+
             }
         ) {
             LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
             items(items = categories, key = {it}) {
-                Row(modifier = Modifier.padding(14.dp)
+                Row(modifier = Modifier
+                    .padding(14.dp)
                     .fillMaxWidth()
                     .clickable {
                         onValueChange(dataUiState.copy(category = it)); active = false
@@ -208,16 +207,6 @@ fun SaveForm(dataUiState: DataUiState,
             }
             }
         }
-        /* OutlinedTextField(
-             value = dataUiState.category,
-             onValueChange = { onValueChange(dataUiState.copy(category = it)) },
-             label = { Text("Category") },
-             modifier = Modifier
-                 .fillMaxWidth()
-                 .weight(1f),
-             enabled = enabled,
-             singleLine = true
-         )*/
         OutlinedTextField(
             value = dataUiState.recto,
             onValueChange = { onValueChange(dataUiState.copy(recto = it)) },
@@ -239,7 +228,11 @@ fun SaveForm(dataUiState: DataUiState,
             enabled = enabled,
             singleLine = false
         )
-        Text(text = saveState.message)
+        Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center) {
+            Text(text = saveState.message
+            )
+        }
+
 
     }
 
@@ -261,3 +254,4 @@ private fun ItemEntryScreenPreview() {
             categories = listOf("Litterature moderne","roman"))
     }
 }
+

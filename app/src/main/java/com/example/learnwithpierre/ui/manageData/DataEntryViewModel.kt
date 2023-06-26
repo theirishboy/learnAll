@@ -34,12 +34,13 @@ class DataEntryViewModel(private val dataRepository: DataRepository) : ViewModel
     var saveUiState by mutableStateOf(SaveState.NOTSHOW)
 
     val dataEntryUiState: StateFlow<DataEntryUiState> =
-        dataRepository.getCategories().map { DataEntryUiState(it) }
+        dataRepository.getCategories().map { DataEntryUiState(it,it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = DataEntryUiState()
             )
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
@@ -50,6 +51,7 @@ class DataEntryViewModel(private val dataRepository: DataRepository) : ViewModel
     fun updateUiState(newDataUiState: DataUiState) {
         if(saveUiState != SaveState.NOTSHOW) saveUiState = SaveState.NOTSHOW
         dataUiState = newDataUiState.copy( actionEnabled = newDataUiState.isValid())
+        dataEntryUiState.value.filterCategories = dataEntryUiState.value.categories.filter {s -> s.contains(dataUiState.category)}
     }
     suspend fun saveData() {
         if (dataUiState.isValid()) {
@@ -64,4 +66,4 @@ enum class SaveState(val message: String){
     NOTSHOW(""),SHOWSUCCESS("la sauvegarde est un succès"),SHOWFAILURE("la sauvegarde est un échec");
 
 }
-data class DataEntryUiState(var categories : List<String> = listOf())
+data class DataEntryUiState(var categories : List<String> = listOf(), var filterCategories: List<String> = listOf())
