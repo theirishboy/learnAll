@@ -1,6 +1,5 @@
 package com.example.learnwithpierre.ui.screen
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -55,10 +54,12 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     fun nextQuestion() {
         showAnswerPopUp = AnswerState.NOTSHOW
-        trainUiScore += 0.1
+        trainUiScore += 1f/trainUiState.dataList.size
         trainUiState.answer = ""
-        trainUiState.dataList.removeLast()
-        currentQuestion = trainUiState.dataList.last()
+        if(trainUiScore <= 1f) {
+            trainUiState.dataList.removeLast()
+            currentQuestion = trainUiState.dataList.last()
+        }
 
     }
 }

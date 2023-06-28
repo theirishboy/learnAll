@@ -52,13 +52,15 @@ fun TrainScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
+    navigateToHome: () -> Unit,
+
     viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory)
 )
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
-    if(currentProgress == 0.5f){
-        navigateBack()
+    if(currentProgress >= 1f){
+        navigateToHome()
     }
     Scaffold(
         topBar = {
