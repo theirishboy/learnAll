@@ -31,7 +31,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     init {
         viewModelScope.launch {
           trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
-            //currentQuestion = trainUiState.dataList.last()
+            currentQuestion = trainUiState.dataList.last()
         }
     }
 

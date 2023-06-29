@@ -7,15 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.dao.DataRepository
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class ShowAllDataScreenViewModel(private val dataRepository: DataRepository) : ViewModel() {
-    private var data1 by mutableStateOf(Data(3,"2GM","1945",true,"Histoire",1, LocalDateTime.now()))
-    private var data2 by mutableStateOf(Data(4052,"1GM","1918",true,"Histoire",1, LocalDateTime.now()))
-    private var data3 by mutableStateOf(Data(1563,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now()))
-    var table : List<Data> = arrayListOf(data1,data2,data3)
+    var showAllDataUiState by mutableStateOf(ShowAllDataUiState())
+        private set
     init {
-        viewModelScope.launch {}
+        viewModelScope.launch {
+            showAllDataUiState  = dataRepository.getAllDataStream().map { ShowAllDataUiState(it as MutableList<Data>) }.filterNotNull().first()
+            //currentQuestion = trainUiState.dataList.last()
+        }
     }
 }
+data class ShowAllDataUiState(val dataList: MutableList<Data> = arrayListOf())

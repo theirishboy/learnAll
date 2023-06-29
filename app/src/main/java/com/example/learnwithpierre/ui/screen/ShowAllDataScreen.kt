@@ -38,7 +38,7 @@ fun ShowAllDataScreen(
     viewModel: ShowAllDataScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
 ){
-    val table = viewModel.table
+    val table = viewModel.showAllDataUiState.dataList
     val items = listOf("Save","Train","Data")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
     val selectedItem by remember { mutableStateOf(0) }

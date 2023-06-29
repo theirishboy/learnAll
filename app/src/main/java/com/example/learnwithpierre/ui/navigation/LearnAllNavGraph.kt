@@ -20,7 +20,7 @@ fun LearnAllNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ShowAllDataScreenRoute.route,
+        startDestination = HomeDestination.route,
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
@@ -45,33 +45,4 @@ fun LearnAllNavHost(
     }
 
 }
-     /*   composable(route = ItemEntryDestination.route) {
-            ItemEntryScreen(
-                navigateBack = { navController.popBackStack() },
-           //     onNavigateUp = { navController.navigateUp() }
-            )
-        }
-        composable(
-            route = ItemDetailsDestination.routeWithArgs,
-            arguments = listOf(navArgument(ItemDetailsDestination.itemIdArg) {
-                type = NavType.IntType
-            })
-        ) {
-            ItemDetailsScreen(
-                navigateToEditItem = { navController.navigate("${ItemEditDestination.route}/$it") },
-                navigateBack = { navController.navigateUp() }
-            )
-        }
-        composable(
-            route = ItemEditDestination.routeWithArgs,
-            arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
-                type = NavType.IntType
-            })
-        ) {
-            ItemEditScreen(
-                navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
-            )
-        }
-    }
-}*///
+
