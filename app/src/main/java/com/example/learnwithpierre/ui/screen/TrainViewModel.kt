@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.Date
 
 class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
@@ -25,12 +26,12 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var showAnswerPopUp by mutableStateOf(AnswerState.NOTSHOW)
         private set
 
-    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, Date("01/02/2022")))
+    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
         viewModelScope.launch {
           trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
-            currentQuestion = trainUiState.dataList.last()
+            //currentQuestion = trainUiState.dataList.last()
         }
     }
 

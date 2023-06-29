@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learnwithpierre.LearnApplication
 import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
 import com.example.learnwithpierre.ui.screen.HomeViewModel
+import com.example.learnwithpierre.ui.screen.ShowAllDataScreenViewModel
 import com.example.learnwithpierre.ui.screen.TrainViewModel
 
 /**
@@ -44,6 +45,9 @@ object AppViewModelProvider {
         }
         initializer {
            TrainViewModel(learnApplication().container.datasRepository)
+        }
+        initializer {
+           ShowAllDataScreenViewModel(learnApplication().container.datasRepository)
         }
     }
 }

@@ -12,11 +12,11 @@ import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import java.time.LocalDateTime
 import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
@@ -24,8 +24,8 @@ class ItemDaoTest {
 
     private lateinit var dataDao: DataDao
     private lateinit var dataDatabase: DataDatabase
-    private var item1 = Data(1, "Apples", "Pear", false,"fruit",1, Date("01/10/2021"))
-    private var item2 = Data(2, "Bananas", "Peach", false,"fruit",1, Date("01/10/2021"))
+    private var item1 = Data(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
+    private var item2 = Data(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
     @Before
     fun createDb() {

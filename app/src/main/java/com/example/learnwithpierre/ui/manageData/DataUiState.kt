@@ -1,6 +1,7 @@
 package com.example.learnwithpierre.ui.manageData
 
 import com.example.learnwithpierre.dao.Data
+import java.time.LocalDateTime
 import java.util.Date
 
 data class DataUiState(
@@ -10,7 +11,7 @@ data class DataUiState(
     val category: String = "",
     val isRecto: Boolean = false,
     val score: Int = 0,
-    val date: Date = Date("11/05/2022"),
+    val date: LocalDateTime = LocalDateTime.now(),
     val actionEnabled: Boolean = false
 
 )

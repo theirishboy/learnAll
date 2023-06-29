@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.learnwithpierre.ui.screen.HomeDestination
 import com.example.learnwithpierre.ui.screen.HomeScreen
+import com.example.learnwithpierre.ui.screen.ShowAllDataScreen
+import com.example.learnwithpierre.ui.screen.ShowAllDataScreenRoute
 import com.example.learnwithpierre.ui.screen.TrainDestination
 import com.example.learnwithpierre.ui.screen.TrainScreen
 
@@ -18,7 +20,7 @@ fun LearnAllNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = ShowAllDataScreenRoute.route,
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
@@ -30,8 +32,14 @@ fun LearnAllNavHost(
         }
         composable(route = TrainDestination.route) {
             TrainScreen(
-                navigateBack = { navController.popBackStack() },
+                navigateBack = {     navController.popBackStack(HomeDestination.route, inclusive = false)
+                },
                 navigateToHome = { navController.navigate(HomeDestination.route) }
+            )
+        }
+        composable(route = ShowAllDataScreenRoute.route) {
+            ShowAllDataScreen(
+                navigateToTraining = { navController.navigate(TrainDestination.route)}
             )
         }
     }

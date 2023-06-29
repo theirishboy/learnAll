@@ -8,8 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -49,6 +52,26 @@ fun LearnAllTopAppBar(
         CenterAlignedTopAppBar(title = { Text(title) }, modifier = modifier)
     }
 }
+/*@Composable
+fun LearnAllBottomAppBar(
+    title: String,
+    canNavigateBack: Boolean,
+    modifier: Modifier = Modifier,
+    navigateUp: () -> Unit = {}
+) {
+    val items = listOf("Save","Train","Data")
+    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = { androidx.compose.material3.Icon(painter = painterResource(id = icons[index]), contentDescription ="" ) },
+                label = { androidx.compose.material3.Text(item) },
+                selected = selectedItem == index,
+                onClick = navigateToTraining
+            )
+        }
+    }
+}*/
 @Preview
 @Composable
 private fun TopAppBarPreview(modifier: Modifier = Modifier){
