@@ -19,7 +19,6 @@ package com.example.learnwithpierre.ui
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -34,8 +33,6 @@ import com.example.learnwithpierre.ui.screen.TrainViewModel
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for ItemEditViewModel
-
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(learnApplication().container.datasRepository)

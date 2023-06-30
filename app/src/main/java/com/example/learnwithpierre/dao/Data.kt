@@ -18,12 +18,14 @@ data class Data(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name = "recto") val recto: String,
-    @ColumnInfo(name = "verso") val verso: String,
+    @ColumnInfo(name = "verso") var verso: String,
     @ColumnInfo(name = "isRecto") val isRecto: Boolean,
     @ColumnInfo(name = "category") val category: String,
     @ColumnInfo(name = "score") val score: Int,
     @ColumnInfo(name = "dateModification")
     val dateModification: LocalDateTime = LocalDateTime.now(),
+    @ColumnInfo(name = "dateTraining")
+    val dateTraining: LocalDateTime = LocalDateTime.now(),
 
     )
 

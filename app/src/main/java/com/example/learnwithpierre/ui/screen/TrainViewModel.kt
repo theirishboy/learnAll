@@ -27,15 +27,22 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
         private set
 
     var size : Int = 0
-
+    var errorData : Data = Data(0,"Please enter data in your db","vide",false,"animal",1, LocalDateTime.now())
     var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
         viewModelScope.launch {
           trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
-            currentQuestion = trainUiState.dataList.last()
-            size = trainUiState.dataList.size
+         try {
+                trainUiState.dataList.last()
+            }catch (e : Exception){
+                currentQuestion = errorData
+                trainUiState.dataList.add(errorData)
+            }
+
         }
+        size = trainUiState.dataList.size
+
     }
 
     fun compareData() {
@@ -68,7 +75,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 /**
  * Ui State for trainScreen
  */
-data class TrainUiState(val dataList: MutableList<Data> = arrayListOf(), var answer: String)
+data class TrainUiState(var dataList: MutableList<Data> = arrayListOf(), var answer: String)
 
 enum class AnswerState(val message: String, val color: Color){
     NOTSHOW("NOTSHOW",md_theme_light_tertiary),TRUE("vrai",md_theme_light_primary),FALSE("fausse",md_theme_light_tertiary);

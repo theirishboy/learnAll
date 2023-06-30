@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 import java.util.Date
 
 //increase the number of version each time we modify the database
-@Database(entities = [Data::class], version = 5, exportSchema = false)
+@Database(entities = [Data::class], version = 6, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DataDatabase : RoomDatabase() {
     //to make the database identify the DAO

@@ -12,6 +12,7 @@ data class DataUiState(
     val isRecto: Boolean = false,
     val score: Int = 0,
     val date: LocalDateTime = LocalDateTime.now(),
+    val dateTraining: LocalDateTime = LocalDateTime.now(),
     val actionEnabled: Boolean = false
 
 )
@@ -29,6 +30,7 @@ fun DataUiState.toData(): Data = Data(
     isRecto = isRecto,
     score = score,
     dateModification = date,
+    dateTraining = dateTraining
 
 )
 
