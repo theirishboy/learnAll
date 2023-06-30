@@ -89,8 +89,6 @@ fun HomeScreen(
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.saveData()
-                    navigateBack()
-
                 }
             },
             saveState = saveState,

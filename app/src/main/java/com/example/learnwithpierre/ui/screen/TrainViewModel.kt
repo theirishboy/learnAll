@@ -26,12 +26,15 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var showAnswerPopUp by mutableStateOf(AnswerState.NOTSHOW)
         private set
 
+    var size : Int = 0
+
     var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
         viewModelScope.launch {
           trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
             currentQuestion = trainUiState.dataList.last()
+            size = trainUiState.dataList.size
         }
     }
 
@@ -42,9 +45,6 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
             }else{
                 showAnswerPopUp = AnswerState.FALSE
             }
-
-
-            //dataRepository.updateData()
         }
 
 
@@ -55,7 +55,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     fun nextQuestion() {
         showAnswerPopUp = AnswerState.NOTSHOW
-        trainUiScore += 1f/trainUiState.dataList.size
+        trainUiScore += 1f/size
         trainUiState.answer = ""
         if(trainUiScore < 1f) {
             trainUiState.dataList.removeLast()
