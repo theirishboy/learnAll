@@ -57,7 +57,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
         showAnswerPopUp = AnswerState.NOTSHOW
         trainUiScore += 1f/trainUiState.dataList.size
         trainUiState.answer = ""
-        if(trainUiScore <= 1f) {
+        if(trainUiScore < 1f) {
             trainUiState.dataList.removeLast()
             currentQuestion = trainUiState.dataList.last()
         }
