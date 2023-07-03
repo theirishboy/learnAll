@@ -2,6 +2,7 @@ package com.example.learnwithpierre.ui.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +62,7 @@ fun TrainScreen(
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
+    val localFocusManager = LocalFocusManager.current
     if(currentProgress >= 1f){
         navigateBack()
     }
@@ -79,7 +82,7 @@ fun TrainScreen(
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
-                modifier = modifier.padding(innerPadding)
+                modifier = modifier.padding(innerPadding).clickable { localFocusManager.clearFocus()  }
             )
         })
     val popUpControl = viewModel.showAnswerPopUp

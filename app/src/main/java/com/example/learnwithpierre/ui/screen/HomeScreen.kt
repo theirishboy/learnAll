@@ -1,6 +1,7 @@
 package com.example.learnwithpierre.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -35,8 +38,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -113,12 +121,19 @@ fun SaveBody(
 
 
     ){
+    val localFocusManager = LocalFocusManager.current
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+            .padding(16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    localFocusManager.clearFocus()
+                })
+            }
+                ,
+        verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         Card(modifier = Modifier
             .fillMaxWidth()
@@ -153,7 +168,7 @@ fun SaveBody(
     }
 
 }
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SaveForm(dataUiState: DataUiState,
              modifier: Modifier = Modifier,
@@ -162,9 +177,12 @@ fun SaveForm(dataUiState: DataUiState,
              saveState: SaveState,
              categories: List<String>
 ){
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var active by remember {
         mutableStateOf(false) }
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(modifier = modifier.fillMaxWidth()
+      , verticalArrangement = Arrangement.spacedBy(16.dp),) {
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
             query = dataUiState.category,
@@ -213,7 +231,10 @@ fun SaveForm(dataUiState: DataUiState,
                 .fillMaxWidth(),
               //  .weight(1f),
             enabled = enabled,
-            singleLine = false
+            singleLine = false,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }),
         )
         OutlinedTextField(
             value = dataUiState.verso,
@@ -224,7 +245,10 @@ fun SaveForm(dataUiState: DataUiState,
                 //.weight(1f)
                 .align(Alignment.CenterHorizontally),
             enabled = enabled,
-            singleLine = false
+            singleLine = false,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { keyboardController?.hide() }),
         )
         Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center) {
             Text(text = saveState.message
