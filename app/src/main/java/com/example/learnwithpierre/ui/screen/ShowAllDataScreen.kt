@@ -3,8 +3,10 @@ package com.example.learnwithpierre.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
@@ -13,13 +15,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Data
@@ -27,7 +30,7 @@ import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import java.time.LocalDateTime
 
-object ShowAllDataScreenRoute : NavigationDestination {
+object ShowAllDataScreenDestination : NavigationDestination {
     override val route = "ShowAllDataScreen"
     override val titleRes: Int = R.string.app_name
 }
@@ -35,13 +38,15 @@ object ShowAllDataScreenRoute : NavigationDestination {
 @Composable
 fun ShowAllDataScreen(
     navigateToTraining: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
     viewModel: ShowAllDataScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
 ){
     val table = viewModel.showAllDataUiState.dataList
     val items = listOf("Save","Train","Data")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
-    val selectedItem by remember { mutableStateOf(0) }
+    val navigationScreens = listOf(navigateToHomeScreen,navigateToTraining, {})
+
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -49,23 +54,27 @@ fun ShowAllDataScreen(
                     NavigationBarItem(
                         icon = {Icon(painter = painterResource(id = icons[index]), contentDescription ="" )},
                         label = { androidx.compose.material3.Text(item) },
-                        selected = selectedItem == index,
-                        onClick = navigateToTraining
+                        selected = index == 2,
+                        onClick = navigationScreens[index]
                     )
                 }
             }
         }
     ) { innerPadding ->
-        Column() {
-            OneLineData(recto = "recto", verso = "Verso", category = "category", score = "score")
-            DisplayAllData(table, modifier = Modifier.padding(innerPadding))
-        }
-
+        ShowAllDataScreenBody(Modifier.padding(innerPadding),table)
     }
 }
+@Composable
+fun ShowAllDataScreenBody(modifier: Modifier, table: MutableList<Data>){
+    Column(modifier = modifier) {
+        OneLineData(recto = "recto", verso = "verso", category = "category", score = "score", title = true)
+        DisplayAllData(table)
+    }
 
+}
 @Composable
 fun DisplayAllData(listAllData : List<Data>, modifier:Modifier = Modifier){
+
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
         items(items = listAllData, key = {it.id}) {
@@ -83,20 +92,17 @@ fun DisplayAllData(listAllData : List<Data>, modifier:Modifier = Modifier){
 
 
 @Composable
-fun OneLineData(recto: String, verso: String, category: String, score: String){
+fun OneLineData(recto: String, verso: String, category: String, score: String, title: Boolean = false){
+    val column1Weight = .2f
+    val column2Weight = .3f
+    val column3Weight = .25f
+    val column4Weight = .25f
     Row(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = recto)
-        }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = verso)
-        }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = category)
-        }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = score)
-        }
+
+        TableCell(text = recto,column1Weight,title = title)
+        TableCell(text = verso,column2Weight,title = title)
+        TableCell(text = category,column3Weight,title = title)
+        TableCell(text = score,column4Weight,title = title)
 
     }
 }
@@ -110,14 +116,34 @@ fun OneLineDataPreview(){
         data.verso,
         data.category,
         data.score.toString(),
+        true
     )
 }
 @Preview
 @Composable
 fun DisplayAllDataPreview(){
-    val data = Data(3,"2GM","1945",true,"Histoire",1, LocalDateTime.now())
+    val data = Data(3,"2GM auqnd cest long ","1945",true,"Histoire",1, LocalDateTime.now())
     val data2 = Data(4052,"1GM","1918",true,"Histoire",1, LocalDateTime.now())
     val data3 = Data(1563,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now())
     val table : List<Data> = arrayListOf(data,data2,data3)
     DisplayAllData(table)
+}
+
+@Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float,
+    alignment: TextAlign = TextAlign.Center,
+    title: Boolean = false
+) {
+    Text(
+        text = text,
+        Modifier
+            .weight(weight)
+            .padding(10.dp),
+        fontWeight = if (title) FontWeight.Bold else FontWeight.Normal,
+        fontSize = if(title) 19.sp else 15.sp,
+        textAlign = alignment,
+
+    )
 }

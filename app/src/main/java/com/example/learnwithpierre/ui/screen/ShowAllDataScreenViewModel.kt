@@ -18,7 +18,7 @@ class ShowAllDataScreenViewModel(private val dataRepository: DataRepository) : V
         private set
     init {
         viewModelScope.launch {
-            showAllDataUiState  = dataRepository.getAllDataStream().map { ShowAllDataUiState(it as MutableList<Data>) }.filterNotNull().first()
+            showAllDataUiState  = dataRepository.getAllDataStream().map { ShowAllDataUiState(it) }.filterNotNull().first()
             //currentQuestion = trainUiState.dataList.last()
         }
     }
