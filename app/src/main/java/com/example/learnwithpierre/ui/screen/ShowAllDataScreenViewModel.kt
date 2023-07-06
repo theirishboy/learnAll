@@ -11,16 +11,28 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-
 class ShowAllDataScreenViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var showAllDataUiState by mutableStateOf(ShowAllDataUiState())
         private set
+
+    var currentCategory by mutableStateOf("Select Category")
     init {
         viewModelScope.launch {
-            showAllDataUiState  = dataRepository.getAllDataStream().map { ShowAllDataUiState(it) }.filterNotNull().first()
-            //currentQuestion = trainUiState.dataList.last()
+            showAllDataUiState.dataList  = dataRepository.getAllDataStream().map { (it) }.filterNotNull().first()
+            showAllDataUiState.dataCategories = dataRepository.getCategories().map { it }.filterNotNull().first()
+            showAllDataUiState.filterDataList = showAllDataUiState.dataList
         }
     }
+     fun onCategoryChange(newCategory: String){
+        currentCategory = newCategory
+         showAllDataUiState = showAllDataUiState.copy(
+             dataList = showAllDataUiState.dataList,
+             dataCategories = showAllDataUiState.dataCategories,
+             filterDataList = showAllDataUiState.dataList.filter { it.category == currentCategory }
+         )
+     }
 }
-data class ShowAllDataUiState(val dataList: MutableList<Data> = arrayListOf())
+data class ShowAllDataUiState(var dataList: MutableList<Data> = arrayListOf(), var dataCategories: List<String> = listOf(), var filterDataList: List<Data> = listOf())
+
+
+

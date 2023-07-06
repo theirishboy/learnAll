@@ -18,4 +18,5 @@ class OfflineDataRepository(private val dataDao: DataDao) : DataRepository {
 
     override fun getCategories(): Flow<MutableList<String>> = dataDao.getCategories()
 
+    override fun getDataByCategory(category: String): Flow<MutableList<Data>> = dataDao.getDataByCategory(category)
 }

@@ -48,5 +48,5 @@ interface DataRepository {
     fun getRandomData():Flow<List<Data>>
 
     fun getCategories(): Flow<MutableList<String>>
-
+    fun getDataByCategory(category: String): Flow<MutableList<Data>>
 }

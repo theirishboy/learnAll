@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -174,10 +175,19 @@ fun SaveForm(dataUiState: DataUiState,
              categories: List<String>
 ){
     val keyboardController = LocalSoftwareKeyboardController.current
+    val localFocusManager = LocalFocusManager.current
+
 
     var active by remember {
         mutableStateOf(false) }
+
     Column(modifier = modifier.fillMaxWidth()
+        .pointerInput(Unit) {
+        detectTapGestures(onTap = {
+            localFocusManager.clearFocus()
+            active = false
+        })
+    }
       , verticalArrangement = Arrangement.spacedBy(16.dp),) {
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
@@ -198,7 +208,8 @@ fun SaveForm(dataUiState: DataUiState,
                         )
                 }
 
-            }
+            },
+
         ) {
             LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
 

@@ -26,7 +26,7 @@ interface DataDao {
     fun getDataByContent(content: String): Flow<Data>
 
     @Query("SELECT * from data WHERE category = :category")
-    fun getDataByCategory(category: String): Flow<List<Data>>
+    fun getDataByCategory(category: String): Flow<MutableList<Data>>
 
     @Query("SELECT * FROM data WHERE id IN (SELECT id FROM data ORDER BY RANDOM() LIMIT 10)")
     fun getRandomData():  Flow<List<Data>>
