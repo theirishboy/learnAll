@@ -2,7 +2,7 @@ package com.example.learnwithpierre
 
 import com.example.learnwithpierre.ui.screen.TrainViewModel
 import com.example.learnwithpierre.dao.Card
-import com.example.learnwithpierre.dao.DataRepository
+import com.example.learnwithpierre.dao.CardRepository
 import com.example.learnwithpierre.ui.screen.AnswerState
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
@@ -19,7 +19,7 @@ import org.junit.After
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 
-class TestDataRepository : DataRepository {
+class TestDataRepository : CardRepository {
     private val testData: List<Card> = listOf(
         Card(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
         Card(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())

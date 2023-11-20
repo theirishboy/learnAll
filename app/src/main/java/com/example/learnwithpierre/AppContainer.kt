@@ -16,15 +16,15 @@ package com.example.learnwithpierre
  * limitations under the License.
  */
 import android.content.Context
-import com.example.learnwithpierre.dao.DataDatabase
-import com.example.learnwithpierre.dao.DataRepository
-import com.example.learnwithpierre.dao.OfflineDataRepository
+import com.example.learnwithpierre.dao.CardDatabase
+import com.example.learnwithpierre.dao.CardRepository
+import com.example.learnwithpierre.dao.OfflineCardRepository
 
 /**
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val datasRepository: DataRepository
+    val datasRepository: CardRepository
 }
 
 /**
@@ -34,8 +34,8 @@ class AppDataContainer(private val context: Context) : AppContainer {
     /**
      * Implementation for [datasRepository]
      */
-    override val datasRepository: DataRepository by lazy {
-        OfflineDataRepository(DataDatabase.getDatabase(context).DataDao())
+    override val datasRepository: CardRepository by lazy {
+        OfflineCardRepository(CardDatabase.getDatabase(context).CardDao())
     }
 
 }

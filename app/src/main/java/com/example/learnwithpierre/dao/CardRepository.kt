@@ -17,36 +17,36 @@ package com.example.learnwithpierre.dao
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository that provides insert, update, delete, and retrieve of [Card] from a given data source.
+ * Repository that provides insert, update, delete, and retrieve of [Card] from a given Card source.
  */
-interface DataRepository {
+interface CardRepository {
     /**
-     * Retrieve all the Datas from the the given data source.
+     * Retrieve all the Cards from the the given Card source.
      */
-    fun getAllDataStream(): Flow<MutableList<Card>>
+    fun getAllCardStream(): Flow<MutableList<Card>>
 
     /**
-     * Retrieve an Data from the given data source that matches with the [id].
+     * Retrieve an Card from the given Card source that matches with the [id].
      */
-    fun getDataStream(id: Int): Flow<Card?>
+    fun getCardStream(id: Int): Flow<Card?>
 
     /**
-     * Insert Data in the data source
+     * Insert Card in the Card source
      */
-    suspend fun insertData(Card: Card)
+    suspend fun insertCard(Card: Card)
 
     /**
-     * Delete Data from the data source
+     * Delete Card from the Card source
      */
-    suspend fun deleteData(Card: Card)
+    suspend fun deleteCard(Card: Card)
 
     /**
-     * Update Data in the data source
+     * Update Card in the Card source
      */
-    suspend fun updateData(Card: Card)
+    suspend fun updateCard(Card: Card)
 
-    fun getRandomData():Flow<List<Card>>
+    fun getRandomCard():Flow<List<Card>>
 
     fun getCategories(): Flow<MutableList<String>>
-    fun getDataByCategory(category: String): Flow<MutableList<Card>>
+    fun getCardByCategory(category: String): Flow<MutableList<Card>>
 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.learnwithpierre.dao.DataRepository
+import com.example.learnwithpierre.dao.CardRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 /**
  * View Model to validate and insert data in the Room database.
  */
-class DataEntryViewModel(private val dataRepository: DataRepository) : ViewModel() {
+class DataEntryViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     /**
      * Holds current data ui state
@@ -25,7 +25,7 @@ class DataEntryViewModel(private val dataRepository: DataRepository) : ViewModel
     var saveUiState by mutableStateOf(SaveState.NOTSHOW)
 
     val dataEntryUiState: StateFlow<DataEntryUiState> =
-        dataRepository.getCategories().map { DataEntryUiState(it,it) }
+        cardRepository.getCategories().map { DataEntryUiState(it,it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -46,7 +46,7 @@ class DataEntryViewModel(private val dataRepository: DataRepository) : ViewModel
     }
     suspend fun saveData() {
         if (dataUiState.isValid()) {
-            dataRepository.insertData(dataUiState.toData())
+            cardRepository.insertCard(dataUiState.toData())
             saveUiState = SaveState.SHOWSUCCESS
             dataUiState = DataUiState()
         }

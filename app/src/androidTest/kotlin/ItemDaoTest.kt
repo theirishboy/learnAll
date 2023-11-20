@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.learnwithpierre.dao.Card
-import com.example.learnwithpierre.dao.DataDao
+import com.example.learnwithpierre.dao.CardDao
 import com.example.learnwithpierre.dao.DataDatabase
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 @RunWith(AndroidJUnit4::class)
 class ItemDaoTest {
 
-    private lateinit var dataDao: DataDao
+    private lateinit var dataDao: CardDao
     private lateinit var dataDatabase: DataDatabase
     private var item1 = Card(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
     private var item2 = Card(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())

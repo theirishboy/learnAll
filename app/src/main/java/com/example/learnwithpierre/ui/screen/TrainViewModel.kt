@@ -9,14 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.compose.md_theme_light_primary
 import com.example.compose.md_theme_light_tertiary
 import com.example.learnwithpierre.dao.Card
-import com.example.learnwithpierre.dao.DataRepository
+import com.example.learnwithpierre.dao.CardRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
+class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     var trainUiState by mutableStateOf(TrainUiState(answer = ""))
         private set
@@ -31,7 +31,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
-          trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Card>, answer = "") }.filterNotNull().first()
+          trainUiState  = cardRepository.getRandomCard().map { TrainUiState(it as MutableList<Card>, answer = "") }.filterNotNull().first()
          try {
              currentQuestion =  trainUiState.cardList.last()
              size = trainUiState.cardList.size
