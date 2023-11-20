@@ -33,7 +33,7 @@ import com.example.learnwithpierre.ui.screen.TrainViewModel
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for HomeViewModel
+        // Initializer for HomeVewiewModel
         initializer {
             HomeViewModel(learnApplication().container.datasRepository)
         }

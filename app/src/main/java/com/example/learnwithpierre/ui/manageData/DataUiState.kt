@@ -1,8 +1,7 @@
 package com.example.learnwithpierre.ui.manageData
 
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import java.time.LocalDateTime
-import java.util.Date
 
 data class DataUiState(
     val id: Int = 0,
@@ -22,7 +21,7 @@ data class DataUiState(
  * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
  * [DataUiState] is not a valid [Int], then the quantity will be set to 0
  */
-fun DataUiState.toData(): Data = Data(
+fun DataUiState.toData(): Card = Card(
     id = id,
     recto = recto,
     verso = verso,
@@ -38,7 +37,7 @@ fun DataUiState.toData(): Data = Data(
  * Extension function to convert [Item] to [DataUiState]
  */
 //add a function the data type to allow every member of type data to be change to DataUiState.
-fun Data.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiState(
+fun Card.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiState(
     id = id,
     recto = recto,
     verso = verso,

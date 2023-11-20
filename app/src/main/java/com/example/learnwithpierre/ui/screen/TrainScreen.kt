@@ -39,11 +39,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.compose.md_theme_light_onPrimary
 import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import java.time.LocalDateTime
-import java.util.Date
 
 object TrainDestination : NavigationDestination {
     override val route = "trainScreen"
@@ -121,7 +120,7 @@ fun BottomPopUp(modifier: Modifier, OnContinue: () -> Unit,answerState: AnswerSt
 
 @Composable
 fun TrainBody(
-    currentQuestion: Data,
+    currentQuestion: Card,
     trainUiState:TrainUiState,
     onValueChange: (TrainUiState) -> Unit,
     onCheckData: () -> Unit,
@@ -235,7 +234,7 @@ fun TrainBody(
 @Composable
 private fun TrainBodyPreview() {
 
-    val currentQuestion =Data(1,"salut","connard",true,"",0, LocalDateTime.now())
+    val currentQuestion =Card(1,"salut","connard",true,"",0, LocalDateTime.now())
     val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
 
     TrainBody(
@@ -253,7 +252,7 @@ private fun TrainBodyPreview() {
 @Composable
 private fun TrainScreenPreview(){
 
-    val currentQuestion =Data(1,"salut","connard",true,"",0, LocalDateTime.now())
+    val currentQuestion =Card(1,"salut","connard",true,"",0, LocalDateTime.now())
     val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
 
     Scaffold(

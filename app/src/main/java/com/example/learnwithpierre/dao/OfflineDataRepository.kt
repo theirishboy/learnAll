@@ -4,19 +4,19 @@ import kotlinx.coroutines.flow.Flow
 
 class OfflineDataRepository(private val dataDao: DataDao) : DataRepository {
 
-    override fun getAllDataStream(): Flow<MutableList<Data>> = dataDao.getAllData()
+    override fun getAllDataStream(): Flow<MutableList<Card>> = dataDao.getAllData()
 
-    override fun getDataStream(id: Int): Flow<Data?> = dataDao.getDataById(id)
+    override fun getDataStream(id: Int): Flow<Card?> = dataDao.getDataById(id)
 
-    override suspend fun insertData(Data: Data) = dataDao.insert(Data)
+    override suspend fun insertData(Card: Card) = dataDao.insert(Card)
 
-    override suspend fun deleteData(Data: Data) = dataDao.delete(Data)
+    override suspend fun deleteData(Card: Card) = dataDao.delete(Card)
 
-    override suspend fun updateData(Data: Data) = dataDao.update(Data)
+    override suspend fun updateData(Card: Card) = dataDao.update(Card)
 
-    override fun getRandomData(): Flow<List<Data>>  = dataDao.getRandomData()
+    override fun getRandomData(): Flow<List<Card>>  = dataDao.getRandomData()
 
     override fun getCategories(): Flow<MutableList<String>> = dataDao.getCategories()
 
-    override fun getDataByCategory(category: String): Flow<MutableList<Data>> = dataDao.getDataByCategory(category)
+    override fun getDataByCategory(category: String): Flow<MutableList<Card>> = dataDao.getDataByCategory(category)
 }

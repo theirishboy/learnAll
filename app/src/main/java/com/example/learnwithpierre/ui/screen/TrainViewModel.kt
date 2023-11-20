@@ -8,14 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compose.md_theme_light_primary
 import com.example.compose.md_theme_light_tertiary
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.dao.DataRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.Date
 
 class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
@@ -27,18 +26,18 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
         private set
 
     var size : Int = 1
-    var errorData : Data = Data(0,"Please enter data in your db","vide",false,"animal",1, LocalDateTime.now())
-    var currentQuestion by mutableStateOf(Data(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
+    var errorCard : Card = Card(0,"Please enter data in your db","vide",false,"animal",1, LocalDateTime.now())
+    var currentQuestion by mutableStateOf(Card(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
         viewModelScope.launch {
-          trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Data>, answer = "") }.filterNotNull().first()
+          trainUiState  = dataRepository.getRandomData().map { TrainUiState(it as MutableList<Card>, answer = "") }.filterNotNull().first()
          try {
-             currentQuestion =  trainUiState.dataList.last()
-             size = trainUiState.dataList.size
+             currentQuestion =  trainUiState.cardList.last()
+             size = trainUiState.cardList.size
          }catch (e : Exception){
-                currentQuestion = errorData
-                trainUiState.dataList.add(errorData)
+                currentQuestion = errorCard
+                trainUiState.cardList.add(errorCard)
             }
 
         }
@@ -47,7 +46,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     fun compareData() {
         viewModelScope.launch {
-            if(trainUiState.answer == trainUiState.dataList.last().verso ){
+            if(trainUiState.answer == trainUiState.cardList.last().verso ){
                 showAnswerPopUp = AnswerState.TRUE
             }else{
                 showAnswerPopUp = AnswerState.FALSE
@@ -57,7 +56,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     }
    fun updateUiState(trainUiState: TrainUiState) {
-        this.trainUiState = TrainUiState(dataList =  trainUiState.dataList, answer = trainUiState.answer)
+        this.trainUiState = TrainUiState(cardList =  trainUiState.cardList, answer = trainUiState.answer)
     }
 
     fun nextQuestion() {
@@ -65,8 +64,8 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
         trainUiScore += 1f/size
         trainUiState.answer = ""
         if(trainUiScore < 1f) {
-            trainUiState.dataList.removeLast()
-            currentQuestion = trainUiState.dataList.last()
+            trainUiState.cardList.removeLast()
+            currentQuestion = trainUiState.cardList.last()
         }
 
     }
@@ -75,7 +74,7 @@ class TrainViewModel(private val dataRepository: DataRepository) : ViewModel() {
 /**
  * Ui State for trainScreen
  */
-data class TrainUiState(var dataList: MutableList<Data> = arrayListOf(), var answer: String)
+data class TrainUiState(var cardList: MutableList<Card> = arrayListOf(), var answer: String)
 
 enum class AnswerState(val message: String, val color: Color){
     NOTSHOW("NOTSHOW",md_theme_light_tertiary),TRUE("vrai",md_theme_light_primary),FALSE("fausse",md_theme_light_tertiary);

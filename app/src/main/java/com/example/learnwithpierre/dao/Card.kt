@@ -1,20 +1,15 @@
 package com.example.learnwithpierre.dao
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 //it's our Table in the database with primaryKey and Column Info
 @Entity
 
-data class Data(
+data class Card(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name = "recto") val recto: String,

@@ -1,7 +1,7 @@
 package com.example.learnwithpierre
 
 import com.example.learnwithpierre.ui.screen.TrainViewModel
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.dao.DataRepository
 import com.example.learnwithpierre.ui.screen.AnswerState
 import kotlinx.coroutines.Dispatchers
@@ -20,37 +20,37 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Before
 
 class TestDataRepository : DataRepository {
-    private val testData: List<Data> = listOf(
-        Data(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
-        Data(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
+    private val testData: List<Card> = listOf(
+        Card(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
+        Card(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
     )
 
-    override fun getAllDataStream(): Flow<MutableList<Data>> {
+    override fun getAllDataStream(): Flow<MutableList<Card>> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getDataStream(id: Int): Flow<Data?> {
+    override fun getDataStream(id: Int): Flow<Card?> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun insertData(data: Data) {
+    override suspend fun insertData(card: Card) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun deleteData(data: Data) {
+    override suspend fun deleteData(card: Card) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun updateData(data: Data) {
+    override suspend fun updateData(card: Card) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getRandomData(): Flow<List<Data>> {
+    override fun getRandomData(): Flow<List<Card>> {
         return flowOf(testData)
     }
 
@@ -62,8 +62,8 @@ class TestDataRepository : DataRepository {
 class TrainViewModelTest {
     private var learnApplication = LearnApplication()
 
-    private var item1 = Data(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
-    private var item2 = Data(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
+    private var item1 = Card(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
+    private var item2 = Card(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val testScope = TestCoroutineScope(testDispatcher)
@@ -85,7 +85,7 @@ class TrainViewModelTest {
         val dataRepository = TestDataRepository()
         val viewModel = TrainViewModel(dataRepository)
         val trainUiState = viewModel.trainUiState
-        trainUiState.dataList = mutableListOf(item1, item2) // Use mutableListOf() to create a mutable list
+        trainUiState.cardList = mutableListOf(item1, item2) // Use mutableListOf() to create a mutable list
 
 
         viewModel.nextQuestion()
@@ -99,7 +99,7 @@ class TrainViewModelTest {
         assertEquals(AnswerState.NOTSHOW,showAnswerState)
         assertEquals(1f/size,trainUiScore.toFloat())
         assertEquals("",trainUiState.answer)
-        assertEquals(trainUiState.dataList.last(), item1)
+        assertEquals(trainUiState.cardList.last(), item1)
         assertEquals(currentQuestion, item1)
     }
     @Test
@@ -109,7 +109,7 @@ class TrainViewModelTest {
 
         val trainUiState = viewModel.trainUiState
         trainUiState.answer = "Good answer"
-        trainUiState.dataList.last().verso = "Good answer"
+        trainUiState.cardList.last().verso = "Good answer"
         val showAnswerState = viewModel.showAnswerPopUp
         viewModel.compareData()
         assertEquals(AnswerState.TRUE, viewModel.showAnswerPopUp)
@@ -122,7 +122,7 @@ class TrainViewModelTest {
 
         val trainUiState = viewModel.trainUiState
         trainUiState.answer = "Bad answer"
-        trainUiState.dataList.last().verso = "Badanswer"
+        trainUiState.cardList.last().verso = "Badanswer"
 
         viewModel.compareData()
         assertEquals(AnswerState.FALSE,viewModel.showAnswerPopUp)

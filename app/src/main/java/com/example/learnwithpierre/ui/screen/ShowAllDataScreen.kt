@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
@@ -89,13 +89,13 @@ fun ShowAllDataScreenBody(
     Column(modifier = modifier) {
         OneLineData(recto = "recto", verso = "verso", category = "category", score = "score", title = true)
         FilterMenu(categories = allDataUiState.dataCategories, onCategoryChange = onCategoryChange)
-        DisplayAllData(allDataUiState.filterDataList)
+        DisplayAllData(allDataUiState.filterCardList)
 
     }
 
 }
 @Composable
-fun DisplayAllData(listAllData : List<Data>, modifier:Modifier = Modifier){
+fun DisplayAllData(listAllData : List<Card>, modifier:Modifier = Modifier){
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(items = listAllData, key = {it.id}) {
             item-> OneLineData(
@@ -167,22 +167,22 @@ fun OneLineData(recto: String, verso: String, category: String, score: String, t
 @Preview
 @Composable
 fun OneLineDataPreview(){
-    val data = Data(1,"2GM","1945",true,"Histoire",1, LocalDateTime.now())
+    val card = Card(1,"2GM","1945",true,"Histoire",1, LocalDateTime.now())
     OneLineData(
-        data.recto,
-        data.verso,
-        data.category,
-        data.score.toString(),
+        card.recto,
+        card.verso,
+        card.category,
+        card.score.toString(),
         true
     )
 }
 @Preview
 @Composable
 fun DisplayAllDataPreview(){
-    val data = Data(3,"2GM auqnd cest long ","1945",true,"Histoire",1, LocalDateTime.now())
-    val data2 = Data(4052,"1GM","1918",true,"Histoire",1, LocalDateTime.now())
-    val data3 = Data(1563,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now())
-    val table : List<Data> = arrayListOf(data,data2,data3)
+    val card = Card(3,"2GM auqnd cest long ","1945",true,"Histoire",1, LocalDateTime.now())
+    val card2 = Card(4052,"1GM","1918",true,"Histoire",1, LocalDateTime.now())
+    val card3 = Card(1563,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now())
+    val table : List<Card> = arrayListOf(card,card2,card3)
     DisplayAllData(table)
 }
 @Composable

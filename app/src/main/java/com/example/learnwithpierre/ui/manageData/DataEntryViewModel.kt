@@ -3,22 +3,13 @@ package com.example.learnwithpierre.ui.manageData
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.compose.md_theme_light_primary
-import com.example.compose.md_theme_light_tertiary
-import com.example.learnwithpierre.dao.Data
 import com.example.learnwithpierre.dao.DataRepository
-import com.example.learnwithpierre.ui.screen.HomeUiState
-import com.example.learnwithpierre.ui.screen.TrainUiState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 /**
  * View Model to validate and insert data in the Room database.

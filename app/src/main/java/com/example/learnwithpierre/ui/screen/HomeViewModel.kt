@@ -2,7 +2,7 @@ package com.example.learnwithpierre.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.learnwithpierre.dao.Data
+import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.dao.DataRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,4 +25,4 @@ class HomeViewModel(dataRepository: DataRepository) : ViewModel() {
 /**
  * Ui State for HomeScreen
  */
-data class HomeUiState(val dataList: List<Data> = listOf())
+data class HomeUiState(val cardList: List<Card> = listOf())

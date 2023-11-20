@@ -4,12 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import java.util.Date
 
 //increase the number of version each time we modify the database
-@Database(entities = [Data::class], version = 6, exportSchema = false)
+@Database(entities = [Card::class], version = 7, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DataDatabase : RoomDatabase() {
     //to make the database identify the DAO
