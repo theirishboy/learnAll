@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -47,9 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.ui.AppViewModelProvider
-import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
-import com.example.learnwithpierre.ui.manageData.DataUiState
-import com.example.learnwithpierre.ui.manageData.SaveState
+import com.example.learnwithpierre.ui.manageData.CardUiState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import kotlinx.coroutines.CoroutineScope
@@ -64,16 +61,16 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    navigateToAllData: () -> Unit,
+    navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
-    viewModel: DataEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: CardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Save","Train","Data")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
     val saveState = viewModel.saveUiState
-    val dataEntryUiState by viewModel.dataEntryUiState.collectAsState()
-    val navigationScreens = listOf({},navigateToTraining,navigateToAllData)
+    val cardEntryUiState by viewModel.cardEntryUiState.collectAsState()
+    val navigationScreens = listOf({},navigateToTraining,navigateToAllCards)
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -89,7 +86,7 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         SaveBody(
-            dataUiState = viewModel.dataUiState,
+            dataUiState = viewModel.cardUiState,
             onValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
@@ -98,7 +95,7 @@ fun HomeScreen(
             },
             saveState = saveState,
             modifier = modifier.padding(innerPadding),
-            categories = dataEntryUiState.filterCategories
+            categories = cardEntryUiState.filterCategories
         )
     }
 
@@ -109,8 +106,8 @@ fun HomeScreen(
 
 @Composable
 fun SaveBody(
-    dataUiState: DataUiState,
-    onValueChange: (DataUiState) -> Unit,
+    dataUiState: CardUiState,
+    onValueChange: (CardUiState) -> Unit,
     onSaveClick: () -> Unit,
     saveState: SaveState,
     modifier: Modifier = Modifier,
@@ -167,9 +164,9 @@ fun SaveBody(
 }
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SaveForm(dataUiState: DataUiState,
+fun SaveForm(dataUiState: CardUiState,
              modifier: Modifier = Modifier,
-             onValueChange: (DataUiState) -> Unit = {},
+             onValueChange: (CardUiState) -> Unit = {},
              enabled: Boolean = true,
              saveState: SaveState,
              categories: List<String>
@@ -272,7 +269,7 @@ fun SaveForm(dataUiState: DataUiState,
 private fun ItemEntryScreenPreview() {
     LearnWithPierreTheme() {
         SaveBody(
-            dataUiState = DataUiState(
+            dataUiState = CardUiState(
                 recto = "Item name et si on met un item name vraiement long pour avoir un test en condition reelzeaeazeazeaze",
                 verso = "10.00 et bas ça a l'air pas mal tout ca, vraiment même les longs textes sont corrects",
             ),

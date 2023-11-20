@@ -24,17 +24,17 @@ import com.example.learnwithpierre.dao.OfflineCardRepository
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val datasRepository: CardRepository
+    val cardsRepository: CardRepository
 }
 
 /**
  * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
  */
-class AppDataContainer(private val context: Context) : AppContainer {
+class AppCardContainer(private val context: Context) : AppContainer {
     /**
-     * Implementation for [datasRepository]
+     * Implementation for [cardsRepository]
      */
-    override val datasRepository: CardRepository by lazy {
+    override val cardsRepository: CardRepository by lazy {
         OfflineCardRepository(CardDatabase.getDatabase(context).CardDao())
     }
 

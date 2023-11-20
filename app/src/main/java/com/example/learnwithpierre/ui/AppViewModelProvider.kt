@@ -23,9 +23,9 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learnwithpierre.LearnApplication
-import com.example.learnwithpierre.ui.manageData.DataEntryViewModel
+import com.example.learnwithpierre.ui.screen.CardEntryViewModel
 import com.example.learnwithpierre.ui.screen.HomeViewModel
-import com.example.learnwithpierre.ui.screen.ShowAllDataScreenViewModel
+import com.example.learnwithpierre.ui.screen.ShowAllCardsScreenViewModel
 import com.example.learnwithpierre.ui.screen.TrainViewModel
 
 /**
@@ -35,16 +35,16 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for HomeVewiewModel
         initializer {
-            HomeViewModel(learnApplication().container.datasRepository)
+            HomeViewModel(learnApplication().container.cardsRepository)
         }
         initializer {
-           DataEntryViewModel(learnApplication().container.datasRepository)
+           CardEntryViewModel(learnApplication().container.cardsRepository)
         }
         initializer {
-           TrainViewModel(learnApplication().container.datasRepository)
+           TrainViewModel(learnApplication().container.cardsRepository)
         }
         initializer {
-           ShowAllDataScreenViewModel(learnApplication().container.datasRepository)
+            ShowAllCardsScreenViewModel(learnApplication().container.cardsRepository)
         }
     }
 }

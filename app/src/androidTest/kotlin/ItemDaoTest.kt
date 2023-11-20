@@ -6,7 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.learnwithpierre.dao.Card
 import com.example.learnwithpierre.dao.CardDao
-import com.example.learnwithpierre.dao.DataDatabase
+import com.example.learnwithpierre.dao.CardDatabase
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -21,8 +21,8 @@ import java.time.LocalDateTime
 @RunWith(AndroidJUnit4::class)
 class ItemDaoTest {
 
-    private lateinit var dataDao: CardDao
-    private lateinit var dataDatabase: DataDatabase
+    private lateinit var cardDao: CardDao
+    private lateinit var carddatabase: CardDatabase
     private var item1 = Card(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
     private var item2 = Card(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
@@ -31,26 +31,26 @@ class ItemDaoTest {
         val context: Context = ApplicationProvider.getApplicationContext()
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        dataDatabase = Room.inMemoryDatabaseBuilder(context, DataDatabase::class.java)
+        carddatabase = Room.inMemoryDatabaseBuilder(context, CardDatabase::class.java)
             // Allowing main thread queries, just for testing.
             .allowMainThreadQueries()
             .build()
-        dataDao = dataDatabase.DataDao()
+        cardDao = carddatabase.CardDao()
     }
     @After
     @Throws(IOException::class)
     fun closeDb() {
-        dataDatabase.close()
+        carddatabase.close()
     }
     private suspend fun addTwoItemsToDb() {
-        dataDao.insert(item1)
-        dataDao.insert(item2)
+        cardDao.insert(item1)
+        cardDao.insert(item2)
     }
     @Test
     @Throws(Exception::class)
     fun daoGetAllItems_returnsAllItemsFromDB() = runBlocking {
         addTwoItemsToDb()
-        val allItems = dataDao.getAllData().first()
+        val allItems = cardDao.getAllCard().first()
         assertEquals(allItems[0], item1)
         assertEquals(allItems[1], item2)
     }
@@ -58,7 +58,7 @@ class ItemDaoTest {
     @Throws(Exception::class)
     fun daoGetRandomItems_returnsAllItemsFromDB() = runBlocking {
         addTwoItemsToDb()
-        val allItems = dataDao.getRandomData().first()
+        val allItems = cardDao.getRandomCard().first()
         assertNotNull(allItems[0])
         assertNotNull(allItems[1])
     }
@@ -66,28 +66,28 @@ class ItemDaoTest {
     @Throws(Exception::class)
     fun daoGetDataById() = runBlocking {
         addTwoItemsToDb()
-        val item = dataDao.getDataById(1).first()
+        val item = cardDao.getCardById(1).first()
         assertEquals(item, item1)
     }
     @Test
     @Throws(Exception::class)
     fun getDataByContentRecto() = runBlocking {
         addTwoItemsToDb()
-        val item = dataDao.getDataByContent("Apples").first()
+        val item = cardDao.getCardByContent("Apples").first()
         assertEquals(item, item1)
     }
     @Test
     @Throws(Exception::class)
     fun getDataByContentVerso() = runBlocking {
         addTwoItemsToDb()
-        val item = dataDao.getDataByContent("Peach").first()
+        val item = cardDao.getCardByContent("Peach").first()
         assertEquals(item, item2)
     }
     @Test
     @Throws(Exception::class)
     fun getDataByCategory() = runBlocking {
         addTwoItemsToDb()
-        val allItems = dataDao.getDataByCategory("fruit").first()
+        val allItems = cardDao.getCardByCategory("fruit").first()
         assertEquals(allItems[0], item1)
         assertEquals(allItems[1], item2)
     }
@@ -95,7 +95,7 @@ class ItemDaoTest {
     @Throws(Exception::class)
     fun getCategories() = runBlocking {
         addTwoItemsToDb()
-        val allItems = dataDao.getCategories().first()
+        val allItems = cardDao.getCategories().first()
         assertEquals(allItems[0], "fruit")
      //   assertEquals(allItems[1], item2)
     }

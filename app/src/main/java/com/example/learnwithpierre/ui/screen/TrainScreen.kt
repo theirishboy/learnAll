@@ -76,7 +76,7 @@ fun TrainScreen(
 
             TrainBody(
                 currentQuestion = currentQuestion,
-                onCheckData = { viewModel.compareData() },
+                onCheckCard = { viewModel.compareCards() },
                 trainUiState = viewModel.trainUiState,
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
@@ -123,7 +123,7 @@ fun TrainBody(
     currentQuestion: Card,
     trainUiState:TrainUiState,
     onValueChange: (TrainUiState) -> Unit,
-    onCheckData: () -> Unit,
+    onCheckCard: () -> Unit,
     progressFactor: Float,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -210,7 +210,7 @@ fun TrainBody(
                 }
             }
             Button(
-                onClick = onCheckData,
+                onClick = onCheckCard,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Valider")
@@ -241,7 +241,7 @@ private fun TrainBodyPreview() {
         currentQuestion = currentQuestion,
         trainUiState = trainUiState,
         onValueChange = {},
-        onCheckData = {},
+        onCheckCard = {},
         progressFactor = 0.5f,
         modifier = Modifier,
         enabled = true
@@ -267,7 +267,7 @@ private fun TrainScreenPreview(){
                 currentQuestion = currentQuestion,
                 trainUiState = trainUiState,
                 onValueChange = {},
-                onCheckData = {},
+                onCheckCard = {},
                 progressFactor = 0.5f,
                 modifier = Modifier.padding(innerPadding),
                 enabled = true

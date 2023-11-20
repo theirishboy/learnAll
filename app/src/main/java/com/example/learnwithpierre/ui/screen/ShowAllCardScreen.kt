@@ -54,8 +54,8 @@ fun ShowAllDataScreen(
 
 
     ){
-    val allDataUiState = viewModel.showAllDataUiState
-    val items = listOf("Save","Train","Data")
+    val allDataUiState = viewModel.showAllCardsUiState
+    val items = listOf("Save","Train","Cards")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
     val navigationScreens = listOf(navigateToHomeScreen,navigateToTraining, {})
 
@@ -83,12 +83,12 @@ fun ShowAllDataScreen(
 @Composable
 fun ShowAllDataScreenBody(
     modifier: Modifier,
-    allDataUiState: ShowAllDataUiState,
+    allDataUiState: ShowAllCardsUiState,
     onCategoryChange: (String) -> Unit,
 ){
     Column(modifier = modifier) {
         OneLineData(recto = "recto", verso = "verso", category = "category", score = "score", title = true)
-        FilterMenu(categories = allDataUiState.dataCategories, onCategoryChange = onCategoryChange)
+        FilterMenu(categories = allDataUiState.cardCategories, onCategoryChange = onCategoryChange)
         DisplayAllData(allDataUiState.filterCardList)
 
     }

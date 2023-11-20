@@ -11,28 +11,28 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-class ShowAllDataScreenViewModel(private val cardRepository: CardRepository) : ViewModel() {
-    var showAllDataUiState by mutableStateOf(ShowAllDataUiState())
+class ShowAllCardsScreenViewModel(private val cardRepository: CardRepository) : ViewModel() {
+    var showAllCardsUiState by mutableStateOf(ShowAllCardsUiState())
         private set
 
     var currentCategory by mutableStateOf("Select Category")
     init {
         viewModelScope.launch {
-            showAllDataUiState.cardList  = cardRepository.getAllCardStream().map { (it) }.filterNotNull().first()
-            showAllDataUiState.dataCategories = cardRepository.getCategories().map { it }.filterNotNull().first()
-            showAllDataUiState.filterCardList = showAllDataUiState.cardList
+            showAllCardsUiState.cardList  = cardRepository.getAllCardStream().map { (it) }.filterNotNull().first()
+            showAllCardsUiState.cardCategories = cardRepository.getCategories().map { it }.filterNotNull().first()
+            showAllCardsUiState.filterCardList = showAllCardsUiState.cardList
         }
     }
      fun onCategoryChange(newCategory: String){
         currentCategory = newCategory
-         showAllDataUiState = showAllDataUiState.copy(
-             cardList = showAllDataUiState.cardList,
-             dataCategories = showAllDataUiState.dataCategories,
-             filterCardList = showAllDataUiState.cardList.filter { it.category == currentCategory }
+         showAllCardsUiState = showAllCardsUiState.copy(
+             cardList = showAllCardsUiState.cardList,
+             cardCategories = showAllCardsUiState.cardCategories,
+             filterCardList = showAllCardsUiState.cardList.filter { it.category == currentCategory }
          )
      }
 }
-data class ShowAllDataUiState(var cardList: MutableList<Card> = arrayListOf(), var dataCategories: List<String> = listOf(), var filterCardList: List<Card> = listOf())
+data class ShowAllCardsUiState(var cardList: MutableList<Card> = arrayListOf(), var cardCategories: List<String> = listOf(), var filterCardList: List<Card> = listOf())
 
 
 

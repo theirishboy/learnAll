@@ -26,7 +26,7 @@ fun LearnAllNavHost(
         composable(route = HomeDestination.route) {
             HomeScreen(
                 modifier = modifier,
-                navigateToAllData = { navController.navigate(ShowAllDataScreenDestination.route) },
+                navigateToAllCards = { navController.navigate(ShowAllDataScreenDestination.route) },
                 navigateToTraining = { navController.navigate(TrainDestination.route)}
             )
         }

@@ -26,7 +26,7 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
         private set
 
     var size : Int = 1
-    var errorCard : Card = Card(0,"Please enter data in your db","vide",false,"animal",1, LocalDateTime.now())
+    var errorCard : Card = Card(0,"Please enter a new in your db","vide",false,"animal",1, LocalDateTime.now())
     var currentQuestion by mutableStateOf(Card(0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
@@ -44,7 +44,7 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     }
 
-    fun compareData() {
+    fun compareCards() {
         viewModelScope.launch {
             if(trainUiState.answer == trainUiState.cardList.last().verso ){
                 showAnswerPopUp = AnswerState.TRUE

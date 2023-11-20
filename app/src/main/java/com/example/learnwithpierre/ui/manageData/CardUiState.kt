@@ -3,7 +3,7 @@ package com.example.learnwithpierre.ui.manageData
 import com.example.learnwithpierre.dao.Card
 import java.time.LocalDateTime
 
-data class DataUiState(
+data class CardUiState(
     val id: Int = 0,
     val recto: String = "",
     val verso: String = "",
@@ -17,11 +17,11 @@ data class DataUiState(
 )
 
 /**
- * Extension function to convert [DataUiState] to [Item]. If the value of [DataUiState.price] is
+ * Extension function to convert [CardUiState] to [Item]. If the value of [CardUiState.price] is
  * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
- * [DataUiState] is not a valid [Int], then the quantity will be set to 0
+ * [CardUiState] is not a valid [Int], then the quantity will be set to 0
  */
-fun DataUiState.toData(): Card = Card(
+fun CardUiState.toData(): Card = Card(
     id = id,
     recto = recto,
     verso = verso,
@@ -34,10 +34,10 @@ fun DataUiState.toData(): Card = Card(
 )
 
 /**
- * Extension function to convert [Item] to [DataUiState]
+ * Extension function to convert [Item] to [CardUiState]
  */
 //add a function the data type to allow every member of type data to be change to DataUiState.
-fun Card.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiState(
+fun Card.toDataUiState(actionEnabled: Boolean = false): CardUiState = CardUiState(
     id = id,
     recto = recto,
     verso = verso,
@@ -49,6 +49,6 @@ fun Card.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiStat
 )
 
 //Check that nothing is missing
-fun DataUiState.isValid() : Boolean {
+fun CardUiState.isValid() : Boolean {
     return recto.isNotBlank() && verso.isNotBlank() && category.isNotBlank()
 }
