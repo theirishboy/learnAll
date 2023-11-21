@@ -38,7 +38,9 @@ object AppViewModelProvider {
             HomeViewModel(learnApplication().container.cardsRepository)
         }
         initializer {
-           CardEntryViewModel(learnApplication().container.cardsRepository)
+           CardEntryViewModel(learnApplication().container.cardsRepository,
+               learnApplication().container.usersRepository,
+               learnApplication().container.decksRepository)
         }
         initializer {
            TrainViewModel(learnApplication().container.cardsRepository)

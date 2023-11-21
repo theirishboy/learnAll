@@ -3,6 +3,7 @@ package com.example.learnwithpierre.dao
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 @Entity(tableName = "decks",
     foreignKeys = [ForeignKey(entity = User::class,
@@ -15,6 +16,6 @@ data class Deck(
     val userId: Long,
     val name: String,
     val description: String?,
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now()
 )

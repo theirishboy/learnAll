@@ -6,12 +6,13 @@ import androidx.room.Insert
 import androidx.room.Update
 
 @Dao
-interface UserDao {
-    //Long allow us to retrieve the id of the new created user
+interface DeckDao {
     @Insert
-    suspend fun insert(user: User):Long
+    fun insertDeck(deck: Deck)
+
     @Update
-    suspend fun update(user: User)
+    fun updateDeck(deck: Deck)
+
     @Delete
-    suspend fun delete(user: User)
+    fun deleteDeck(deck: Deck)
 }

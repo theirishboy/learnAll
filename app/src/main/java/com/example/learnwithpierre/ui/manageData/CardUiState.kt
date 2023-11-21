@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 data class CardUiState(
     val cardId: Long = 0,
-    val deckId: Long = 0,
+    val deckId: Long = 1,
     val recto: String = "",
     val verso: String = "",
     val category: String = "",
