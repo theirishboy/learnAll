@@ -4,7 +4,8 @@ import com.example.learnwithpierre.dao.Card
 import java.time.LocalDateTime
 
 data class CardUiState(
-    val id: Int = 0,
+    val cardId: Long = 0,
+    val deckId: Long = 0,
     val recto: String = "",
     val verso: String = "",
     val category: String = "",
@@ -22,7 +23,8 @@ data class CardUiState(
  * [CardUiState] is not a valid [Int], then the quantity will be set to 0
  */
 fun CardUiState.toData(): Card = Card(
-    id = id,
+    cardId = cardId,
+    deckId = deckId,
     recto = recto,
     verso = verso,
     category = category,
@@ -38,7 +40,8 @@ fun CardUiState.toData(): Card = Card(
  */
 //add a function the data type to allow every member of type data to be change to DataUiState.
 fun Card.toDataUiState(actionEnabled: Boolean = false): CardUiState = CardUiState(
-    id = id,
+    cardId = cardId,
+    deckId = deckId,
     recto = recto,
     verso = verso,
     category = category,

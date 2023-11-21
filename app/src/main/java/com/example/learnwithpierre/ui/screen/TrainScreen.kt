@@ -234,7 +234,7 @@ fun TrainBody(
 @Composable
 private fun TrainBodyPreview() {
 
-    val currentQuestion =Card(1,"salut","connard",true,"",0, LocalDateTime.now())
+    val currentQuestion =Card(1,0,"salut","connard",true,"",0, LocalDateTime.now())
     val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
 
     TrainBody(
@@ -252,7 +252,7 @@ private fun TrainBodyPreview() {
 @Composable
 private fun TrainScreenPreview(){
 
-    val currentQuestion =Card(1,"salut","connard",true,"",0, LocalDateTime.now())
+    val currentQuestion =Card(1,0,"salut","connard",true,"",0, LocalDateTime.now())
     val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
 
     Scaffold(

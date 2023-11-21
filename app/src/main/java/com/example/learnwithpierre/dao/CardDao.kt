@@ -19,7 +19,7 @@ interface CardDao {
     @Delete
     suspend fun delete(item : Card)
 
-    @Query("SELECT * from card WHERE id = :id")
+    @Query("SELECT * from card WHERE cardId = :id")
     fun getCardById(id: Int): Flow<Card>
 
     @Query("SELECT * from card WHERE recto = :content OR verso = :content")
@@ -28,14 +28,14 @@ interface CardDao {
     @Query("SELECT * from card WHERE category = :category")
     fun getCardByCategory(category: String): Flow<MutableList<Card>>
 
-    @Query("SELECT * FROM card WHERE id IN (SELECT id FROM card ORDER BY RANDOM() LIMIT 10)")
+    @Query("SELECT * FROM card WHERE cardId IN (SELECT cardId FROM card ORDER BY RANDOM() LIMIT 10)")
     fun getRandomCard():  Flow<List<Card>>
 
 
     @Query("SELECT * from card ORDER BY recto ASC")
     fun getAllCard(): Flow<MutableList<Card>>
 
-    @Query("SELECT DISTINCT category from card ORDER BY id desc")
+    @Query("SELECT DISTINCT category from card ORDER BY cardId desc")
     fun getCategories(): Flow<MutableList<String>>
 
 

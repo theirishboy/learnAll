@@ -46,10 +46,10 @@ object ShowAllDataScreenDestination : NavigationDestination {
 }
 
 @Composable
-fun ShowAllDataScreen(
+fun ShowAllCardScreen(
     navigateToTraining: () -> Unit,
     navigateToHomeScreen: () -> Unit,
-    viewModel: ShowAllDataScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: ShowAllCardsScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 
 
@@ -97,7 +97,7 @@ fun ShowAllDataScreenBody(
 @Composable
 fun DisplayAllData(listAllData : List<Card>, modifier:Modifier = Modifier){
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(items = listAllData, key = {it.id}) {
+        items(items = listAllData, key = {it.cardId}) {
             item-> OneLineData(
             recto = item.recto,
             verso = item.verso,
@@ -167,7 +167,7 @@ fun OneLineData(recto: String, verso: String, category: String, score: String, t
 @Preview
 @Composable
 fun OneLineDataPreview(){
-    val card = Card(1,"2GM","1945",true,"Histoire",1, LocalDateTime.now())
+    val card = Card(1,0,"2GM","1945",true,"Histoire",1, LocalDateTime.now())
     OneLineData(
         card.recto,
         card.verso,
@@ -179,9 +179,9 @@ fun OneLineDataPreview(){
 @Preview
 @Composable
 fun DisplayAllDataPreview(){
-    val card = Card(3,"2GM auqnd cest long ","1945",true,"Histoire",1, LocalDateTime.now())
-    val card2 = Card(4052,"1GM","1918",true,"Histoire",1, LocalDateTime.now())
-    val card3 = Card(1563,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now())
+    val card = Card(3,0,"2GM auqnd cest long ","1945",true,"Histoire",1, LocalDateTime.now())
+    val card2 = Card(4052,0,"1GM","1918",true,"Histoire",1, LocalDateTime.now())
+    val card3 = Card(1563,0,"start 2GM","1939",true,"Histoire",1, LocalDateTime.now())
     val table : List<Card> = arrayListOf(card,card2,card3)
     DisplayAllData(table)
 }
