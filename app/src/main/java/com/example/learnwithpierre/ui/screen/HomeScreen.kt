@@ -4,7 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +18,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,13 +41,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.ui.AppViewModelProvider
@@ -85,7 +98,7 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
-        SaveBody(
+        ShowMyDecksBody(
             dataUiState = viewModel.cardUiState,
             onValueChange = viewModel::updateUiState,
             onSaveClick = {
@@ -105,7 +118,7 @@ fun HomeScreen(
 
 
 @Composable
-fun SaveBody(
+fun ShowMyDecksBody(
     dataUiState: CardUiState,
     onValueChange: (CardUiState) -> Unit,
     onSaveClick: () -> Unit,
@@ -132,39 +145,28 @@ fun SaveBody(
         Card(modifier = Modifier
             .fillMaxWidth()
             .weight(0.5f),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp)){
 
 
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,modifier = modifier
                     .fillMaxWidth()
-                    .weight(0.3f)) {
-                Text(text = "ajouter une carte")
+                    .padding(3.dp)) {
+                Text(text = "My decks", fontSize = 30.sp, fontWeight = FontWeight.Bold )
             }
             Row(modifier = modifier.weight(1f)){
                 //Spacer(modifier = Modifier.height(100.dp))
-                SaveForm(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState, categories = categories)
+                SaveForm2(dataUiState = dataUiState, onValueChange = onValueChange, saveState = saveState, categories = categories)
 
             }}
-
-        Button(
-            onClick = onSaveClick,
-            enabled = dataUiState.actionEnabled,
-            modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Save")
-            }
-
-
-
 
     }
 
 }
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SaveForm(dataUiState: CardUiState,
+fun SaveForm2(dataUiState: CardUiState,
              modifier: Modifier = Modifier,
              onValueChange: (CardUiState) -> Unit = {},
              enabled: Boolean = true,
@@ -178,13 +180,14 @@ fun SaveForm(dataUiState: CardUiState,
     var active by remember {
         mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxWidth()
+    Column(modifier = modifier
+        .fillMaxWidth()
         .pointerInput(Unit) {
-        detectTapGestures(onTap = {
-            localFocusManager.clearFocus()
-            active = false
-        })
-    }
+            detectTapGestures(onTap = {
+                localFocusManager.clearFocus()
+                active = false
+            })
+        }
       , verticalArrangement = Arrangement.spacedBy(16.dp),) {
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
@@ -192,7 +195,7 @@ fun SaveForm(dataUiState: CardUiState,
             onQueryChange = {  onValueChange(dataUiState.copy(category = it)) } ,
             onSearch = {active = false}, active = active ,
             onActiveChange = { active = it },
-            placeholder = { Text(text = "Catégorie")},
+            placeholder = { Text(text = "Decks")},
             leadingIcon = {Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")},
             trailingIcon = {
                 if(active) {
@@ -226,37 +229,37 @@ fun SaveForm(dataUiState: CardUiState,
                 }
             }
             }
+
         }
-        OutlinedTextField(
-            value = dataUiState.recto,
-            onValueChange = { onValueChange(dataUiState.copy(recto = it)) },
-            label = { Text("Recto") },
-            modifier = Modifier
-                .fillMaxWidth(),
-              //  .weight(1f),
-            enabled = enabled,
-            singleLine = false,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }),
-        )
-        OutlinedTextField(
-            value = dataUiState.verso,
-            onValueChange = { onValueChange(dataUiState.copy(verso = it)) },
-            label = { Text("Verso") },
-            modifier = Modifier
-                .fillMaxWidth()
-                //.weight(1f)
-                .align(Alignment.CenterHorizontally),
-            enabled = enabled,
-            singleLine = false,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }),
-        )
-        Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center) {
-            Text(text = saveState.message
-            )
+        val itemsList = listOf("A", "B", "C")
+
+        LazyColumn(modifier.weight(0.7f)){
+            items(itemsList){
+                OneDeck(
+                    Modifier
+                        .drawBehind {
+                            val strokeWidth = 3 * density
+                            val y = size.height - strokeWidth / 2
+                            drawLine(
+                                Color.LightGray,
+                                Offset(0f, y),
+                                Offset(size.width, y),
+                                strokeWidth
+                            )
+                        }
+                        .padding(5.dp))
+
+            }
+        }
+        Row(
+            Modifier
+                .weight(0.1f)
+                .fillMaxHeight().padding(5.dp)) {
+            Button(onClick = { /*TODO*/ }, shape = RoundedCornerShape(15.dp),modifier = Modifier.fillMaxWidth().align(Alignment.Bottom)) {
+                CreateNewDeck(modifier.align(Alignment.Bottom))
+
+            }
+
         }
 
 
@@ -264,11 +267,47 @@ fun SaveForm(dataUiState: CardUiState,
 
 }
 
+@Composable
+fun CreateNewDeck(modifier: Modifier = Modifier) {
+    Row(modifier = modifier){
+        Text(text = " Create new deck")
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Add new deck")
+    }
+
+}
+
+@Composable
+fun OneDeck(modifier: Modifier = Modifier){
+    Row(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.weight(0.7f)) {
+            Text(text = "Name Dweqewqee weqewqwqweqew eck", fontWeight = FontWeight.Bold ,maxLines = 1, modifier = Modifier.fillMaxWidth())
+            Row{
+                Icon(
+                    painter = painterResource(id = R.drawable.playing_cards_24),
+                    contentDescription = "Last day you used the app"
+                )
+                Text(text = "50 cards", modifier = Modifier.fillMaxWidth())
+            }
+        }
+        Column(modifier = Modifier.weight(0.3f)) {
+            Row(modifier = Modifier.align(Alignment.End)) {
+
+                Text(text = "50 day ", textAlign = TextAlign.End)
+                Icon(painter = painterResource(id = R.drawable.baseline_history_24)
+                    , contentDescription = "Last day you used the app")
+
+            }
+
+        }
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun ItemEntryScreenPreview() {
+private fun ShowDeckScrenPreview() {
     LearnWithPierreTheme() {
-        SaveBody(
+        ShowMyDecksBody(
             dataUiState = CardUiState(
                 recto = "Item name et si on met un item name vraiement long pour avoir un test en condition reelzeaeazeazeaze",
                 verso = "10.00 et bas ça a l'air pas mal tout ca, vraiment même les longs textes sont corrects",
@@ -279,5 +318,13 @@ private fun ItemEntryScreenPreview() {
             modifier = Modifier,
             categories = listOf("Litterature moderne","roman"))
     }
+}
+@Preview
+@Composable
+private fun OneDeckPreview(){
+    LearnWithPierreTheme {
+        OneDeck()
+    }
+
 }
 

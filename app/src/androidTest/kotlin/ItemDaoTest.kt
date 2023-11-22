@@ -23,8 +23,8 @@ class ItemDaoTest {
 
     private lateinit var cardDao: CardDao
     private lateinit var carddatabase: CardDatabase
-    private var item1 = Card(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
-    private var item2 = Card(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
+    private var item1 = Card(1, 1,"Apples", "Pear", false,"fruit",1, LocalDateTime.now())
+    private var item2 = Card(2, 1,"Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
     @Before
     fun createDb() {
