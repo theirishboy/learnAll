@@ -4,10 +4,12 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,9 +26,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Deck
@@ -188,8 +195,7 @@ fun DisplayDecks(
         var text by remember { mutableStateOf("") }
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
-        var filteredDeck = homeUiState.deckList
-        var currentCategory by remember { mutableStateOf("") }
+        homeUiState.deckList
 
         TextField(
                 value = text,
@@ -230,14 +236,21 @@ fun DisplayDecks(
 
                 }
             }
-            Button(onClick = { homeViewModel.addNewDeck(Deck(0,1,"jambon","", LocalDateTime.now(),
-                LocalDateTime.now())) }, shape = RoundedCornerShape(15.dp),modifier = Modifier
+        var showDialog by remember { mutableStateOf(false) }
+            Button(onClick = {  showDialog = true }, shape = RoundedCornerShape(15.dp),modifier = Modifier
                     .fillMaxSize()
                   ) {
-                    CreateNewDeck(modifier.align(Alignment.CenterVertically))
-
+                    CreateNewDeck(modifier.align(Alignment.CenterVertically)) }
+        if (showDialog) {
+            AddDeckDialog(
+                onDismiss = { showDialog = false },
+                onConfirm = { deckName,description ->
+                   homeViewModel.addNewDeck(Deck(0,1,deckName,description, LocalDateTime.now(),
+                       LocalDateTime.now()))
+                    showDialog = false
                 }
-
+            )
+        }
 
 
 
@@ -297,6 +310,56 @@ private fun ShowDeckScrenPreview() {
             modifier = Modifier,))
             */
        */
+    }
+}
+@Composable
+fun AddDeckDialog(onDismiss: () -> Unit, onConfirm: (String,String) -> Unit) {
+    var deckName by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = MaterialTheme.shapes.medium, // Rounded corners
+            elevation = 8.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    "Add New Deck",
+                )
+                OutlinedTextField(
+                    value = deckName,
+                    onValueChange = { deckName = it },
+                    label = { Text("Deck Name") },
+                    maxLines = 1,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") },
+                    maxLines = 10,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = { onConfirm(deckName,description) },
+                        enabled = deckName.isNotBlank() // Disable if the input is blank
+                    ) {
+                        Text("Add")
+                    }
+                }
+            }
+        }
     }
 }
 @Preview
