@@ -35,8 +35,8 @@ class CardEntryViewModel(private val cardRepository: CardRepository,
     init {
         runBlocking(Dispatchers.IO) {
             // Insert user
-//            val newUser = User(0, "Test", "Test", LocalDateTime.now(), LocalDateTime.now())
-//            val generatedUserId = userRepository.insertUser(newUser)
+            val newUser = User(0, "Test", "Test", LocalDateTime.now(), LocalDateTime.now())
+            val generatedUserId = userRepository.insertUser(newUser)
 
             // Use the generated user ID for the deck
             val newDeck = Deck(0, 1, "demo", "", LocalDateTime.now(), LocalDateTime.now())
