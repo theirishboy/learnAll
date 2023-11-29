@@ -33,9 +33,13 @@ class HomeViewModel(private val deckRepository: DeckRepository, private val user
 
             deckRepository.getAllDeckFromAUser(1).collect { decks ->
                 val decksWithSize = decks.map { deck ->
+                    var size : Long = 0
                     // Fetch the size for each deck
-                    val size = deckRepository.getSizeOfADeck(deck.deckId)
+                    viewModelScope.launch(Dispatchers.IO) {
+                         size = deckRepository.getSizeOfADeck(deck.deckId)
+                    }
                     DeckWithSize(deck, size)
+
                 }
                 // Update your UI state with the list of decks with their sizes
                 _homeUiState.value = HomeUiState(decksWithSize, decksWithSize)

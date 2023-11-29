@@ -38,5 +38,8 @@ interface FlashCardDao {
     @Query("SELECT DISTINCT category from card ORDER BY cardId desc")
     fun getCategories(): Flow<MutableList<String>>
 
+    @Query("SELECT * FROM card WHERE deckId = :deckId")
+    fun getCardByDeckId(deckId : Long): Flow<MutableList<FlashCard>>
+
 
 }

@@ -74,6 +74,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
+    navigateToOneDeck: (Long) -> Unit,
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val selectedItem by remember { mutableStateOf(0) }
@@ -97,6 +98,7 @@ fun HomeScreen(
         ShowMyDecksBody(
             homeViewModel = homeViewModel,
             modifier = modifier.padding(innerPadding),
+            navigateToOneDeck = navigateToOneDeck
         )
     }
 
@@ -109,6 +111,7 @@ fun HomeScreen(
 fun ShowMyDecksBody(
     homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
+    navigateToOneDeck: (Long) -> Unit
 
 
     ){
@@ -145,7 +148,7 @@ fun ShowMyDecksBody(
                 .fillMaxHeight(1f))  {
                 Row(verticalAlignment = Alignment.Top,modifier = Modifier
                     .fillMaxSize()){
-                    DisplayDecks(homeViewModel = homeViewModel)
+                    DisplayDecks(homeViewModel = homeViewModel, navigateToOneDeck = navigateToOneDeck)
                 }}
             }
 
@@ -158,7 +161,8 @@ fun ShowMyDecksBody(
 @Composable
 fun DisplayDecks(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    navigateToOneDeck: (Long) -> Unit,
 ){
     val localFocusManager = LocalFocusManager.current
     val homeUiState by homeViewModel.homeUiState.collectAsState()
@@ -178,7 +182,6 @@ fun DisplayDecks(
         var text by remember { mutableStateOf("") }
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
-        homeUiState.deckList
 
         TextField(
                 value = text,
@@ -215,7 +218,8 @@ fun DisplayDecks(
                                     strokeWidth
                                 )
                             }
-                            .padding(5.dp).fillMaxSize().clickable {  })
+                            .padding(5.dp).fillMaxSize().clickable {navigateToOneDeck(item.deck.deckId)},
+                        )
 
                 }
             }

@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.learnwithpierre.ui.screen.HomeDestination
 import com.example.learnwithpierre.ui.screen.HomeScreen
+import com.example.learnwithpierre.ui.screen.OneDeckViewDestination
+import com.example.learnwithpierre.ui.screen.OneDeckViewScreen
 import com.example.learnwithpierre.ui.screen.ShowAllCardScreen
 import com.example.learnwithpierre.ui.screen.ShowAllDataScreenDestination
 import com.example.learnwithpierre.ui.screen.TrainDestination
@@ -27,7 +29,8 @@ fun LearnAllNavHost(
             HomeScreen(
                 modifier = modifier,
                 navigateToAllCards = { navController.navigate(ShowAllDataScreenDestination.route) },
-                navigateToTraining = { navController.navigate(TrainDestination.route)}
+                navigateToTraining = { navController.navigate(TrainDestination.route)},
+                navigateToOneDeck = {deckId -> navController.navigate("${OneDeckViewDestination.route}/$deckId")}
             )
         }
         composable(route = TrainDestination.route) {
@@ -41,6 +44,11 @@ fun LearnAllNavHost(
             ShowAllCardScreen(
                 navigateToTraining = { navController.navigate(TrainDestination.route)},
                 navigateToHomeScreen = {navController.navigate(HomeDestination.route)}
+            )
+        }
+        composable(route = OneDeckViewDestination.routeWithArgs){
+            OneDeckViewScreen(navigateToAllCards = { /*TODO*/ },
+                navigateToTraining =  {}
             )
         }
     }

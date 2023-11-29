@@ -8,15 +8,16 @@ class OfflineFlashCardRepository(private val flashCardDao: FlashCardDao) : Flash
 
     override fun getCardStream(id: Int): Flow<FlashCard?> = flashCardDao.getCardById(id)
 
-    override suspend fun insertCard(FlashCard: FlashCard) = flashCardDao.insert(FlashCard)
+    override suspend fun insertCard(flashCard: FlashCard) = flashCardDao.insert(flashCard)
 
-    override suspend fun deleteCard(FlashCard: FlashCard) = flashCardDao.delete(FlashCard)
+    override suspend fun deleteCard(flashCard: FlashCard) = flashCardDao.delete(flashCard)
 
-    override suspend fun updateCard(FlashCard: FlashCard) = flashCardDao.update(FlashCard)
+    override suspend fun updateCard(flashCard: FlashCard) = flashCardDao.update(flashCard)
 
     override fun getRandomCard(): Flow<List<FlashCard>>  = flashCardDao.getRandomCard()
 
     override fun getCategories(): Flow<MutableList<String>> = flashCardDao.getCategories()
 
     override fun getCardByCategory(category: String): Flow<MutableList<FlashCard>> = flashCardDao.getCardByCategory(category)
+    override fun getCardByDeckId(deckId : Long): Flow<MutableList<FlashCard>> = flashCardDao.getCardByDeckId(deckId)
 }

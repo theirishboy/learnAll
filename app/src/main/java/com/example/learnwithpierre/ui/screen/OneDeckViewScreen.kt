@@ -6,55 +6,69 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.FlashCard
-import com.example.learnwithpierre.dao.FlashCardDao
+import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 
-object DeckViewDestination : NavigationDestination {
-    override val route = "OneDeckView"
+object OneDeckViewDestination : NavigationDestination {
+    override val route = "DeckView"
     override val titleRes: Int = R.string.app_name
+    const val deckIdArg = "deckId"
+    val routeWithArgs = "$route/{$deckIdArg}"
 }
 
 @Composable
-fun DeckViewScreen(
+fun OneDeckViewScreen(
     navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
+    oneDeckViewModel: OneDeckViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val oneDeckUiState by oneDeckViewModel.oneDeckUiState.collectAsState()
+
+    when (val state = oneDeckUiState) {
+       // is OneDeckUiState.Loading -> LoadingView()
+        is OneDeckUiState.Success -> OneDeckViewPage(state.flashCards)
+        is OneDeckUiState.Error -> ErrorView(error = state.exception)
+    }
+
+}
+@Composable
+fun ErrorView(error: Throwable) {
+    Text(text = "There is an error ${error.message}")
+}
+@Composable
+private fun OneDeckViewPage(oneDeckUiState: MutableList<FlashCard>) {
     Scaffold(
         topBar = {
             LearnAllTopAppBar(
@@ -64,16 +78,24 @@ fun DeckViewScreen(
             )
         },
         bottomBar = {
-            BottomAppBar(modifier = Modifier.clickable {  }) {
-                    Row(modifier = Modifier
+            BottomAppBar(modifier = Modifier.clickable { }) {
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.CenterVertically), horizontalArrangement = Arrangement.Center){
-                        Icon(painter = painterResource(id = R.drawable.baseline_menu_book_24) , contentDescription = "Add new deck")
-                        Spacer(modifier = Modifier.padding(3.dp))
-                        Text(text = "Let's Train",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp, textAlign = TextAlign.Center)
-                    }
+                        .align(Alignment.CenterVertically),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_menu_book_24),
+                        contentDescription = "Add new deck"
+                    )
+                    Spacer(modifier = Modifier.padding(3.dp))
+                    Text(
+                        text = "Let's Train",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp, textAlign = TextAlign.Center
+                    )
+                }
 
             }
 
@@ -87,15 +109,14 @@ fun DeckViewScreen(
         }
 
     ) {
-        DeckViewBody(it)
+        DeckViewBody(it, oneDeckUiState)
 
 
     }
-
 }
 
 @Composable
-private fun DeckViewBody(it: PaddingValues) {
+private fun DeckViewBody(it: PaddingValues, oneDeckUiState: MutableList<FlashCard>) {
     Column(
         modifier = Modifier
             .padding(it)
@@ -131,7 +152,7 @@ private fun DeckViewBody(it: PaddingValues) {
                     .fillMaxSize(1f),
                 contentPadding = PaddingValues(5.dp)
             ) {
-                items(listOfDeck) {
+                items(oneDeckUiState) {
                     Row{
                         Card( modifier = Modifier
                             .fillMaxWidth()
@@ -166,7 +187,7 @@ private fun DeckViewBody(it: PaddingValues) {
 
 @Preview
 @Composable
-fun DeckViewScreenPreview() {
-    DeckViewScreen({}, {})
+fun OneDeckViewScreenPreview() {
+    OneDeckViewScreen({}, {})
 
 }

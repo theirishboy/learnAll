@@ -33,20 +33,22 @@ interface FlashCardRepository {
     /**
      * Insert Card in the Card source
      */
-    suspend fun insertCard(FlashCard: FlashCard)
+    suspend fun insertCard(flashCard: FlashCard)
 
     /**
      * Delete Card from the Card source
      */
-    suspend fun deleteCard(FlashCard: FlashCard)
+    suspend fun deleteCard(flashCard: FlashCard)
 
     /**
      * Update Card in the Card source
      */
-    suspend fun updateCard(FlashCard: FlashCard)
+    suspend fun updateCard(flashCard: FlashCard)
 
     fun getRandomCard():Flow<List<FlashCard>>
 
     fun getCategories(): Flow<MutableList<String>>
     fun getCardByCategory(category: String): Flow<MutableList<FlashCard>>
+
+    fun getCardByDeckId(deckId : Long):Flow<MutableList<FlashCard>>
 }
