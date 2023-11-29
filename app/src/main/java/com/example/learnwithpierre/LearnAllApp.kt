@@ -2,6 +2,7 @@ package com.example.learnwithpierre
 
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -37,7 +38,7 @@ fun LearnAllTopAppBar(
 ) {
     if (canNavigateBack) {
         CenterAlignedTopAppBar(
-            title = { Text(title) },
+            title = { Text(title, style = MaterialTheme.typography.h6) },
             modifier = modifier,
             navigationIcon = {
                 IconButton(onClick = navigateUp) {
