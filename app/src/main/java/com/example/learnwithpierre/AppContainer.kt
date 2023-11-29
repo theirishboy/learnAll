@@ -17,10 +17,10 @@ package com.example.learnwithpierre
  */
 import android.content.Context
 import com.example.learnwithpierre.dao.CardDatabase
-import com.example.learnwithpierre.dao.CardRepository
+import com.example.learnwithpierre.dao.FlashCardRepository
 import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.DeckRepositoryOffline
-import com.example.learnwithpierre.dao.OfflineCardRepository
+import com.example.learnwithpierre.dao.OfflineFlashCardRepository
 import com.example.learnwithpierre.dao.UserRepository
 import com.example.learnwithpierre.dao.UserRepositoryOffline
 
@@ -28,7 +28,7 @@ import com.example.learnwithpierre.dao.UserRepositoryOffline
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val cardsRepository: CardRepository
+    val cardsRepository: FlashCardRepository
     val usersRepository: UserRepository
     val decksRepository: DeckRepository
 }
@@ -40,8 +40,8 @@ class AppCardContainer(private val context: Context) : AppContainer {
     /**
      * Implementation for [cardsRepository]
      */
-    override val cardsRepository: CardRepository by lazy {
-        OfflineCardRepository(CardDatabase.getDatabase(context).CardDao())
+    override val cardsRepository: FlashCardRepository by lazy {
+        OfflineFlashCardRepository(CardDatabase.getDatabase(context).CardDao())
     }
     override val usersRepository: UserRepository by lazy {
         UserRepositoryOffline(CardDatabase.getDatabase(context).UserDao())

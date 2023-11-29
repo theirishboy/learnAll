@@ -8,15 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compose.md_theme_light_primary
 import com.example.compose.md_theme_light_tertiary
-import com.example.learnwithpierre.dao.Card
-import com.example.learnwithpierre.dao.CardRepository
+import com.example.learnwithpierre.dao.FlashCard
+import com.example.learnwithpierre.dao.FlashCardRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
+class TrainViewModel(private val flashCardRepository: FlashCardRepository) : ViewModel() {
 
     var trainUiState by mutableStateOf(TrainUiState(answer = ""))
         private set
@@ -26,18 +26,18 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
         private set
 
     var size : Int = 1
-    var errorCard : Card = Card(0,0,"Please enter a new in your db","vide",false,"animal",1, LocalDateTime.now())
-    var currentQuestion by mutableStateOf(Card(0,0,"demo","vide",false,"animal",1, LocalDateTime.now()))
+    var errorFlashCard : FlashCard = FlashCard(0,0,"Please enter a new in your db","vide",false,"animal",1, LocalDateTime.now())
+    var currentQuestion by mutableStateOf(FlashCard(0,0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
         viewModelScope.launch {
-          trainUiState  = cardRepository.getRandomCard().map { TrainUiState(it as MutableList<Card>, answer = "") }.filterNotNull().first()
+          trainUiState  = flashCardRepository.getRandomCard().map { TrainUiState(it as MutableList<FlashCard>, answer = "") }.filterNotNull().first()
          try {
-             currentQuestion =  trainUiState.cardList.last()
-             size = trainUiState.cardList.size
+             currentQuestion =  trainUiState.flashCardList.last()
+             size = trainUiState.flashCardList.size
          }catch (e : Exception){
-                currentQuestion = errorCard
-                trainUiState.cardList.add(errorCard)
+                currentQuestion = errorFlashCard
+                trainUiState.flashCardList.add(errorFlashCard)
             }
 
         }
@@ -46,7 +46,7 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     fun compareCards() {
         viewModelScope.launch {
-            if(trainUiState.answer == trainUiState.cardList.last().verso ){
+            if(trainUiState.answer == trainUiState.flashCardList.last().verso ){
                 showAnswerPopUp = AnswerState.TRUE
             }else{
                 showAnswerPopUp = AnswerState.FALSE
@@ -56,7 +56,7 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
 
     }
    fun updateUiState(trainUiState: TrainUiState) {
-        this.trainUiState = TrainUiState(cardList =  trainUiState.cardList, answer = trainUiState.answer)
+        this.trainUiState = TrainUiState(flashCardList =  trainUiState.flashCardList, answer = trainUiState.answer)
     }
 
     fun nextQuestion() {
@@ -64,8 +64,8 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
         trainUiScore += 1f/size
         trainUiState.answer = ""
         if(trainUiScore < 1f) {
-            trainUiState.cardList.removeLast()
-            currentQuestion = trainUiState.cardList.last()
+            trainUiState.flashCardList.removeLast()
+            currentQuestion = trainUiState.flashCardList.last()
         }
 
     }
@@ -74,7 +74,7 @@ class TrainViewModel(private val cardRepository: CardRepository) : ViewModel() {
 /**
  * Ui State for trainScreen
  */
-data class TrainUiState(var cardList: MutableList<Card> = arrayListOf(), var answer: String)
+data class TrainUiState(var flashCardList: MutableList<FlashCard> = arrayListOf(), var answer: String)
 
 enum class AnswerState(val message: String, val color: Color){
     NOTSHOW("NOTSHOW",md_theme_light_tertiary),TRUE("vrai",md_theme_light_primary),FALSE("fausse",md_theme_light_tertiary);

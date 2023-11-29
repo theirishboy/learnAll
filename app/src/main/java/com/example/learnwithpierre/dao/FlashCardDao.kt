@@ -9,31 +9,31 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CardDao {
+interface FlashCardDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(item : Card)
+    suspend fun insert(item : FlashCard)
 
     @Update
-    suspend fun update(item: Card)
+    suspend fun update(item: FlashCard)
 
     @Delete
-    suspend fun delete(item : Card)
+    suspend fun delete(item : FlashCard)
 
     @Query("SELECT * from card WHERE cardId = :id")
-    fun getCardById(id: Int): Flow<Card>
+    fun getCardById(id: Int): Flow<FlashCard>
 
     @Query("SELECT * from card WHERE recto = :content OR verso = :content")
-    fun getCardByContent(content: String): Flow<Card>
+    fun getCardByContent(content: String): Flow<FlashCard>
 
     @Query("SELECT * from card WHERE category = :category")
-    fun getCardByCategory(category: String): Flow<MutableList<Card>>
+    fun getCardByCategory(category: String): Flow<MutableList<FlashCard>>
 
     @Query("SELECT * FROM card WHERE cardId IN (SELECT cardId FROM card ORDER BY RANDOM() LIMIT 10)")
-    fun getRandomCard():  Flow<List<Card>>
+    fun getRandomCard():  Flow<List<FlashCard>>
 
 
     @Query("SELECT * from card ORDER BY recto ASC")
-    fun getAllCard(): Flow<MutableList<Card>>
+    fun getAllCard(): Flow<MutableList<FlashCard>>
 
     @Query("SELECT DISTINCT category from card ORDER BY cardId desc")
     fun getCategories(): Flow<MutableList<String>>

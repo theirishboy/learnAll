@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.learnwithpierre.dao.CardRepository
+import com.example.learnwithpierre.dao.FlashCardRepository
 import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.User
@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 /**
  * View Model to validate and insert data in the Room database.
  */
-class CardEntryViewModel(private val cardRepository: CardRepository,
+class CardEntryViewModel(private val flashCardRepository: FlashCardRepository,
                          private val userRepository: UserRepository,
                          private val deckRepository: DeckRepository
 ) : ViewModel() {
@@ -49,7 +49,7 @@ class CardEntryViewModel(private val cardRepository: CardRepository,
     var saveUiState by mutableStateOf(SaveState.NOTSHOW)
 
     val cardEntryUiState: StateFlow<cardEntryUiState> =
-        cardRepository.getCategories().map { cardEntryUiState(it,it) }
+        flashCardRepository.getCategories().map { cardEntryUiState(it,it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -70,7 +70,7 @@ class CardEntryViewModel(private val cardRepository: CardRepository,
     }
     suspend fun saveData() {
         if (cardUiState.isValid()) {
-            cardRepository.insertCard(cardUiState.toData())
+            flashCardRepository.insertCard(cardUiState.toData())
             saveUiState = SaveState.SHOWSUCCESS
             cardUiState = CardUiState()
         }

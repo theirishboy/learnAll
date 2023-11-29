@@ -1,8 +1,8 @@
 package com.example.learnwithpierre
 
 import com.example.learnwithpierre.ui.screen.TrainViewModel
-import com.example.learnwithpierre.dao.Card
-import com.example.learnwithpierre.dao.CardRepository
+import com.example.learnwithpierre.dao.FlashCard
+import com.example.learnwithpierre.dao.FlashCardRepository
 import com.example.learnwithpierre.ui.screen.AnswerState
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
@@ -19,38 +19,38 @@ import org.junit.After
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 
-class TestDataRepository : CardRepository {
-    private val testData: List<Card> = listOf(
-        Card(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
-        Card(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
+class TestDataRepositoryFlash : FlashCardRepository {
+    private val testData: List<FlashCard> = listOf(
+        FlashCard(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
+        FlashCard(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
     )
 
-    override fun getAllDataStream(): Flow<MutableList<Card>> {
+    override fun getAllDataStream(): Flow<MutableList<FlashCard>> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getDataStream(id: Int): Flow<Card?> {
+    override fun getDataStream(id: Int): Flow<FlashCard?> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun insertData(card: Card) {
+    override suspend fun insertData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun deleteData(card: Card) {
+    override suspend fun deleteData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun updateData(card: Card) {
+    override suspend fun updateData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getRandomData(): Flow<List<Card>> {
+    override fun getRandomData(): Flow<List<FlashCard>> {
         return flowOf(testData)
     }
 
@@ -62,8 +62,8 @@ class TestDataRepository : CardRepository {
 class TrainViewModelTest {
     private var learnApplication = LearnApplication()
 
-    private var item1 = Card(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
-    private var item2 = Card(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
+    private var item1 = FlashCard(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
+    private var item2 = FlashCard(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val testScope = TestCoroutineScope(testDispatcher)
@@ -82,10 +82,10 @@ class TrainViewModelTest {
 
     @Test
     fun trainViewModel_CorrectScoreCalculation() = runBlocking {
-        val dataRepository = TestDataRepository()
+        val dataRepository = TestDataRepositoryFlash()
         val viewModel = TrainViewModel(dataRepository)
         val trainUiState = viewModel.trainUiState
-        trainUiState.cardList = mutableListOf(item1, item2) // Use mutableListOf() to create a mutable list
+        trainUiState.flashCardList = mutableListOf(item1, item2) // Use mutableListOf() to create a mutable list
 
 
         viewModel.nextQuestion()
@@ -99,17 +99,17 @@ class TrainViewModelTest {
         assertEquals(AnswerState.NOTSHOW,showAnswerState)
         assertEquals(1f/size,trainUiScore.toFloat())
         assertEquals("",trainUiState.answer)
-        assertEquals(trainUiState.cardList.last(), item1)
+        assertEquals(trainUiState.flashCardList.last(), item1)
         assertEquals(currentQuestion, item1)
     }
     @Test
     fun trainViewModel_PopUpState_CompareData_GoodAnswer() = runBlocking {
-        val dataRepository = TestDataRepository()
+        val dataRepository = TestDataRepositoryFlash()
         val viewModel = TrainViewModel(dataRepository)
 
         val trainUiState = viewModel.trainUiState
         trainUiState.answer = "Good answer"
-        trainUiState.cardList.last().verso = "Good answer"
+        trainUiState.flashCardList.last().verso = "Good answer"
         val showAnswerState = viewModel.showAnswerPopUp
         viewModel.compareCards()
         assertEquals(AnswerState.TRUE, viewModel.showAnswerPopUp)
@@ -117,12 +117,12 @@ class TrainViewModelTest {
     }
     @Test
     fun trainViewModel_PopUpState_CompareData_BadAnswer() = runBlocking {
-        val dataRepository = TestDataRepository()
+        val dataRepository = TestDataRepositoryFlash()
         val viewModel = TrainViewModel(dataRepository)
 
         val trainUiState = viewModel.trainUiState
         trainUiState.answer = "Bad answer"
-        trainUiState.cardList.last().verso = "Badanswer"
+        trainUiState.flashCardList.last().verso = "Badanswer"
 
         viewModel.compareCards()
         assertEquals(AnswerState.FALSE,viewModel.showAnswerPopUp)

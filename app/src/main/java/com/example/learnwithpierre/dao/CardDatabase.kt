@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 //increase the number of version each time we modify the database
-@Database(entities = [Card::class, Deck::class,User::class], version = 12, exportSchema = false)
+@Database(entities = [FlashCard::class, Deck::class,User::class], version = 12, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class CardDatabase : RoomDatabase() {
     //to make the database identify the DAO
-    abstract fun CardDao(): CardDao
+    abstract fun CardDao(): FlashCardDao
     abstract fun UserDao(): UserDao
     abstract fun DeckDao(): DeckDao
     //allow to access method insert... or to generate the database

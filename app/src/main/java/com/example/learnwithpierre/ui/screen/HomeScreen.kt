@@ -1,5 +1,6 @@
 package com.example.learnwithpierre.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -37,7 +37,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -62,7 +61,6 @@ import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
-import kotlinx.coroutines.CoroutineScope
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -74,7 +72,6 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -99,14 +96,7 @@ fun HomeScreen(
     ) { innerPadding ->
         ShowMyDecksBody(
             homeViewModel = homeViewModel,
-           /* onSaveClick = {
-                coroutineScope.launch {
-                    viewModel.saveData()
-                }
-            },*/
-            //saveState = saveState,
             modifier = modifier.padding(innerPadding),
-           // categories = cardEntryUiState.filterCategories
         )
     }
 
@@ -118,15 +108,11 @@ fun HomeScreen(
 @Composable
 fun ShowMyDecksBody(
     homeViewModel: HomeViewModel,
-   // onValueChange: (CardUiState) -> Unit,
-  //  onSaveClick: () -> Unit,
-    //saveState: SaveState,
     modifier: Modifier = Modifier,
 
 
     ){
     val localFocusManager = LocalFocusManager.current
-    var filterText by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,7 +127,6 @@ fun ShowMyDecksBody(
     ) {
         Card(modifier = modifier
             .fillMaxSize(),
-            //.weight(0.5f),
             shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp)){
 
@@ -161,7 +146,6 @@ fun ShowMyDecksBody(
                 Row(verticalAlignment = Alignment.Top,modifier = Modifier
                     .fillMaxSize()){
                     DisplayDecks(homeViewModel = homeViewModel)
-
                 }}
             }
 
@@ -170,13 +154,12 @@ fun ShowMyDecksBody(
     }
 
 }
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DisplayDecks(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel
 ){
-    val keyboardController = LocalSoftwareKeyboardController.current
     val localFocusManager = LocalFocusManager.current
     val homeUiState by homeViewModel.homeUiState.collectAsState()
 
@@ -217,7 +200,7 @@ fun DisplayDecks(
                 })
             )
 
-            LazyColumn(modifier.fillMaxSize(0.9f)){
+            LazyColumn(modifier.fillMaxWidth(1f).fillMaxHeight(0.9f)){
                 items(homeUiState.filteredDeckList){
                     item ->
                     OneDeck(item,
@@ -232,25 +215,12 @@ fun DisplayDecks(
                                     strokeWidth
                                 )
                             }
-                            .padding(5.dp))
+                            .padding(5.dp).fillMaxSize().clickable {  })
 
                 }
             }
-        var showDialog by remember { mutableStateOf(false) }
-            Button(onClick = {  showDialog = true }, shape = RoundedCornerShape(15.dp),modifier = Modifier
-                    .fillMaxSize()
-                  ) {
-                    CreateNewDeck(modifier.align(Alignment.CenterVertically)) }
-        if (showDialog) {
-            AddDeckDialog(
-                onDismiss = { showDialog = false },
-                onConfirm = { deckName,description ->
-                   homeViewModel.addNewDeck(Deck(0,1,deckName,description, LocalDateTime.now(),
-                       LocalDateTime.now()))
-                    showDialog = false
-                }
-            )
-        }
+        DisplayAddButton(homeViewModel,modifier)
+
 
 
 
@@ -259,11 +229,29 @@ fun DisplayDecks(
     }
 
 }
+@Composable
+fun DisplayAddButton(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
+    var showDialog by remember { mutableStateOf(false) }
+    Button(onClick = {  showDialog = true }, shape = RoundedCornerShape(15.dp),modifier = modifier
+        .fillMaxSize()
+    ) {
+        CreateButton(modifier.align(Alignment.CenterVertically)," Create new deck") }
+    if (showDialog) {
+        AddDeckDialog(
+            onDismiss = { showDialog = false },
+            onConfirm = { deckName,description ->
+                homeViewModel.addNewDeck(Deck(0,1,deckName,description, LocalDateTime.now(),
+                    LocalDateTime.now()))
+                showDialog = false
+            }
+        )
+    }
+}
 
 @Composable
-fun CreateNewDeck(modifier: Modifier = Modifier) {
+fun CreateButton(modifier: Modifier = Modifier, text : String) {
     Row(modifier = modifier){
-        Text(text = " Create new deck")
+        Text(text = text)
         Icon(imageVector = Icons.Default.Add, contentDescription = "Add new deck")
     }
 
@@ -300,16 +288,12 @@ fun OneDeck(deckWithSize: DeckWithSize,modifier: Modifier = Modifier){
 @Composable
 private fun ShowDeckScrenPreview() {
     LearnWithPierreTheme() {
-      /*  ShowMyDecksBody(
-            /*homeUiState = HomeUiState(
-                listOf(
-                    Deck(1,2,"jean","la description est longue", LocalDateTime.now(), LocalDateTime.now())
+ //       ShowMyDecksBody(
+          //  homeViewModel =  HomeViewModel(),
 
-                )
-            ),
-            modifier = Modifier,))
-            */
-       */
+         //   modifier = Modifier,)
+
+
     }
 }
 @Composable

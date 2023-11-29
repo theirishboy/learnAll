@@ -1,6 +1,6 @@
 package com.example.learnwithpierre.ui.manageData
 
-import com.example.learnwithpierre.dao.Card
+import com.example.learnwithpierre.dao.FlashCard
 import java.time.LocalDateTime
 
 data class CardUiState(
@@ -22,7 +22,7 @@ data class CardUiState(
  * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
  * [CardUiState] is not a valid [Int], then the quantity will be set to 0
  */
-fun CardUiState.toData(): Card = Card(
+fun CardUiState.toData(): FlashCard = FlashCard(
     cardId = cardId,
     deckId = deckId,
     recto = recto,
@@ -39,7 +39,7 @@ fun CardUiState.toData(): Card = Card(
  * Extension function to convert [Item] to [CardUiState]
  */
 //add a function the data type to allow every member of type data to be change to DataUiState.
-fun Card.toDataUiState(actionEnabled: Boolean = false): CardUiState = CardUiState(
+fun FlashCard.toDataUiState(actionEnabled: Boolean = false): CardUiState = CardUiState(
     cardId = cardId,
     deckId = deckId,
     recto = recto,

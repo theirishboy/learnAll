@@ -14,7 +14,7 @@ import java.time.LocalDateTime
         childColumns = arrayOf("deckId"),
         onDelete = ForeignKey.CASCADE)])
 
-data class Card(
+data class FlashCard(
     @PrimaryKey(autoGenerate = true)
     val cardId: Long,
     @ColumnInfo(name = "deckId")val deckId: Long,

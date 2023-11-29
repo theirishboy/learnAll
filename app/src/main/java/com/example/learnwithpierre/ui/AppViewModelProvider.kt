@@ -35,7 +35,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for HomeVewiewModel
         initializer {
-            HomeViewModel(learnApplication().container.decksRepository)
+            HomeViewModel(learnApplication().container.decksRepository,
+                learnApplication().container.usersRepository)
         }
         initializer {
            CardEntryViewModel(learnApplication().container.cardsRepository,
