@@ -186,47 +186,7 @@ fun SaveForm(dataUiState: CardUiState,
             })
         }
         , verticalArrangement = Arrangement.spacedBy(16.dp),) {
-        SearchBar(
-            modifier = Modifier.fillMaxWidth(),
-            query = dataUiState.category,
-            onQueryChange = {  onValueChange(dataUiState.copy(category = it)) } ,
-            onSearch = {active = false}, active = active ,
-            onActiveChange = { active = it },
-            placeholder = { Text(text = "Catégorie")},
-            leadingIcon = {Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")},
-            trailingIcon = {
-                if(active) {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            onValueChange(dataUiState.copy(category = ""))
-
-                        },
-                        imageVector = Icons.Default.Close, contentDescription = "add Icon"
-                    )
-                }
-
-            },
-
-            ) {
-            LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-
-                items(items = categories, key = {it}) {
-                    Row(modifier = Modifier
-                        .padding(14.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            onValueChange(dataUiState.copy(category = it)); active = false
-                        }) {
-                        Icon(
-                            modifier = Modifier.padding(end = 10.dp),
-                            imageVector = Icons.Default.Search, contentDescription = "history Icon"
-                        )
-                        Text(text = it)
-
-                    }
-                }
-            }
-        }
+       
         OutlinedTextField(
             value = dataUiState.recto,
             onValueChange = { onValueChange(dataUiState.copy(recto = it)) },

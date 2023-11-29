@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.DeckRepository
+import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.User
 import com.example.learnwithpierre.dao.UserRepository
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ class HomeViewModel(private val deckRepository: DeckRepository, private val user
             // Use the generated user ID for the deck
             val newDeck = Deck(0, 1, "demo", "", LocalDateTime.now(), LocalDateTime.now())
             deckRepository.insertDeck(newDeck)
+
 
 
             deckRepository.getAllDeckFromAUser(1).collect { decks ->

@@ -1,5 +1,6 @@
 package com.example.learnwithpierre.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,14 +16,19 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,9 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
@@ -58,7 +67,7 @@ fun OneDeckViewScreen(
 
     when (val state = oneDeckUiState) {
        // is OneDeckUiState.Loading -> LoadingView()
-        is OneDeckUiState.Success -> OneDeckViewPage(state.flashCards)
+        is OneDeckUiState.Success -> OneDeckViewPage(state.flashCards, oneDeckViewModel)
         is OneDeckUiState.Error -> ErrorView(error = state.exception)
     }
 
@@ -68,7 +77,7 @@ fun ErrorView(error: Throwable) {
     Text(text = "There is an error ${error.message}")
 }
 @Composable
-private fun OneDeckViewPage(oneDeckUiState: MutableList<FlashCard>) {
+private fun OneDeckViewPage(flashCardsList: MutableList<FlashCard>, oneDeckViewModel: OneDeckViewModel) {
     Scaffold(
         topBar = {
             LearnAllTopAppBar(
@@ -102,21 +111,21 @@ private fun OneDeckViewPage(oneDeckUiState: MutableList<FlashCard>) {
         },
         floatingActionButton = {
 
-            ExtendedFloatingActionButton(onClick = { /* do something */ }) {
+            ExtendedFloatingActionButton(onClick = {  }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add new deck")
                 Text(text = "add card")
             }
         }
 
     ) {
-        DeckViewBody(it, oneDeckUiState)
+        DeckViewBody(it, flashCardsList )
 
 
     }
 }
 
 @Composable
-private fun DeckViewBody(it: PaddingValues, oneDeckUiState: MutableList<FlashCard>) {
+private fun DeckViewBody(it: PaddingValues, flashCardsList: MutableList<FlashCard>) {
     Column(
         modifier = Modifier
             .padding(it)
@@ -134,25 +143,18 @@ private fun DeckViewBody(it: PaddingValues, oneDeckUiState: MutableList<FlashCar
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(Modifier.fillMaxWidth()){
                 Text(text = "Cards", modifier = Modifier.padding(5.dp), fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                Text(text = "3/5",modifier = Modifier
+                Text(text = flashCardsList.size.toString(),modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth(), textAlign = TextAlign.End, fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
             }
-            val listOfDeck = listOf(
-                FlashCard(1, 1, "Est ce aue Kotlin est pour les gens", "dee", true, "none", 5),
-                FlashCard(1, 1, "Est ce aue Kotlin est pour les gens", "dee", true, "none", 5),
-                FlashCard(1, 1, "Est ce aue Kotlin est pour les gens", "dee", true, "none", 5),
-                FlashCard(1, 1, "Est ce aue Kotlin est pour les gens", "dee", true, "none", 5),
-                FlashCard(1, 1, "Est ce aue Kotlin est pour les gens", "dee", true, "none", 5)
-            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxSize(1f),
                 contentPadding = PaddingValues(5.dp)
             ) {
-                items(oneDeckUiState) {
+                items(flashCardsList) {
                     Row{
                         Card( modifier = Modifier
                             .fillMaxWidth()
@@ -184,10 +186,82 @@ private fun DeckViewBody(it: PaddingValues, oneDeckUiState: MutableList<FlashCar
 
 
 }
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun LoadingDialog(isShowingDialog: Boolean, dismissOnBackPress: Boolean = false, dismissOnClickOutside: Boolean = false) {
+    if (isShowingDialog) {
+        Dialog(
+            onDismissRequest = { },
+            DialogProperties(
+                dismissOnBackPress = dismissOnBackPress,
+                dismissOnClickOutside = dismissOnClickOutside
+            )
+        ) {
+            Scaffold(
+                topBar = { TopAppBarAddCardScreen() }
+            ){
+                it ->
+                Column(modifier = Modifier.fillMaxSize().padding(it)) {
+                    Text(text = "Categorie")
+                    Card {
+                        Text(text = "Recto")
+
+                    }
+                    Card {
+                        Text(text = "Versp")
+
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopAppBarAddCardScreen() {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text(
+                "New Card",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Localized description"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_save_24),
+                    contentDescription = "Localized description"
+                )
+            }
+        },
+
+    )
+
+}
 
 @Preview
 @Composable
 fun OneDeckViewScreenPreview() {
-    OneDeckViewScreen({}, {})
+//    OneDeckViewScreen({}, {})
 
+}
+@Preview
+@Composable
+fun AddCardDialogPreview(){
+    LoadingDialog(true)
 }
