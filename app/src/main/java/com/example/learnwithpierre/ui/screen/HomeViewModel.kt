@@ -8,6 +8,7 @@ import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.User
 import com.example.learnwithpierre.dao.UserRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,25 +27,19 @@ class HomeViewModel(private val deckRepository: DeckRepository, private val user
         viewModelScope.launch(Dispatchers.IO) {
             val newUser = User(0, "Test", "Test", LocalDateTime.now(), LocalDateTime.now())
             val generatedUserId = userRepository.insertUser(newUser)
-
-            // Use the generated user ID for the deck
-            val newDeck = Deck(0, 1, "demo", "", LocalDateTime.now(), LocalDateTime.now())
-            deckRepository.insertDeck(newDeck)
-
-
-
             deckRepository.getAllDeckFromAUser(1).collect { decks ->
                 val decksWithSize = decks.map { deck ->
-                    var size : Long = 0
+
                     // Fetch the size for each deck
-                    viewModelScope.launch(Dispatchers.IO) {
-                         size = deckRepository.getSizeOfADeck(deck.deckId)
+                    val size = async {
+                        deckRepository.getSizeOfADeck(deck.deckId)
                     }
-                    DeckWithSize(deck, size)
+                    val loadSize = size.await()
+                    DeckWithSize(deck, loadSize)
 
                 }
-                // Update your UI state with the list of decks with their sizes
                 _homeUiState.value = HomeUiState(decksWithSize, decksWithSize)
+                println("viewModel is called")
             }
         }
     }

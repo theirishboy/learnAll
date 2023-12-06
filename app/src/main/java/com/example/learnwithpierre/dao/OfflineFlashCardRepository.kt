@@ -6,7 +6,7 @@ class OfflineFlashCardRepository(private val flashCardDao: FlashCardDao) : Flash
 
     override fun getAllCardStream(): Flow<MutableList<FlashCard>> = flashCardDao.getAllCard()
 
-    override fun getCardStream(id: Int): Flow<FlashCard?> = flashCardDao.getCardById(id)
+    override fun getCardStream(id: Long): Flow<FlashCard?> = flashCardDao.getCardById(id)
 
     override suspend fun insertCard(flashCard: FlashCard) = flashCardDao.insert(flashCard)
 

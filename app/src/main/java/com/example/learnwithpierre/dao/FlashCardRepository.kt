@@ -28,7 +28,7 @@ interface FlashCardRepository {
     /**
      * Retrieve an Card from the given Card source that matches with the [id].
      */
-    fun getCardStream(id: Int): Flow<FlashCard?>
+    fun getCardStream(id: Long): Flow<FlashCard?>
 
     /**
      * Insert Card in the Card source

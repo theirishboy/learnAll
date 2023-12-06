@@ -81,12 +81,19 @@ fun HomeScreen(
     val items = listOf("Save","Train","Data")
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
     val navigationScreens = listOf({},navigateToTraining,navigateToAllCards)
+    val homeUiState by homeViewModel.homeUiState.collectAsState()
+    println("Il y a une recomposition")
     Scaffold(
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        icon = {Icon(painter = painterResource(id = icons[index]), contentDescription ="" )},
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = icons[index]),
+                                contentDescription = ""
+                            )
+                        },
                         label = { Text(item) },
                         selected = selectedItem == index,
                         onClick = navigationScreens[index]
@@ -96,9 +103,11 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         ShowMyDecksBody(
-            homeViewModel = homeViewModel,
+            homeUiState = homeUiState,
             modifier = modifier.padding(innerPadding),
-            navigateToOneDeck = navigateToOneDeck
+            navigateToOneDeck = navigateToOneDeck,
+            updateFilteredDeck =  {homeViewModel.updateFilteredDeck(it)},
+            addNewDeck = {homeViewModel.addNewDeck(it)}
         )
     }
 
@@ -109,11 +118,11 @@ fun HomeScreen(
 
 @Composable
 fun ShowMyDecksBody(
-    homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    navigateToOneDeck: (Long) -> Unit
-
-
+    navigateToOneDeck: (Long) -> Unit,
+    updateFilteredDeck : (String) -> Unit,
+    addNewDeck : (Deck) -> Unit,
+    homeUiState: HomeUiState
     ){
     val localFocusManager = LocalFocusManager.current
     Column(
@@ -148,7 +157,8 @@ fun ShowMyDecksBody(
                 .fillMaxHeight(1f))  {
                 Row(verticalAlignment = Alignment.Top,modifier = Modifier
                     .fillMaxSize()){
-                    DisplayDecks(homeViewModel = homeViewModel, navigateToOneDeck = navigateToOneDeck)
+                    DisplayDecks(homeUiState = homeUiState, navigateToOneDeck = navigateToOneDeck,updateFilteredDeck =  {updateFilteredDeck(it)},
+                        addNewDeck = {addNewDeck(it)})
                 }}
             }
 
@@ -161,11 +171,12 @@ fun ShowMyDecksBody(
 @Composable
 fun DisplayDecks(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel,
+    homeUiState: HomeUiState,
     navigateToOneDeck: (Long) -> Unit,
+    updateFilteredDeck : (String) -> Unit,
+    addNewDeck : (Deck) -> Unit
 ){
     val localFocusManager = LocalFocusManager.current
-    val homeUiState by homeViewModel.homeUiState.collectAsState()
 
     var active by remember {
         mutableStateOf(false) }
@@ -187,7 +198,7 @@ fun DisplayDecks(
                 value = text,
                 onValueChange = {
                     text = it;
-                    homeViewModel.updateFilteredDeck(it)
+                    updateFilteredDeck(it)
                                 },
                 label = { Text("Search") },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
@@ -223,7 +234,7 @@ fun DisplayDecks(
 
                 }
             }
-        DisplayAddButton(homeViewModel,modifier)
+        DisplayAddButton(addNewDeck,modifier)
 
 
 
@@ -234,7 +245,7 @@ fun DisplayDecks(
 
 }
 @Composable
-fun DisplayAddButton(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
+fun DisplayAddButton(addNewDeck : (Deck) -> Unit, modifier: Modifier = Modifier) {
     var showDialog by remember { mutableStateOf(false) }
     Button(onClick = {  showDialog = true }, shape = RoundedCornerShape(15.dp),modifier = modifier
         .fillMaxSize()
@@ -244,7 +255,7 @@ fun DisplayAddButton(homeViewModel: HomeViewModel, modifier: Modifier = Modifier
         AddDeckDialog(
             onDismiss = { showDialog = false },
             onConfirm = { deckName,description ->
-                homeViewModel.addNewDeck(Deck(0,1,deckName,description, LocalDateTime.now(),
+                addNewDeck(Deck(0,1,deckName,description, LocalDateTime.now(),
                     LocalDateTime.now()))
                 showDialog = false
             }

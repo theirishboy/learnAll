@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
 
 @Dao
 interface DeckDao {
@@ -26,4 +27,9 @@ interface DeckDao {
 
     @Query("SELECT COUNT(*) FROM CARD WHERE :deckId = deckId")
     fun getSizeOfADeck(deckId : Long): Long
+
+    @Query("DELETE FROM DECKS WHERE DECKID = :deckId")
+    fun deleteDeckById(deckId: Long)
+    @Query("UPDATE decks SET UPDATEDAT = :dateModification WHERE DECKID = :deckId")
+     fun updateDateModificationByDeckId(deckId: Long, dateModification: LocalDateTime)
 }

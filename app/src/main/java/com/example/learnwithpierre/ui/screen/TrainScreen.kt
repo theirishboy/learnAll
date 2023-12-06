@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,11 +21,16 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -36,7 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.compose.md_theme_light_onPrimary
+import com.example.learnwithpierre.ui.theme.md_theme_light_onPrimary
+import com.example.learnwithpierre.DeckViewTopAppBar
 import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.FlashCard
@@ -47,7 +54,8 @@ import java.time.LocalDateTime
 object TrainDestination : NavigationDestination {
     override val route = "trainScreen"
     override val titleRes: Int = R.string.app_name
-}
+    const val deckIdArg = "cardId"
+    val routeWithArgs = "${TrainDestination.route}/{$deckIdArg}"}
 
 @Composable
 fun TrainScreen(
@@ -70,7 +78,7 @@ fun TrainScreen(
             LearnAllTopAppBar(
                 title = "Train",
                 canNavigateBack = canNavigateBack,
-                navigateUp = navigateBack,
+                navigateBack = navigateBack,
             )
         } , content = {innerPadding ->
 
@@ -81,7 +89,9 @@ fun TrainScreen(
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
-                modifier = modifier.padding(innerPadding).clickable { localFocusManager.clearFocus()  }
+                modifier = modifier
+                    .padding(innerPadding)
+                    .clickable { localFocusManager.clearFocus() }
             )
         })
     val popUpControl = viewModel.showAnswerPopUp
@@ -132,8 +142,12 @@ fun TrainBody(
     ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progressFactor,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
+    var hasAnswer by remember {
+        mutableStateOf(false)
+    }
+
 
     Column(
         modifier = modifier
@@ -209,12 +223,57 @@ fun TrainBody(
 
                 }
             }
-            Button(
-                onClick = onCheckCard,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("Valider")
+            if(!hasAnswer){
+                Row{
+                    Button(
+                        onClick = {hasAnswer = true},
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Valider")
+                    }
+                }
+            }else{
+                Row(modifier.fillMaxWidth()){
+                    TextButton(
+                        onClick = onCheckCard,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFFF4B6B6)),
+                    ) {
+                        Text("Hard")
+                    }
+                    TextButton(
+                        onClick = onCheckCard,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFFFFCC99)),
+                    ) {
+                        Text("Average")
+                    }
+                    TextButton(
+                        onClick = onCheckCard,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFFFFF5BA)),
+                    ) {
+                        Text("Almost")
+                    }
+                    TextButton(
+                        onClick = onCheckCard,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = Color(0xFFA8D5BA)),
+                    ) {
+                        Text("Perfect")
+                    }
+                }
             }
+
+
 
         }
 
@@ -230,23 +289,23 @@ fun TrainBody(
 
 
 
-@Preview(showBackground = true)
-@Composable
-private fun TrainBodyPreview() {
-
-    val currentQuestion =FlashCard(1,0,"salut","connard",true,"",0, LocalDateTime.now())
-    val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
-
-    TrainBody(
-        currentQuestion = currentQuestion,
-        trainUiState = trainUiState,
-        onValueChange = {},
-        onCheckCard = {},
-        progressFactor = 0.5f,
-        modifier = Modifier,
-        enabled = true
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun TrainBodyPreview() {
+//
+//    val currentQuestion =FlashCard(1,0,"salut","connard",true,"",0, LocalDateTime.now())
+//    val trainUiState = TrainUiState(answer = "J'aime le jambon d'auvergne et les phrases longues pour tester que tout se passe bien")
+//
+//    TrainBody(
+//        currentQuestion = currentQuestion,
+//        trainUiState = trainUiState,
+//        onValueChange = {},
+//        onCheckCard = {},
+//        progressFactor = 0.5f,
+//        modifier = Modifier,
+//        enabled = true
+//    )
+//}
 
 @Preview
 @Composable
@@ -257,10 +316,11 @@ private fun TrainScreenPreview(){
 
     Scaffold(
         topBar = {
-            LearnAllTopAppBar(
+            DeckViewTopAppBar(
                 title = "Train",
                 canNavigateBack = true,
-                navigateUp = {},
+                navigateBack = {},
+                deleteDeck = {},
             )
         } , content = {innerPadding->
             TrainBody(

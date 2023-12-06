@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learnwithpierre.LearnApplication
 import com.example.learnwithpierre.ui.screen.CardEntryViewModel
 import com.example.learnwithpierre.ui.screen.HomeViewModel
+import com.example.learnwithpierre.ui.screen.OneCardViewModel
 import com.example.learnwithpierre.ui.screen.OneDeckViewModel
 import com.example.learnwithpierre.ui.screen.OneDeckViewScreen
 import com.example.learnwithpierre.ui.screen.ShowAllCardsScreenViewModel
@@ -47,13 +48,20 @@ object AppViewModelProvider {
                learnApplication().container.decksRepository)
         }
         initializer {
-           TrainViewModel(learnApplication().container.cardsRepository)
+           TrainViewModel(learnApplication().container.cardsRepository, this.createSavedStateHandle())
         }
         initializer {
             ShowAllCardsScreenViewModel(learnApplication().container.cardsRepository)
         }
         initializer {
             OneDeckViewModel(
+                learnApplication().container.decksRepository,
+                learnApplication().container.cardsRepository,
+                this.createSavedStateHandle(),
+            )
+        }
+        initializer {
+            OneCardViewModel(
                 learnApplication().container.cardsRepository,
                 this.createSavedStateHandle(),
             )

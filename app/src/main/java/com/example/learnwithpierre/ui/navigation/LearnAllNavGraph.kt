@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.learnwithpierre.ui.screen.HomeDestination
 import com.example.learnwithpierre.ui.screen.HomeScreen
+import com.example.learnwithpierre.ui.screen.OneCardViewDestination
+import com.example.learnwithpierre.ui.screen.OneCardViewScreen
 import com.example.learnwithpierre.ui.screen.OneDeckViewDestination
 import com.example.learnwithpierre.ui.screen.OneDeckViewScreen
 import com.example.learnwithpierre.ui.screen.ShowAllCardScreen
@@ -33,7 +35,7 @@ fun LearnAllNavHost(
                 navigateToOneDeck = {deckId -> navController.navigate("${OneDeckViewDestination.route}/$deckId")}
             )
         }
-        composable(route = TrainDestination.route) {
+        composable(route = TrainDestination.routeWithArgs) {
             TrainScreen(
                 navigateBack = {     navController.popBackStack(HomeDestination.route, inclusive = false)
                 },
@@ -47,8 +49,18 @@ fun LearnAllNavHost(
             )
         }
         composable(route = OneDeckViewDestination.routeWithArgs){
-            OneDeckViewScreen(navigateToAllCards = { /*TODO*/ },
-                navigateToTraining =  {}
+            OneDeckViewScreen(navigateBack = {     navController.popBackStack(HomeDestination.route, inclusive = false)
+                },
+                navigateToAllCards = { /*TODO*/ },
+                navigateToTraining =  {},
+                navigateToModifyOneCard = {cardId -> navController.navigate("${OneCardViewDestination.route}/$cardId")},
+                navigateToTrainView = {deckId -> navController.navigate("${TrainDestination.route}/$deckId")}
+
+            )
+        }
+        composable(route = OneCardViewDestination.routeWithArgs){
+            OneCardViewScreen(dismissOnBackPress = {navController.popBackStack("${OneDeckViewDestination.route}/1", inclusive = false)
+                },
             )
         }
     }

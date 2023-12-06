@@ -14,13 +14,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -39,28 +42,101 @@ fun LearnAllApp(navController: NavHostController = rememberNavController()) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LearnAllTopAppBar(
+fun DeckViewTopAppBar(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
-    navigateUp: () -> Unit = {}
+    navigateBack: () -> Unit = {},
+    deleteDeck: () -> Unit
 ) {
     if (canNavigateBack) {
         CenterAlignedTopAppBar(
             title = { Text(title, style = MaterialTheme.typography.h6) },
             modifier = modifier,
             navigationIcon = {
-                IconButton(onClick = navigateUp) {
+                IconButton(onClick = navigateBack) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back"
                     )
+                }
+            },
+            actions = {
+                IconButton(onClick = deleteDeck) {
+                    Icon(
+                        painterResource(id =R.drawable.baseline_delete_outline_24),
+                        contentDescription = "Delete Deck" )
                 }
             }
         )
     } else {
         CenterAlignedTopAppBar(title = { Text(title) }, modifier = modifier)
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LearnAllTopAppBar(
+    title: String,
+    canNavigateBack: Boolean,
+    modifier: Modifier = Modifier,
+    navigateBack: () -> Unit = {},
+) {
+    if (canNavigateBack) {
+        CenterAlignedTopAppBar(
+            title = { Text(title, style = MaterialTheme.typography.h6) },
+            modifier = modifier,
+            navigationIcon = {
+                IconButton(onClick = navigateBack) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            },
+        )
+    } else {
+        CenterAlignedTopAppBar(title = { Text(title) }, modifier = modifier)
+    }
+}
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopAppBarAddCardScreen(
+    dismissOnBackPress: () -> Unit,
+    onSavePress: () -> Unit,
+    title: String
+) {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text(
+                title,
+                maxLines = 1,
+                style = MaterialTheme.typography.h6
+            )
+        },
+        navigationIcon = {
+           IconButton(onClick = dismissOnBackPress) {
+               Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Localized description"
+                )
+            }
+        },
+        actions = {
+           IconButton(onClick = onSavePress) {
+             Icon(
+                    painter = painterResource(id = R.drawable.baseline_save_24),
+                    contentDescription = "Localized description"
+                )
+            }
+        },
+
+        )
+
 }
 /*@Composable
 fun LearnAllBottomAppBar(
@@ -119,7 +195,12 @@ fun LoadingDialog(isShowingDialog: Boolean, dismissOnBackPress: Boolean = false,
 @Preview
 @Composable
 private fun TopAppBarPreview(modifier: Modifier = Modifier){
-    LearnAllTopAppBar(title = "Bonjour", canNavigateBack = true)
+    DeckViewTopAppBar(title = "Bonjour", canNavigateBack = true, deleteDeck = {})
+}
+@Preview
+@Composable
+private fun TopAppBarAddCardScreenPreview(modifier: Modifier = Modifier){
+    TopAppBarAddCardScreen({},{},title = "Hello")
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview

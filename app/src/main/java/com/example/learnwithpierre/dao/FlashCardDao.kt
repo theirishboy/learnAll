@@ -20,7 +20,7 @@ interface FlashCardDao {
     suspend fun delete(item : FlashCard)
 
     @Query("SELECT * from card WHERE cardId = :id")
-    fun getCardById(id: Int): Flow<FlashCard>
+    fun getCardById(id: Long): Flow<FlashCard>
 
     @Query("SELECT * from card WHERE recto = :content OR verso = :content")
     fun getCardByContent(content: String): Flow<FlashCard>

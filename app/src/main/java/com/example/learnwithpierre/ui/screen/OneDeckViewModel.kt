@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.learnwithpierre.dao.FlashCardRepository
 import androidx.lifecycle.viewModelScope
+import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.FlashCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class OneDeckViewModel(private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+class OneDeckViewModel(val deckRepository: DeckRepository,private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val deckId: Long = checkNotNull(savedStateHandle[OneDeckViewDestination.deckIdArg]).toString().toLong()
 
@@ -23,12 +24,36 @@ class OneDeckViewModel(private val cardRepository: FlashCardRepository, savedSta
 
     init {
         viewModelScope.launch{
-            val newCard = FlashCard(0, 1, "recto", "verso",true,"Yo",5, LocalDateTime.now(), LocalDateTime.now())
-            cardRepository.insertCard(newCard)
             cardRepository.getCardByDeckId(deckId).collect{
                 card -> _oneDeckUiState.value = OneDeckUiState.Success(card)
             }
         }
+    }
+    fun addOneCardToDeck(recto: String, verso: String){
+            viewModelScope.launch(Dispatchers.IO){
+                val newCard = FlashCard(0, deckId, recto, verso,true,"undefined",0, LocalDateTime.now(), LocalDateTime.now())
+                cardRepository.insertCard(newCard)
+                deckRepository.updateDateModificationByDeckById(deckId, LocalDateTime.now())
+            }
+
+        }
+    fun getDeckId() : Long{
+        return deckId
+    }
+
+    fun deleteDeck() {
+        viewModelScope.launch(Dispatchers.IO) {
+            deckRepository.deleteDeckById(getDeckId())
+        }
+
+    }
+
+    fun deleteOneCard(card: FlashCard) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cardRepository.deleteCard(card)
+        }
+
+
     }
 }
 sealed class OneDeckUiState {
