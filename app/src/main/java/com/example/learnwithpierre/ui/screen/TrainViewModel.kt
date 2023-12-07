@@ -11,6 +11,7 @@ import com.example.learnwithpierre.ui.theme.md_theme_light_primary
 import com.example.learnwithpierre.ui.theme.md_theme_light_tertiary
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.FlashCardRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -33,7 +34,7 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
 
     init {
         viewModelScope.launch {
-          trainUiState  = flashCardRepository.getCardByDeckId(deckId).map { TrainUiState(it as MutableList<FlashCard>, answer = "") }.filterNotNull().first()
+          trainUiState  = flashCardRepository.getCardByDeckId(deckId).map { TrainUiState(it, answer = "") }.filterNotNull().first()
          try {
              currentQuestion =  trainUiState.flashCardList.last()
              size = trainUiState.flashCardList.size
@@ -46,7 +47,7 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
 
     }
 
-    fun compareCards() {
+    fun checkCards() {
         viewModelScope.launch {
             if(trainUiState.answer == trainUiState.flashCardList.last().verso ){
                 showAnswerPopUp = AnswerState.TRUE
@@ -59,6 +60,61 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
     }
    fun updateUiState(trainUiState: TrainUiState) {
         this.trainUiState = TrainUiState(flashCardList =  trainUiState.flashCardList, answer = trainUiState.answer)
+    }
+    fun updateFlashCard(flashCard: FlashCard, answer: AnswerQuality){
+        val dateModification = LocalDateTime.now()
+        var dateTraining = flashCard.dateTraining
+        val score = calculateNewScore(answer, flashCard)
+        dateTraining = calculateNewDateTraining(score, dateTraining)
+
+        val newFlashCard = FlashCard(flashCard.cardId,
+            flashCard.deckId,
+            flashCard.recto,
+            flashCard.verso,
+            flashCard.isRecto,
+            flashCard.category,
+            score,
+            flashCard.dateCreation,
+            dateModification,
+            dateTraining)
+        viewModelScope.launch(Dispatchers.IO) {
+            flashCardRepository.updateCard(flashCard = newFlashCard)
+        }
+    }
+
+    private fun calculateNewScore(
+        answer: AnswerQuality,
+        flashCard: FlashCard
+    ): Int {
+        var score = flashCard.score
+        when (answer) {
+            AnswerQuality.BAD -> score = 0
+            AnswerQuality.FAIR -> score = if (flashCard.score > 0) {
+                flashCard.score - 1
+            } else 0
+
+            AnswerQuality.FINE -> if (score > 2) score = 2
+            AnswerQuality.PERFECT -> score += 1
+        }
+        return score
+    }
+
+    private fun calculateNewDateTraining(
+        score: Int,
+        dateTraining: LocalDateTime
+    ): LocalDateTime {
+        var dateTraining1 = dateTraining
+        when (score) {
+            0 -> dateTraining1 = LocalDateTime.now()
+            1 -> dateTraining1 = LocalDateTime.now().plusDays(1)
+            2 -> dateTraining1 = LocalDateTime.now().plusDays(3)
+            3 -> dateTraining1 = LocalDateTime.now().plusDays(7)
+            4 -> dateTraining1 = LocalDateTime.now().plusDays(14)
+            5 -> dateTraining1 = LocalDateTime.now().plusDays(30)
+            6 -> dateTraining1 = LocalDateTime.now().plusDays(90)
+            7 -> dateTraining1 = LocalDateTime.now().plusDays(180)
+        }
+        return dateTraining1
     }
 
     fun nextQuestion() {
@@ -83,4 +139,10 @@ enum class AnswerState(val message: String, val color: Color){
         md_theme_light_tertiary
     );
 
+}
+enum class AnswerQuality {
+    BAD,
+    FAIR,
+    FINE,
+    PERFECT
 }

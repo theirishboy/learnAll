@@ -2,7 +2,6 @@ package com.example.learnwithpierre.ui.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -55,7 +55,7 @@ object TrainDestination : NavigationDestination {
     override val route = "trainScreen"
     override val titleRes: Int = R.string.app_name
     const val deckIdArg = "cardId"
-    val routeWithArgs = "${TrainDestination.route}/{$deckIdArg}"}
+    val routeWithArgs = "$route/{$deckIdArg}"}
 
 @Composable
 fun TrainScreen(
@@ -84,14 +84,14 @@ fun TrainScreen(
 
             TrainBody(
                 currentQuestion = currentQuestion,
-                onCheckCard = { viewModel.compareCards() },
                 trainUiState = viewModel.trainUiState,
                 onValueChange = {
                         updatedUiState -> viewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
+                updateScore =  { flashCard, answerQuality -> viewModel.updateFlashCard(flashCard, answerQuality) },
+                nextQuestion = { viewModel.nextQuestion() },
                 modifier = modifier
                     .padding(innerPadding)
-                    .clickable { localFocusManager.clearFocus() }
             )
         })
     val popUpControl = viewModel.showAnswerPopUp
@@ -131,13 +131,12 @@ fun BottomPopUp(modifier: Modifier, OnContinue: () -> Unit,answerState: AnswerSt
 @Composable
 fun TrainBody(
     currentQuestion: FlashCard,
-    trainUiState:TrainUiState,
+    trainUiState: TrainUiState,
     onValueChange: (TrainUiState) -> Unit,
-    onCheckCard: () -> Unit,
     progressFactor: Float,
+    updateScore: (FlashCard, AnswerQuality) -> Unit,
+    nextQuestion : () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-
 
     ) {
     val animatedProgress by animateFloatAsState(
@@ -145,32 +144,25 @@ fun TrainBody(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
     var hasAnswer by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
-
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(5.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
-    )
-    {
-        LinearProgressIndicator(
-            modifier = Modifier
+    ) {
+        LinearProgressIndicator(modifier = Modifier
                 .semantics(mergeDescendants = true) {}
                 .padding(7.dp)
                 .fillMaxWidth(),
-            progress = animatedProgress,
-        )
+            progress = animatedProgress,)
         Column(Modifier.weight(0.3f)) {
-
             Text(text = " A quoi correspond  ? :",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 ))
-
             Spacer(modifier = Modifier.height(8.dp))
             Card(
                 modifier = Modifier
@@ -178,7 +170,6 @@ fun TrainBody(
                     .weight(0.5f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
-
                 ) {
                 Text(
                     text = currentQuestion.recto,
@@ -202,8 +193,6 @@ fun TrainBody(
                     .weight(0.8f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
-
-
                 ) {
                 Column  (
                     modifier = Modifier.padding(16.dp)
@@ -235,40 +224,47 @@ fun TrainBody(
             }else{
                 Row(modifier.fillMaxWidth()){
                     TextButton(
-                        onClick = onCheckCard,
+                        onClick = { updateScore(currentQuestion,AnswerQuality.BAD); nextQuestion() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
                             .background(color = Color(0xFFF4B6B6)),
+                        shape = RectangleShape
                     ) {
-                        Text("Hard")
+                        Text("BAD")
                     }
                     TextButton(
-                        onClick = onCheckCard,
+                        onClick =  { updateScore(currentQuestion,AnswerQuality.FAIR) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
                             .background(color = Color(0xFFFFCC99)),
+                            shape = RectangleShape
+
                     ) {
-                        Text("Average")
+                        Text("FAIR")
                     }
                     TextButton(
-                        onClick = onCheckCard,
+                        onClick =  { updateScore(currentQuestion,AnswerQuality.FINE) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
                             .background(color = Color(0xFFFFF5BA)),
+                        shape = RectangleShape
+
                     ) {
-                        Text("Almost")
+                        Text("FINE")
                     }
                     TextButton(
-                        onClick = onCheckCard,
+                        onClick =  { updateScore(currentQuestion,AnswerQuality.PERFECT) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
                             .background(color = Color(0xFFA8D5BA)),
+                        shape = RectangleShape
+
                     ) {
-                        Text("Perfect")
+                        Text("PERFECT")
                     }
                 }
             }
@@ -327,10 +323,10 @@ private fun TrainScreenPreview(){
                 currentQuestion = currentQuestion,
                 trainUiState = trainUiState,
                 onValueChange = {},
-                onCheckCard = {},
                 progressFactor = 0.5f,
-                modifier = Modifier.padding(innerPadding),
-                enabled = true
+                updateScore = { a, b -> },
+                nextQuestion = {},
+                modifier = Modifier.padding(innerPadding)
             )
         })
 }

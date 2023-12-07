@@ -111,7 +111,7 @@ class TrainViewModelTest {
         trainUiState.answer = "Good answer"
         trainUiState.flashCardList.last().verso = "Good answer"
         val showAnswerState = viewModel.showAnswerPopUp
-        viewModel.compareCards()
+        viewModel.checkCards()
         assertEquals(AnswerState.TRUE, viewModel.showAnswerPopUp)
         assertNotEquals(showAnswerState, viewModel.showAnswerPopUp)
     }
@@ -124,7 +124,7 @@ class TrainViewModelTest {
         trainUiState.answer = "Bad answer"
         trainUiState.flashCardList.last().verso = "Badanswer"
 
-        viewModel.compareCards()
+        viewModel.checkCards()
         assertEquals(AnswerState.FALSE,viewModel.showAnswerPopUp)
     }
 
