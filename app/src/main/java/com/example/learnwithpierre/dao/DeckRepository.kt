@@ -9,6 +9,7 @@ interface DeckRepository {
     suspend fun updateDeck(deck: Deck)
     suspend fun deleteDeck(deck: Deck)
     suspend fun deleteDeckById(deckId: Long)
+    suspend fun getDeck(deckId: Long) : Deck
     fun getAllDeckFromAUser(userId : Long) : Flow<MutableList<Deck>>
     fun getSizeOfADeck(deck : Long) : Long
     fun updateDateModificationByDeckById(deckId: Long,dateModification : LocalDateTime)

@@ -59,6 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.DeckViewTopAppBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.TopAppBarAddCardScreen
+import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
@@ -84,6 +85,7 @@ fun OneDeckViewScreen(
     when (val state = oneDeckUiState) {
        // is OneDeckUiState.Loading -> LoadingView()
         is OneDeckUiState.Success -> OneDeckViewPage(
+            state.deck,
             state.flashCards,
             oneDeckViewModel,
             navigateBack,
@@ -99,6 +101,7 @@ fun ErrorView(error: Throwable) {
 }
 @Composable
 private fun OneDeckViewPage(
+    deck : Deck,
     flashCardsList: MutableList<FlashCard>,
     oneDeckViewModel: OneDeckViewModel,
     navigateBack: () -> Unit,
@@ -148,7 +151,7 @@ private fun OneDeckViewPage(
         }
 
     ) {
-        DeckViewBody(it, flashCardsList,navigateToModifyOneCard, deleteOneCard = {card -> oneDeckViewModel.deleteOneCard(card)})
+        DeckViewBody(it, flashCardsList,navigateToModifyOneCard, deleteOneCard = {card -> oneDeckViewModel.deleteOneCard(card)}, deck)
         if(showDialog.value){
             CardDialog(dismissOnBackPress = { showDialog.value = false }, oneDeckViewModel = oneDeckViewModel)
         }
@@ -162,7 +165,8 @@ private fun DeckViewBody(
     it: PaddingValues,
     flashCardsList: MutableList<FlashCard>,
     navigateToModifyOneCard: (Long) -> Unit,
-    deleteOneCard: (FlashCard) -> Unit
+    deleteOneCard: (FlashCard) -> Unit,
+    deck: Deck
 ) {
     val haptics = LocalHapticFeedback.current
     var contextCardId by rememberSaveable { mutableStateOf<Long>(0) }
@@ -179,7 +183,7 @@ private fun DeckViewBody(
             Column(Modifier.padding(5.dp)) {
                 Text(text = "Description", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Spacer(modifier = Modifier.padding(1.dp))
-                Text(text = "Je décris la descirption")
+                Text(text =  deck.description ?: "No description")
             }
         }
         Spacer(modifier = Modifier.padding(5.dp))
@@ -274,12 +278,12 @@ fun CardDialog(
             onDismissRequest = { },
             DialogProperties(
                 usePlatformDefaultWidth = false,
-                dismissOnClickOutside = dismissOnClickOutside
+                dismissOnClickOutside = dismissOnClickOutside,
             )
         ) {
         Card(shape = RoundedCornerShape(15.dp)) {
             Scaffold(
-                modifier = Modifier.fillMaxSize(0.85f),
+                modifier = Modifier.fillMaxSize(1f),
 
                 topBar = {
                     TopAppBarAddCardScreen(
@@ -362,5 +366,6 @@ fun CardDialog(
 fun OneDeckViewScreenPreview() {
     val fcard = FlashCard(0,1,"hello","World",true,"no",5)
     val fcard2 = FlashCard(0,1,"hello","Ce texte est bcp trop long",true,"no",5)
-    DeckViewBody(PaddingValues(5.dp), arrayListOf(fcard,fcard,fcard,fcard2), {},{})
+    val deck = Deck(0,0,"Kotlin","")
+    DeckViewBody(PaddingValues(5.dp), arrayListOf(fcard,fcard,fcard,fcard2), {},{}, deck)
 }

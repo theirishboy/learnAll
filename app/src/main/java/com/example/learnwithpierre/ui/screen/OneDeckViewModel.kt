@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.learnwithpierre.dao.FlashCardRepository
 import androidx.lifecycle.viewModelScope
+import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.FlashCard
 import kotlinx.coroutines.Dispatchers
@@ -18,15 +19,18 @@ class OneDeckViewModel(val deckRepository: DeckRepository,private val cardReposi
 
     private val deckId: Long = checkNotNull(savedStateHandle[OneDeckViewDestination.deckIdArg]).toString().toLong()
 
-    private val _oneDeckUiState = MutableStateFlow(OneDeckUiState.Success(arrayListOf()))
+    private val _oneDeckUiState = MutableStateFlow(OneDeckUiState.Success(Deck(0,0,"Fail",""),arrayListOf()))
 
     val oneDeckUiState: StateFlow<OneDeckUiState> = _oneDeckUiState.asStateFlow()
 
+
     init {
-        viewModelScope.launch{
+        viewModelScope.launch(Dispatchers.IO){
+            val deck : Deck = deckRepository.getDeck(deckId = deckId)
             cardRepository.getCardByDeckId(deckId).collect{
-                card -> _oneDeckUiState.value = OneDeckUiState.Success(card)
+                card -> _oneDeckUiState.value = OneDeckUiState.Success(deck,card)
             }
+
         }
     }
     fun addOneCardToDeck(recto: String, verso: String){
@@ -57,7 +61,7 @@ class OneDeckViewModel(val deckRepository: DeckRepository,private val cardReposi
     }
 }
 sealed class OneDeckUiState {
-    data class Success(val flashCards: MutableList<FlashCard>): OneDeckUiState()
+    data class Success(val deck: Deck, val flashCards: MutableList<FlashCard>): OneDeckUiState()
     data class Error(val exception: Throwable): OneDeckUiState()
 }
 

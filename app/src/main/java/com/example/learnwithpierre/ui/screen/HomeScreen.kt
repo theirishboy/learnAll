@@ -78,8 +78,8 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Save","Train","Data")
-    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_dataset_24)
+    val items = listOf("Save","Train","Profil")
+    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_account_circle_24)
     val navigationScreens = listOf({},navigateToTraining,navigateToAllCards)
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     println("Il y a une recomposition")
@@ -213,27 +213,28 @@ fun DisplayDecks(
 
                 })
             )
-
-            LazyColumn(modifier.fillMaxWidth(1f).fillMaxHeight(0.9f)){
-                items(homeUiState.filteredDeckList){
-                    item ->
-                    OneDeck(item,
-                        Modifier
-                            .drawBehind {
-                                val strokeWidth = 3 * density
-                                val y = size.height - strokeWidth / 2
-                                drawLine(
-                                    Color.LightGray,
-                                    Offset(0f, y),
-                                    Offset(size.width, y),
-                                    strokeWidth
-                                )
-                            }
-                            .padding(5.dp).fillMaxSize().clickable {navigateToOneDeck(item.deck.deckId)},
+                LazyColumn(modifier.fillMaxWidth(1f).fillMaxHeight(0.9f)){
+                    items(homeUiState.filteredDeckList){
+                            item ->
+                        OneDeck(item,
+                            Modifier
+                                .drawBehind {
+                                    val strokeWidth = 3 * density
+                                    val y = size.height - strokeWidth / 2
+                                    drawLine(
+                                        Color.LightGray,
+                                        Offset(0f, y),
+                                        Offset(size.width, y),
+                                        strokeWidth
+                                    )
+                                }
+                                .padding(5.dp).fillMaxSize().clickable {navigateToOneDeck(item.deck.deckId)},
                         )
 
+                    }
                 }
-            }
+
+
         DisplayAddButton(addNewDeck,modifier)
 
 

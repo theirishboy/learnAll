@@ -10,6 +10,10 @@ import java.time.LocalDateTime
 
 @Dao
 interface DeckDao {
+
+    @Query("SELECT * FROM DECKS WHERE :deckId = deckId")
+    fun getDeck(deckId: Long): Deck
+
     @Insert
     fun insertDeck(deck: Deck)
 

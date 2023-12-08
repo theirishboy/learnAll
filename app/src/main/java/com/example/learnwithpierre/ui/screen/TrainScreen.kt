@@ -69,7 +69,7 @@ fun TrainScreen(
 {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
-    val localFocusManager = LocalFocusManager.current
+    LocalFocusManager.current
     if(currentProgress >= 1f){
         navigateBack()
     }
@@ -144,7 +144,10 @@ fun TrainBody(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
     var hasAnswer by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
+    }
+    var topTitle by remember {
+        mutableStateOf("A quoi correspond  ? :")
     }
     Column(
         modifier = modifier
@@ -153,12 +156,12 @@ fun TrainBody(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         LinearProgressIndicator(modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(7.dp)
-                .fillMaxWidth(),
+            .semantics(mergeDescendants = true) {}
+            .padding(7.dp)
+            .fillMaxWidth(),
             progress = animatedProgress,)
-        Column(Modifier.weight(0.3f)) {
-            Text(text = " A quoi correspond  ? :",
+        Column(Modifier.weight(0.6f)) {
+            Text(text = topTitle,
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -190,7 +193,7 @@ fun TrainBody(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.8f),
+                    .weight(0.9f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
                 ) {
@@ -222,51 +225,8 @@ fun TrainBody(
                     }
                 }
             }else{
-                Row(modifier.fillMaxWidth()){
-                    TextButton(
-                        onClick = { updateScore(currentQuestion,AnswerQuality.BAD); nextQuestion() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFFF4B6B6)),
-                        shape = RectangleShape
-                    ) {
-                        Text("BAD")
-                    }
-                    TextButton(
-                        onClick =  { updateScore(currentQuestion,AnswerQuality.FAIR) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFFFFCC99)),
-                            shape = RectangleShape
-
-                    ) {
-                        Text("FAIR")
-                    }
-                    TextButton(
-                        onClick =  { updateScore(currentQuestion,AnswerQuality.FINE) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFFFFF5BA)),
-                        shape = RectangleShape
-
-                    ) {
-                        Text("FINE")
-                    }
-                    TextButton(
-                        onClick =  { updateScore(currentQuestion,AnswerQuality.PERFECT) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .background(color = Color(0xFFA8D5BA)),
-                        shape = RectangleShape
-
-                    ) {
-                        Text("PERFECT")
-                    }
-                }
+                topTitle = "ça correspond à"
+                ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion)
             }
 
 
@@ -283,6 +243,59 @@ fun TrainBody(
 
 }
 
+@Composable
+private fun ShowAnswer(
+    modifier: Modifier,
+    updateScore: (FlashCard, AnswerQuality) -> Unit,
+    currentQuestion: FlashCard,
+    nextQuestion: () -> Unit
+) {
+    Row(modifier.fillMaxWidth()) {
+        TextButton(
+            onClick = { updateScore(currentQuestion, AnswerQuality.BAD); nextQuestion() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(color = Color(0xFFF4B6B6)),
+            shape = RectangleShape
+        ) {
+            Text("BAD")
+        }
+        TextButton(
+            onClick = { updateScore(currentQuestion, AnswerQuality.FAIR); nextQuestion() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(color = Color(0xFFFFCC99)),
+            shape = RectangleShape
+
+        ) {
+            Text("FAIR")
+        }
+        TextButton(
+            onClick = { updateScore(currentQuestion, AnswerQuality.FINE); nextQuestion() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(color = Color(0xFFFFF5BA)),
+            shape = RectangleShape
+
+        ) {
+            Text("FINE")
+        }
+        TextButton(
+            onClick = { updateScore(currentQuestion, AnswerQuality.PERFECT); nextQuestion() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(color = Color(0xFFA8D5BA)),
+            shape = RectangleShape
+
+        ) {
+            Text("PERFECT")
+        }
+    }
+}
 
 
 //@Preview(showBackground = true)

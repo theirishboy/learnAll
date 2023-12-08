@@ -3,6 +3,7 @@ package com.example.learnwithpierre.dao
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
@@ -12,7 +13,9 @@ import java.time.LocalDateTime
     foreignKeys = [ForeignKey(entity = Deck::class,
         parentColumns = arrayOf("deckId"),
         childColumns = arrayOf("deckId"),
-        onDelete = ForeignKey.CASCADE)])
+        onDelete = ForeignKey.CASCADE)],
+    indices = [Index(value = ["deckId"])] // This line adds the index
+    )
 
 data class FlashCard(
     @PrimaryKey(autoGenerate = true)

@@ -2,6 +2,7 @@ package com.example.learnwithpierre.dao
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
@@ -10,7 +11,8 @@ import java.time.LocalDateTime
         parentColumns = arrayOf("userId"),
         childColumns = arrayOf("userId"),
         onDelete = ForeignKey.CASCADE
-    )])
+    )],
+    indices = [Index(value = ["userId"])])
 data class Deck(
     @PrimaryKey(autoGenerate = true) val deckId: Long = 0,
     val userId: Long,
