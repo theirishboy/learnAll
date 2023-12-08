@@ -25,34 +25,34 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
         private set
     var trainUiScore by mutableStateOf(0.0)
         private set
-    var showAnswerPopUp by mutableStateOf(AnswerState.NOTSHOW)
-        private set
 
-    var size : Int = 1
-    var errorFlashCard : FlashCard = FlashCard(0,0,"Please enter a new card in your db","vide",false,"animal",1, LocalDateTime.now())
+    private var size : Int = 1
+    private var errorFlashCard : FlashCard = FlashCard(0,0,"Please enter a new card in your db","vide",false,"animal",1, LocalDateTime.now())
     var currentQuestion by mutableStateOf(FlashCard(0,0,"demo","vide",false,"animal",1, LocalDateTime.now()))
 
     init {
-        viewModelScope.launch {
-          trainUiState  = flashCardRepository.getCardByDeckId(deckId).map { TrainUiState(it, answer = "") }.filterNotNull().first()
-         try {
-             currentQuestion =  trainUiState.flashCardList.last()
-             size = trainUiState.flashCardList.size
-         }catch (e : Exception){
-                currentQuestion = errorFlashCard
-                trainUiState.flashCardList.add(errorFlashCard)
-            }
+        if (deckId.compareTo(0) == 0) {
+            viewModelScope.launch {
+                trainUiState  = flashCardRepository.getRandomCard().map { TrainUiState(it, answer = "") }.filterNotNull().first()
+                try {
+                    currentQuestion =  trainUiState.flashCardList.last()
+                    size = trainUiState.flashCardList.size
+                }catch (e : Exception){
+                    currentQuestion = errorFlashCard
+                    trainUiState.flashCardList.add(errorFlashCard)
+                }
 
-        }
+            }        }else{
+            viewModelScope.launch {
+                trainUiState  = flashCardRepository.getCardByDeckId(deckId).map { TrainUiState(it, answer = "") }.filterNotNull().first()
+                try {
+                    currentQuestion =  trainUiState.flashCardList.last()
+                    size = trainUiState.flashCardList.size
+                }catch (e : Exception){
+                    currentQuestion = errorFlashCard
+                    trainUiState.flashCardList.add(errorFlashCard)
+                }
 
-    }
-
-    fun checkCards() {
-        viewModelScope.launch {
-            if(trainUiState.answer == trainUiState.flashCardList.last().verso ){
-                showAnswerPopUp = AnswerState.TRUE
-            }else{
-                showAnswerPopUp = AnswerState.FALSE
             }
         }
 
@@ -118,7 +118,6 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
     }
 
     fun nextQuestion() {
-        showAnswerPopUp = AnswerState.NOTSHOW
         trainUiScore += 1f/size
         trainUiState.answer = ""
         if(trainUiScore < 1f) {

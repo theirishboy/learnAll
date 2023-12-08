@@ -45,7 +45,7 @@ interface FlashCardRepository {
      */
     suspend fun updateCard(flashCard: FlashCard)
 
-    fun getRandomCard():Flow<List<FlashCard>>
+    fun getRandomCard():Flow<MutableList<FlashCard>>
 
     fun getCategories(): Flow<MutableList<String>>
     fun getCardByCategory(category: String): Flow<MutableList<FlashCard>>

@@ -28,8 +28,8 @@ interface FlashCardDao {
     @Query("SELECT * from card WHERE category = :category")
     fun getCardByCategory(category: String): Flow<MutableList<FlashCard>>
 
-    @Query("SELECT * FROM card WHERE cardId IN (SELECT cardId FROM card ORDER BY RANDOM() LIMIT 10)")
-    fun getRandomCard():  Flow<List<FlashCard>>
+    @Query("SELECT * FROM card ORDER BY dateTraining DESC LIMIT 10")
+    fun getRandomCard():  Flow<MutableList<FlashCard>>
 
 
     @Query("SELECT * from card ORDER BY recto ASC")

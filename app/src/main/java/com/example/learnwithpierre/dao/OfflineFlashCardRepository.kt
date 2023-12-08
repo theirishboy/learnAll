@@ -14,7 +14,7 @@ class OfflineFlashCardRepository(private val flashCardDao: FlashCardDao) : Flash
 
     override suspend fun updateCard(flashCard: FlashCard) = flashCardDao.update(flashCard)
 
-    override fun getRandomCard(): Flow<List<FlashCard>>  = flashCardDao.getRandomCard()
+    override fun getRandomCard(): Flow<MutableList<FlashCard>>  = flashCardDao.getRandomCard()
 
     override fun getCategories(): Flow<MutableList<String>> = flashCardDao.getCategories()
 

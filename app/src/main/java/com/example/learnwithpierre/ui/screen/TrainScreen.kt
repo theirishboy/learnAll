@@ -65,12 +65,11 @@ fun TrainScreen(
     navigateToHome: () -> Unit,
 
     viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory)
-)
-{
+) {
     val currentQuestion = viewModel.currentQuestion
     val currentProgress = viewModel.trainUiScore.toFloat()
     LocalFocusManager.current
-    if(currentProgress >= 1f){
+    if (currentProgress >= 1f) {
         navigateBack()
     }
     Scaffold(
@@ -80,54 +79,25 @@ fun TrainScreen(
                 canNavigateBack = canNavigateBack,
                 navigateBack = navigateBack,
             )
-        } , content = {innerPadding ->
+        }, content = { innerPadding ->
 
             TrainBody(
                 currentQuestion = currentQuestion,
                 trainUiState = viewModel.trainUiState,
-                onValueChange = {
-                        updatedUiState -> viewModel.updateUiState(updatedUiState) },
+                onValueChange = { updatedUiState -> viewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
-                updateScore =  { flashCard, answerQuality -> viewModel.updateFlashCard(flashCard, answerQuality) },
+                updateScore = { flashCard, answerQuality ->
+                    viewModel.updateFlashCard(
+                        flashCard,
+                        answerQuality
+                    )
+                },
                 nextQuestion = { viewModel.nextQuestion() },
                 modifier = modifier
                     .padding(innerPadding)
             )
         })
-    val popUpControl = viewModel.showAnswerPopUp
-    if (popUpControl != AnswerState.NOTSHOW) {
-        BottomPopUp(modifier = modifier, OnContinue = { viewModel.nextQuestion() }, popUpControl)
-    }
-
-
-
 }
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun BottomPopUp(modifier: Modifier, OnContinue: () -> Unit,answerState: AnswerState) {
-    Popup(
-        alignment = Alignment.BottomCenter,
-        offset = IntOffset(0, 700),
-        onDismissRequest = {},
-        PopupProperties(clippingEnabled = true, usePlatformDefaultWidth = false, focusable = true)
-    ) {
-        Column(
-            modifier
-                .background(md_theme_light_onPrimary)
-                .fillMaxWidth()
-                .fillMaxHeight(0.2F), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(text = "Votre réponse est " + answerState.message)
-            Button(
-                colors = ButtonDefaults.buttonColors(containerColor = answerState.color),
-                onClick = OnContinue
-            ) {
-                Text(text = "Continuer")
-            }
-
-        }
-    }
-}
-
 @Composable
 fun TrainBody(
     currentQuestion: FlashCard,
@@ -149,6 +119,13 @@ fun TrainBody(
     var topTitle by remember {
         mutableStateOf("A quoi correspond  ? :")
     }
+    var contentFirstCard by remember {
+        mutableStateOf("")
+    }
+    var canChangeAnswer by remember {
+        mutableStateOf(true)
+    }
+    contentFirstCard = currentQuestion.recto
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -175,7 +152,7 @@ fun TrainBody(
                 elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp),
                 ) {
                 Text(
-                    text = currentQuestion.recto,
+                    text = contentFirstCard,
                     modifier = Modifier.padding(16.dp),
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -208,6 +185,7 @@ fun TrainBody(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         ),
+                        enabled = canChangeAnswer,
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -215,28 +193,34 @@ fun TrainBody(
 
                 }
             }
-            if(!hasAnswer){
-                Row{
-                    Button(
-                        onClick = {hasAnswer = true},
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Valider")
-                    }
-                }
-            }else{
-                topTitle = "ça correspond à"
-                ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion)
-            }
+
 
 
 
         }
-
+        if(!hasAnswer){
+            topTitle = "Find what match with"
+            canChangeAnswer = true
+            Row{
+                Button(
+                    onClick = {hasAnswer = true},
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Valider")
+                }
+            }
+        }else{
+            topTitle = "ça correspond à"
+            contentFirstCard = currentQuestion.verso
+            canChangeAnswer = false
+            ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion) { hasAnswer = false }
+        }
 
 
 
     }
+
+
 
 
 
@@ -248,11 +232,12 @@ private fun ShowAnswer(
     modifier: Modifier,
     updateScore: (FlashCard, AnswerQuality) -> Unit,
     currentQuestion: FlashCard,
-    nextQuestion: () -> Unit
+    nextQuestion: () -> Unit,
+    onClick: () -> Unit
 ) {
     Row(modifier.fillMaxWidth()) {
         TextButton(
-            onClick = { updateScore(currentQuestion, AnswerQuality.BAD); nextQuestion() },
+            onClick = { updateScore(currentQuestion, AnswerQuality.BAD); onClick(); nextQuestion(); },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -262,7 +247,7 @@ private fun ShowAnswer(
             Text("BAD")
         }
         TextButton(
-            onClick = { updateScore(currentQuestion, AnswerQuality.FAIR); nextQuestion() },
+            onClick = { updateScore(currentQuestion, AnswerQuality.FAIR); onClick(); nextQuestion() },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -273,7 +258,7 @@ private fun ShowAnswer(
             Text("FAIR")
         }
         TextButton(
-            onClick = { updateScore(currentQuestion, AnswerQuality.FINE); nextQuestion() },
+            onClick = { updateScore(currentQuestion, AnswerQuality.FINE);  onClick();nextQuestion() },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -284,7 +269,7 @@ private fun ShowAnswer(
             Text("FINE")
         }
         TextButton(
-            onClick = { updateScore(currentQuestion, AnswerQuality.PERFECT); nextQuestion() },
+            onClick = { updateScore(currentQuestion, AnswerQuality.PERFECT);  onClick(); nextQuestion() },
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)

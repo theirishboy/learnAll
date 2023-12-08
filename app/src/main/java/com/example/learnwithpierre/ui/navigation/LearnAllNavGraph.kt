@@ -31,7 +31,7 @@ fun LearnAllNavHost(
             HomeScreen(
                 modifier = modifier,
                 navigateToAllCards = { navController.navigate(ShowAllDataScreenDestination.route) },
-                navigateToTraining = { navController.navigate(TrainDestination.route)},
+                navigateToTraining = { navController.navigate("${TrainDestination.route}/0")},
                 navigateToOneDeck = {deckId -> navController.navigate("${OneDeckViewDestination.route}/$deckId")}
             )
         }
