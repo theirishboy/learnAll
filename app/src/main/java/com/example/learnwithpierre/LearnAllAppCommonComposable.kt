@@ -17,9 +17,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -96,7 +101,9 @@ fun LearnAllTopAppBar(
             },
         )
     } else {
-        CenterAlignedTopAppBar(title = { Text(title) }, modifier = modifier)
+        CenterAlignedTopAppBar(
+            title = { Text(title, style = MaterialTheme.typography.h6) },
+             modifier = modifier)
     }
 }
 @Composable
@@ -192,6 +199,33 @@ fun LoadingDialog(isShowingDialog: Boolean, dismissOnBackPress: Boolean = false,
         }
     }
 }
+@Composable
+fun NavigationBottomBar(
+    navigateToHomeScreen: () -> Unit,
+    navigateToTraining: () -> Unit,
+    navigateToProfil: () -> Unit
+){
+    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_account_circle_24)
+    val items = listOf("Save","Train","Profil")
+    val selectedItem by remember { mutableStateOf(0) }
+    val navigationScreens = listOf(navigateToHomeScreen,navigateToTraining,navigateToProfil)
+
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = {
+                    androidx.compose.material3.Icon(
+                        painter = painterResource(id = icons[index]),
+                        contentDescription = ""
+                    )
+                },
+                label = { androidx.compose.material3.Text(item) },
+                selected = selectedItem == index,
+                onClick = navigationScreens[index]
+            )
+        }
+    }
+}
 @Preview
 @Composable
 private fun TopAppBarPreview(modifier: Modifier = Modifier){
@@ -220,3 +254,4 @@ fun PreviewSomeDialogContent() {
         }
     )
 }
+

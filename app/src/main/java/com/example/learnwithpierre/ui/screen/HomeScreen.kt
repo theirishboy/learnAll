@@ -27,8 +27,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -56,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.learnwithpierre.NavigationBottomBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.ui.AppViewModelProvider
@@ -72,34 +71,16 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navigateToAllCards: () -> Unit,
+    navigateToProfil: () -> Unit,
     navigateToTraining: () -> Unit,
     navigateToOneDeck: (Long) -> Unit,
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val selectedItem by remember { mutableStateOf(0) }
-    val items = listOf("Save","Train","Profil")
-    val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_account_circle_24)
-    val navigationScreens = listOf({},navigateToTraining,navigateToAllCards)
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     println("Il y a une recomposition")
     Scaffold(
-        bottomBar = {
-            NavigationBar {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = icons[index]),
-                                contentDescription = ""
-                            )
-                        },
-                        label = { Text(item) },
-                        selected = selectedItem == index,
-                        onClick = navigationScreens[index]
-                    )
-                }
-            }
+        bottomBar = {NavigationBottomBar({},navigateToTraining,navigateToProfil)
+
         }
     ) { innerPadding ->
         ShowMyDecksBody(
@@ -251,7 +232,7 @@ fun DisplayAddButton(addNewDeck : (Deck) -> Unit, modifier: Modifier = Modifier)
     Button(onClick = {  showDialog = true }, shape = RoundedCornerShape(15.dp),modifier = modifier
         .fillMaxSize()
     ) {
-        CreateButton(modifier.align(Alignment.CenterVertically)," Create new deck") }
+        ButtonText(modifier.align(Alignment.CenterVertically)," Create new deck") }
     if (showDialog) {
         AddDeckDialog(
             onDismiss = { showDialog = false },
@@ -265,7 +246,7 @@ fun DisplayAddButton(addNewDeck : (Deck) -> Unit, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun CreateButton(modifier: Modifier = Modifier, text : String) {
+fun ButtonText(modifier: Modifier = Modifier, text : String) {
     Row(modifier = modifier){
         Text(text = text)
         Icon(imageVector = Icons.Default.Add, contentDescription = "Add new deck")

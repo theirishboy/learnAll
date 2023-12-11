@@ -102,19 +102,11 @@ fun TrainBody(
         targetValue = progressFactor,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
-    var hasAnswer by remember {
-        mutableStateOf(false)
-    }
-    var topTitle by remember {
-        mutableStateOf("A quoi correspond  ? :")
-    }
-    var contentFirstCard by remember {
-        mutableStateOf("")
-    }
-    var canChangeAnswer by remember {
-        mutableStateOf(true)
-    }
-    contentFirstCard = currentQuestion.recto
+    var hasAnswer by remember { mutableStateOf(false) }
+    var topTitle by remember { mutableStateOf("A quoi correspond  ? :") }
+    var contentFirstCard by remember { mutableStateOf("") }
+    var canChangeAnswer by remember { mutableStateOf(true) }
+    contentFirstCard =  if (currentQuestion.isRecto )currentQuestion.recto else currentQuestion.verso
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -194,13 +186,14 @@ fun TrainBody(
                 Button(
                     onClick = {hasAnswer = true},
                     modifier = Modifier.fillMaxWidth(),
+                    shape =  RoundedCornerShape(15.dp),
                 ) {
                     Text("Valider")
                 }
             }
         }else{
             topTitle = "ça correspond à"
-            contentFirstCard = currentQuestion.verso
+            contentFirstCard = if (currentQuestion.isRecto )currentQuestion.verso else currentQuestion.recto
             canChangeAnswer = false
             ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion) { hasAnswer = false }
         }
@@ -299,11 +292,10 @@ private fun TrainScreenPreview(){
 
     Scaffold(
         topBar = {
-            DeckViewTopAppBar(
+            LearnAllTopAppBar(
                 title = "Train",
                 canNavigateBack = true,
                 navigateBack = {},
-                deleteDeck = {},
             )
         } , content = {innerPadding->
             TrainBody(

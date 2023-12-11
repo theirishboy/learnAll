@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class OneDeckViewModel(val deckRepository: DeckRepository,private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+class OneDeckViewModel(private val deckRepository: DeckRepository, private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val deckId: Long = checkNotNull(savedStateHandle[OneDeckViewDestination.deckIdArg]).toString().toLong()
 

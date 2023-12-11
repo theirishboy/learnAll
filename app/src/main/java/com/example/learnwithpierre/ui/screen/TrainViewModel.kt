@@ -63,15 +63,19 @@ class TrainViewModel(private val flashCardRepository: FlashCardRepository, saved
     }
     fun updateFlashCard(flashCard: FlashCard, answer: AnswerQuality){
         val dateModification = LocalDateTime.now()
-        var dateTraining = flashCard.dateTraining
+
         val score = calculateNewScore(answer, flashCard)
+
+        var dateTraining = flashCard.dateTraining
         dateTraining = calculateNewDateTraining(score, dateTraining)
+
+        val isRecto = !flashCard.isRecto
 
         val newFlashCard = FlashCard(flashCard.cardId,
             flashCard.deckId,
             flashCard.recto,
             flashCard.verso,
-            flashCard.isRecto,
+            isRecto,
             flashCard.category,
             score,
             flashCard.dateCreation,
