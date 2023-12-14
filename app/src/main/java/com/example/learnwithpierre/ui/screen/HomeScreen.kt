@@ -79,7 +79,7 @@ fun HomeScreen(
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     println("Il y a une recomposition")
     Scaffold(
-        bottomBar = {NavigationBottomBar({},navigateToTraining,navigateToProfil)
+        bottomBar = {NavigationBottomBar({},navigateToTraining,navigateToProfil,0)
 
         }
     ) { innerPadding ->
@@ -350,6 +350,14 @@ private fun OneDeckPreview(){
         val deck =  Deck(1,2,"jean","la description est longue", LocalDateTime.now(), LocalDateTime.now())
         val deckWithSize = DeckWithSize(deck,2)
         OneDeck(deckWithSize = deckWithSize)
+    }
+
+}
+@Preview
+@Composable
+private fun MyDecksBodyPreview(){
+    LearnWithPierreTheme {
+        ShowMyDecksBody(Modifier,{},{},{},HomeUiState())
     }
 
 }

@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learnwithpierre.LearnApplication
+import com.example.learnwithpierre.ui.screen.AuthViewModel
 import com.example.learnwithpierre.ui.screen.CardEntryViewModel
 import com.example.learnwithpierre.ui.screen.HomeViewModel
 import com.example.learnwithpierre.ui.screen.OneCardViewModel
@@ -66,6 +67,7 @@ object AppViewModelProvider {
                 this.createSavedStateHandle(),
             )
         }
+
     }
 }
 

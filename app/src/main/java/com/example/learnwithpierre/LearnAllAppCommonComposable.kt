@@ -203,11 +203,12 @@ fun LoadingDialog(isShowingDialog: Boolean, dismissOnBackPress: Boolean = false,
 fun NavigationBottomBar(
     navigateToHomeScreen: () -> Unit,
     navigateToTraining: () -> Unit,
-    navigateToProfil: () -> Unit
+    navigateToProfil: () -> Unit,
+    currentItem : Int
 ){
     val icons = listOf(R.drawable.baseline_download_24,R.drawable.baseline_model_training_24,R.drawable.baseline_account_circle_24)
     val items = listOf("Save","Train","Profil")
-    val selectedItem by remember { mutableStateOf(0) }
+    val selectedItem by remember { mutableStateOf(currentItem) }
     val navigationScreens = listOf(navigateToHomeScreen,navigateToTraining,navigateToProfil)
 
     NavigationBar {

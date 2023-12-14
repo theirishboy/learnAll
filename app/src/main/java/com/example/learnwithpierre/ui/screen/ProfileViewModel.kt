@@ -1,8 +1,6 @@
 package com.example.learnwithpierre.ui.screen
 
 import androidx.lifecycle.ViewModel
-import com.example.learnwithpierre.dao.Deck
-import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
