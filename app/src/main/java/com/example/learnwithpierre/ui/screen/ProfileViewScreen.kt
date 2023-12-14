@@ -142,10 +142,10 @@ private fun ProfileViewScreenBody(
                     if (authState != AuthState.SignedIn) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_login_24),
-                            contentDescription = "Disconnect",
+                            contentDescription = "Connect",
                             tint = Color.White
                         )
-                        Text(modifier = Modifier, text = "Connection")
+                        Text(modifier = Modifier, text = "Connect")
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Close,

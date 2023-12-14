@@ -81,6 +81,7 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
         // 1.
         val googleCredential = GoogleAuthProvider
             .getCredential(credential.googleIdToken, null)
+        Log.d("GOOGLE Sign", "google credential $googleCredential")
         // 2.
         return authenticateUser(googleCredential)
     }
