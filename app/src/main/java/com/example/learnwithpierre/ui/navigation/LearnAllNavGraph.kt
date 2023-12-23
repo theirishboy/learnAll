@@ -1,10 +1,12 @@
 package com.example.learnwithpierre.ui.navigation
 
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.learnwithpierre.ui.screen.AuthViewModel
 import com.example.learnwithpierre.ui.screen.HomeDestination
 import com.example.learnwithpierre.ui.screen.HomeScreen
 import com.example.learnwithpierre.ui.screen.OneCardViewDestination
@@ -17,6 +19,7 @@ import com.example.learnwithpierre.ui.screen.ShowAllCardScreen
 import com.example.learnwithpierre.ui.screen.ShowAllDataScreenDestination
 import com.example.learnwithpierre.ui.screen.TrainDestination
 import com.example.learnwithpierre.ui.screen.TrainScreen
+import dagger.hilt.android.AndroidEntryPoint
 
 
 @Composable
@@ -24,9 +27,10 @@ fun LearnAllNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = ProfileViewDestination.route,
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {

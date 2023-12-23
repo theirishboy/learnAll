@@ -16,6 +16,7 @@ package com.example.learnwithpierre
  * limitations under the License.
  */
 import android.content.Context
+import androidx.activity.viewModels
 import com.example.learnwithpierre.dao.CardDatabase
 import com.example.learnwithpierre.dao.FlashCardRepository
 import com.example.learnwithpierre.dao.DeckRepository
@@ -23,6 +24,9 @@ import com.example.learnwithpierre.dao.DeckRepositoryOffline
 import com.example.learnwithpierre.dao.OfflineFlashCardRepository
 import com.example.learnwithpierre.dao.UserRepository
 import com.example.learnwithpierre.dao.UserRepositoryOffline
+import com.example.learnwithpierre.model.AuthRepository
+import com.example.learnwithpierre.model.AuthRepositoryImpl
+import com.example.learnwithpierre.ui.screen.AuthViewModel
 
 /**
  * App container for Dependency injection.

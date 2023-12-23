@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,19 +51,37 @@ object ProfileViewDestination : NavigationDestination {
 
 
 @Composable
-fun ProfileViewScreen(authViewModel:AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun ProfileViewScreen(authViewModel:AuthViewModel = viewModel(factory = AppViewModelProvider.Factory),){
     var name = ""
     var email = ""
     val authState = DataProvider.authState
+    val currentUser = authViewModel.currentUser.collectAsState().value
+    val openLoginDialog = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = { LearnAllTopAppBar(title = "Profil", canNavigateBack = false) },
-        bottomBar = { NavigationBottomBar({},{},{},2) }
+    DataProvider.updateAuthState(currentUser)
+    if (DataProvider.authState != AuthState.SignedOut) {
+        if (openLoginDialog.value){
+            Dialog(
+                onDismissRequest = { openLoginDialog.value = false },
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false
+                )
+            ) {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    LoginScreen(authViewModel, openLoginDialog)
+                }
+            }
+        }    } else {
+        LoginScreen(authViewModel)
+        Scaffold(
+            topBar = { LearnAllTopAppBar(title = "Profil", canNavigateBack = false) },
+            bottomBar = { NavigationBottomBar({}, {}, {}, 2) }
 
-    ) {
-        ProfileViewScreenBody(it, authState, authViewModel )
+        ) {
+            ProfileViewScreenBody(it, authState, authViewModel, openLoginDialog = {openLoginDialog.value = true})
 
         }
+    }
 
 
 
@@ -73,9 +92,9 @@ fun ProfileViewScreen(authViewModel:AuthViewModel = viewModel(factory = AppViewM
 private fun ProfileViewScreenBody(
     it: PaddingValues,
     authState: AuthState,
-    authViewModel: AuthViewModel =  viewModel(factory = AppViewModelProvider.Factory)
+    authViewModel: AuthViewModel =  viewModel(factory = AppViewModelProvider.Factory),
+    openLoginDialog: () -> Unit
 ) {
-    val openLoginDialog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -129,7 +148,7 @@ private fun ProfileViewScreenBody(
         ) {
             Button(
                 onClick = {
-                    if (authState != AuthState.SignedIn) openLoginDialog.value = true
+                    if (authState != AuthState.SignedIn) openLoginDialog()
                     else authViewModel.signOut()
                 },
                 shape = RoundedCornerShape(15.dp),
@@ -158,18 +177,7 @@ private fun ProfileViewScreenBody(
                 }
             }
         }
-        if (openLoginDialog.value){
-            Dialog(
-                onDismissRequest = { openLoginDialog.value = false },
-                properties = DialogProperties(
-                    usePlatformDefaultWidth = false
-                )
-            ) {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    LoginScreen(authViewModel, openLoginDialog)
-                }
-            }
-        }
+
 
 
 
@@ -180,6 +188,6 @@ private fun ProfileViewScreenBody(
 @Composable
 fun ProfilViewScreenPreview(){
     LearnWithPierreTheme {
-        ProfileViewScreenBody(PaddingValues(5.dp), authState = AuthState.SignedOut)
+        ProfileViewScreenBody(PaddingValues(5.dp), authState = AuthState.SignedOut, openLoginDialog = {} )
     }
 }
