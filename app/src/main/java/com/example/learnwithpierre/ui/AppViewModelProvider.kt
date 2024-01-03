@@ -41,7 +41,6 @@ import javax.inject.Inject
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
-@AndroidEntryPoint
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {

@@ -1,8 +1,8 @@
 package com.example.learnwithpierre.ui.navigation
 
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +19,6 @@ import com.example.learnwithpierre.ui.screen.ShowAllCardScreen
 import com.example.learnwithpierre.ui.screen.ShowAllDataScreenDestination
 import com.example.learnwithpierre.ui.screen.TrainDestination
 import com.example.learnwithpierre.ui.screen.TrainScreen
-import dagger.hilt.android.AndroidEntryPoint
 
 
 @Composable
@@ -69,8 +68,11 @@ fun LearnAllNavHost(
             )
         }
         composable(route = ProfileViewDestination.route){
-            ProfileViewScreen()
-
+        // Creates a ViewModel from the current BackStackEntry
+            val viewModel = hiltViewModel<AuthViewModel>()
+            ProfileViewScreen(viewModel,
+                navigateToHomeScreen = {navController.navigate(HomeDestination.route)},
+                navigateToTraining = { navController.navigate("${TrainDestination.route}/0")},)
         }
     }
 

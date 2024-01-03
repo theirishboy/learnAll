@@ -39,22 +39,6 @@ class MainActivity : ComponentActivity() {
                 LearnAllApp()
             }
         }
-
-//        setContent {
-//            LearnWithPierreTheme {
-//
-//                val currentUser = authViewModel.currentUser.collectAsState().value
-//                // 3.
-//                DataProvider.updateAuthState(currentUser)
-//                // 4.
-//                if (DataProvider.authState != AuthState.SignedOut) {
-//
-//                    ProfileViewScreen()
-//                } else {
-//                    LoginScreen(authViewModel)
-//                }
-//            }
-//        }
     }
 }
 

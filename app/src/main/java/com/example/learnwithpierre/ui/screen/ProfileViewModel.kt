@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-@HiltViewModel
 class ProfilViewModel(userRepository: UserRepository) : ViewModel() {
     private val _profilUiState = MutableStateFlow(ProfilUiState.Success("jean","jean"))
     val profilUiState: StateFlow<ProfilUiState> = _profilUiState.asStateFlow()

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 typealias FirebaseSignInResponse = Response<AuthResult>
 typealias SignOutResponse = Response<Boolean>
-typealias AuthStateResponse = StateFlow<FirebaseUser?>
+typealias   AuthStateResponse = StateFlow<FirebaseUser?>
 
 sealed class Response<out T> {
     object Loading: Response<Nothing>()
