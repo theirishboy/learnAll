@@ -17,26 +17,9 @@ package com.example.learnwithpierre.ui
  */
 
 
-import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.learnwithpierre.LearnApplication
-import com.example.learnwithpierre.model.AuthModule
-import com.example.learnwithpierre.model.AuthRepositoryImpl
-import com.example.learnwithpierre.ui.screen.AuthViewModel
-import com.example.learnwithpierre.ui.screen.CardEntryViewModel
-import com.example.learnwithpierre.ui.screen.HomeViewModel
-import com.example.learnwithpierre.ui.screen.OneCardViewModel
-import com.example.learnwithpierre.ui.screen.OneDeckViewModel
-import com.example.learnwithpierre.ui.screen.OneDeckViewScreen
-import com.example.learnwithpierre.ui.screen.ShowAllCardsScreenViewModel
-import com.example.learnwithpierre.ui.screen.TrainViewModel
-import com.google.android.gms.auth.api.identity.SignInClient
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app

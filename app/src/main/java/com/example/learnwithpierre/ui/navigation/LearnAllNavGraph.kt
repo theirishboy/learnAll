@@ -20,9 +20,6 @@ import com.example.learnwithpierre.ui.screen.OneDeckViewModel
 import com.example.learnwithpierre.ui.screen.OneDeckViewScreen
 import com.example.learnwithpierre.ui.screen.ProfileViewDestination
 import com.example.learnwithpierre.ui.screen.ProfileViewScreen
-import com.example.learnwithpierre.ui.screen.ShowAllCardScreen
-import com.example.learnwithpierre.ui.screen.ShowAllCardsScreenViewModel
-import com.example.learnwithpierre.ui.screen.ShowAllDataScreenDestination
 import com.example.learnwithpierre.ui.screen.TrainDestination
 import com.example.learnwithpierre.ui.screen.TrainScreen
 import com.example.learnwithpierre.ui.screen.TrainViewModel
@@ -61,15 +58,7 @@ fun LearnAllNavHost(
 
             )
         }
-        composable(route = ShowAllDataScreenDestination.route) {
-            val showAllCardsScreenViewModel = hiltViewModel<ShowAllCardsScreenViewModel>()
 
-            ShowAllCardScreen(
-                navigateToTraining = { navController.navigate(TrainDestination.route)},
-                navigateToHomeScreen = {navController.navigate(HomeDestination.route)},
-                viewModel = showAllCardsScreenViewModel
-            )
-        }
         composable(route = OneDeckViewDestination.routeWithArgs){
             val oneDeckViewModel = hiltViewModel<OneDeckViewModel>()
             OneDeckViewScreen(navigateBack = {navController.popBackStack(HomeDestination.route, inclusive = false)
