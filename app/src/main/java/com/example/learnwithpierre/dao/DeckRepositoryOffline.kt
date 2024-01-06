@@ -1,8 +1,9 @@
 package com.example.learnwithpierre.dao
 
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class DeckRepositoryOffline(private val deckDao: DeckDao): DeckRepository {
+class DeckRepositoryOffline @Inject constructor(private val deckDao: DeckDao): DeckRepository {
     override suspend fun getDeck(deckId: Long): Deck = deckDao.getDeck(deckId)
     override suspend fun insertDeck(deck: Deck) = deckDao.insertDeck(deck)
     override suspend fun updateDeck(deck: Deck) = deckDao.updateDeck(deck)

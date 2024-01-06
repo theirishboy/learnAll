@@ -61,7 +61,6 @@ import com.example.learnwithpierre.R
 import com.example.learnwithpierre.TopAppBarAddCardScreen
 import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.FlashCard
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 
 object OneDeckViewDestination : NavigationDestination {
@@ -76,7 +75,7 @@ fun OneDeckViewScreen(
     navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
     navigateToModifyOneCard: (Long) -> Unit,
-    oneDeckViewModel: OneDeckViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    oneDeckViewModel: OneDeckViewModel = viewModel(),
     navigateBack: () -> Unit,
     navigateToTrainView: (Long) -> Unit,
 ) {

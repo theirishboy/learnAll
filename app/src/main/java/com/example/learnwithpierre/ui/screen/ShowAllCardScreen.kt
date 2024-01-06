@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.FlashCard
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -49,7 +48,7 @@ object ShowAllDataScreenDestination : NavigationDestination {
 fun ShowAllCardScreen(
     navigateToTraining: () -> Unit,
     navigateToHomeScreen: () -> Unit,
-    viewModel: ShowAllCardsScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: ShowAllCardsScreenViewModel = viewModel(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 
 

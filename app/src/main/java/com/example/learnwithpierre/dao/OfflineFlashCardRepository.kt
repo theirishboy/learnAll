@@ -1,8 +1,9 @@
 package com.example.learnwithpierre.dao
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class OfflineFlashCardRepository(private val flashCardDao: FlashCardDao) : FlashCardRepository {
+class OfflineFlashCardRepository @Inject constructor(private val flashCardDao: FlashCardDao) : FlashCardRepository {
 
     override fun getAllCardStream(): Flow<MutableList<FlashCard>> = flashCardDao.getAllCard()
 

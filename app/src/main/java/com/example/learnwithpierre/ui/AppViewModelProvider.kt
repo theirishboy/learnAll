@@ -42,44 +42,6 @@ import javax.inject.Inject
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
 
-object AppViewModelProvider {
-    val Factory = viewModelFactory {
-        // Initializer for HomeVewiewModel
-        initializer {
-            HomeViewModel(learnApplication().container.decksRepository,
-                learnApplication().container.usersRepository)
-        }
-        initializer {
-           CardEntryViewModel(learnApplication().container.cardsRepository,
-               learnApplication().container.usersRepository,
-               learnApplication().container.decksRepository)
-        }
-        initializer {
-           TrainViewModel(learnApplication().container.cardsRepository, this.createSavedStateHandle())
-        }
-        initializer {
-            ShowAllCardsScreenViewModel(learnApplication().container.cardsRepository)
-        }
-        initializer {
-            OneDeckViewModel(
-                learnApplication().container.decksRepository,
-                learnApplication().container.cardsRepository,
-                this.createSavedStateHandle(),
-            )
-        }
-        initializer {
-            OneCardViewModel(
-                learnApplication().container.cardsRepository,
-                this.createSavedStateHandle(),
-            )
-        }
 
-    }
-}
-
-/**
- * Extension function to queries for [Application] object and returns an instance of
- * [learnApplication].
- */
 fun CreationExtras.learnApplication(): LearnApplication =
     (this[AndroidViewModelFactory.APPLICATION_KEY] as LearnApplication)

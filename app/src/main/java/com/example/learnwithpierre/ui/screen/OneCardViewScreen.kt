@@ -29,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.TopAppBarAddCardScreen
 import com.example.learnwithpierre.dao.FlashCard
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 
 object OneCardViewDestination : NavigationDestination {
@@ -42,7 +41,7 @@ object OneCardViewDestination : NavigationDestination {
 @Composable
 fun OneCardViewScreen(
     dismissOnBackPress: () -> Unit,
-    oneCardViewModel: OneCardViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    oneCardViewModel: OneCardViewModel = viewModel()
 ) {
     val oneCardUiState by oneCardViewModel.oneCardUiState.collectAsState()
     when (val state = oneCardUiState) {

@@ -11,14 +11,17 @@ import com.example.learnwithpierre.ui.theme.md_theme_light_primary
 import com.example.learnwithpierre.ui.theme.md_theme_light_tertiary
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.FlashCardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class TrainViewModel(private val flashCardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+@HiltViewModel
+class TrainViewModel @Inject constructor(private val flashCardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val deckId: Long = checkNotNull(savedStateHandle[TrainDestination.deckIdArg]).toString().toLong()
     var trainUiState by mutableStateOf(TrainUiState(answer = ""))

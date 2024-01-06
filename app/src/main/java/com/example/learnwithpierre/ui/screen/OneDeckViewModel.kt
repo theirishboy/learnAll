@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.Deck
 import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.FlashCard
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class OneDeckViewModel(private val deckRepository: DeckRepository, private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+@HiltViewModel
+class OneDeckViewModel @Inject constructor(private val deckRepository: DeckRepository, private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val deckId: Long = checkNotNull(savedStateHandle[OneDeckViewDestination.deckIdArg]).toString().toLong()
 

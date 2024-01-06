@@ -13,6 +13,7 @@ import com.example.learnwithpierre.dao.UserRepository
 import com.example.learnwithpierre.ui.manageData.CardUiState
 import com.example.learnwithpierre.ui.manageData.isValid
 import com.example.learnwithpierre.ui.manageData.toData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,13 +21,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
+import javax.inject.Inject
 
 /**
  * View Model to validate and insert data in the Room database.
  */
-class CardEntryViewModel(private val flashCardRepository: FlashCardRepository,
-                         private val userRepository: UserRepository,
-                         private val deckRepository: DeckRepository
+@HiltViewModel
+class CardEntryViewModel  @Inject constructor(private val flashCardRepository: FlashCardRepository,
+                                              private val userRepository: UserRepository,
+                                              private val deckRepository: DeckRepository
 ) : ViewModel() {
 
     /**

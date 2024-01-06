@@ -19,10 +19,12 @@ class AuthViewModel @Inject constructor(
     val oneTapClient: SignInClient
 ): ViewModel() {
     // 3.
-    val currentUser = getAuthState()
+    var currentUser = getAuthState()
     init {
         // 2.
-        getAuthState()
+        CoroutineScope(Dispatchers.IO).launch {
+            getAuthState()
+        }
     }
 
     // 1.

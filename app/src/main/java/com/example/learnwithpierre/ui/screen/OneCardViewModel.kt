@@ -5,13 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.FlashCardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class OneCardViewModel(private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
+@HiltViewModel
+class OneCardViewModel @Inject constructor(private val cardRepository: FlashCardRepository, savedStateHandle: SavedStateHandle) : ViewModel() {
     private val cardId: Long = checkNotNull(savedStateHandle[OneCardViewDestination.cardIdArg]).toString().toLong()
 
     private val _oneCardUiState = MutableStateFlow<OneCardUiState>(OneCardUiState.Loading("Loading"))

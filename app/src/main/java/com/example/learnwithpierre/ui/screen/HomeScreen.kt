@@ -57,7 +57,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.NavigationBottomBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.Deck
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
 import java.time.LocalDateTime
@@ -74,7 +73,7 @@ fun HomeScreen(
     navigateToProfil: () -> Unit,
     navigateToTraining: () -> Unit,
     navigateToOneDeck: (Long) -> Unit,
-    homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    homeViewModel: HomeViewModel = viewModel()
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     println("Il y a une recomposition")

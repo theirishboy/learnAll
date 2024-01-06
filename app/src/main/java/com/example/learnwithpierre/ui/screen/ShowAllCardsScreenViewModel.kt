@@ -7,11 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.FlashCardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-class ShowAllCardsScreenViewModel(private val flashCardRepository: FlashCardRepository) : ViewModel() {
+import javax.inject.Inject
+
+@HiltViewModel
+class ShowAllCardsScreenViewModel @Inject constructor(private val flashCardRepository: FlashCardRepository) : ViewModel() {
     var showAllCardsUiState by mutableStateOf(ShowAllCardsUiState())
         private set
 

@@ -7,6 +7,7 @@ import com.example.learnwithpierre.dao.DeckRepository
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.User
 import com.example.learnwithpierre.dao.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class HomeViewModel(private val deckRepository: DeckRepository, private val userRepository: UserRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val deckRepository: DeckRepository, private val userRepository: UserRepository) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
 

@@ -21,36 +21,36 @@ import org.junit.Before
 
 class TestDataRepositoryFlash : FlashCardRepository {
     private val testData: List<FlashCard> = listOf(
-        FlashCard(1, "demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
-        FlashCard(2, "demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
+        FlashCard(1, 1,"demo1", "vide1", false, "animal1", 1, LocalDateTime.now()),
+        FlashCard(2, 1,"demo2", "vide2", false, "animal2", 2, LocalDateTime.now())
     )
 
-    override fun getAllDataStream(): Flow<MutableList<FlashCard>> {
+    fun getAllDataStream(): Flow<MutableList<FlashCard>> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getDataStream(id: Int): Flow<FlashCard?> {
+    fun getDataStream(id: Int): Flow<FlashCard?> {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun insertData(flashCard: FlashCard) {
+    suspend fun insertData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun deleteData(flashCard: FlashCard) {
+    suspend fun deleteData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override suspend fun updateData(flashCard: FlashCard) {
+    suspend fun updateData(flashCard: FlashCard) {
         // Implement this method if needed for your tests
         TODO()
     }
 
-    override fun getRandomData(): Flow<List<FlashCard>> {
+    fun getRandomData(): Flow<List<FlashCard>> {
         return flowOf(testData)
     }
 
@@ -62,8 +62,8 @@ class TestDataRepositoryFlash : FlashCardRepository {
 class TrainViewModelTest {
     private var learnApplication = LearnApplication()
 
-    private var item1 = FlashCard(1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
-    private var item2 = FlashCard(2, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
+    private var item1 = FlashCard(1,1, "Apples", "Pear", false,"fruit",1, LocalDateTime.now())
+    private var item2 = FlashCard(2,1, "Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
     private val testDispatcher = TestCoroutineDispatcher()
     private val testScope = TestCoroutineScope(testDispatcher)
@@ -105,15 +105,15 @@ class TrainViewModelTest {
     @Test
     fun trainViewModel_PopUpState_CompareData_GoodAnswer() = runBlocking {
         val dataRepository = TestDataRepositoryFlash()
-        val viewModel = TrainViewModel(dataRepository)
+        val trainViewModel = TrainViewModel(dataRepository,this)
 
-        val trainUiState = viewModel.trainUiState
+        val trainUiState = trainViewModel.trainUiState
         trainUiState.answer = "Good answer"
         trainUiState.flashCardList.last().verso = "Good answer"
-        val showAnswerState = viewModel.showAnswerPopUp
-        viewModel.checkCards()
-        assertEquals(AnswerState.TRUE, viewModel.showAnswerPopUp)
-        assertNotEquals(showAnswerState, viewModel.showAnswerPopUp)
+        val showAnswerState = trainViewModel.showAnswerPopUp
+        trainViewModel.checkCards()
+        assertEquals(AnswerState.TRUE, trainViewModel.showAnswerPopUp)
+        assertNotEquals(showAnswerState, trainViewModel.showAnswerPopUp)
     }
     @Test
     fun trainViewModel_PopUpState_CompareData_BadAnswer() = runBlocking {

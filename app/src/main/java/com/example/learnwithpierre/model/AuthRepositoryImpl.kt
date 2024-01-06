@@ -27,13 +27,10 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
 ): AuthRepository {
     override fun getAuthState(viewModelScope: CoroutineScope) = callbackFlow {
         val authStateListener = AuthStateListener { auth ->
-            // 4.
             trySend(auth.currentUser)
             Log.i(TAG, "User: ${auth.currentUser?.uid ?: "Not authenticated"}")
         }
-        // 2.
         auth.addAuthStateListener(authStateListener)
-        // 3.
         awaitClose {
             auth.removeAuthStateListener(authStateListener)
         }
@@ -55,6 +52,7 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
     override suspend fun signOut(): SignOutResponse {
         return try {
             auth.signOut()
+            DataProvider.updateAuthState(null)
             Response.Success(true)
         }
         catch (e: java.lang.Exception) {
@@ -96,7 +94,6 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
         }
     }
 
-    // 2.
     private suspend fun authSignIn(credential: AuthCredential): FirebaseSignInResponse {
         return try {
             val authResult = auth.signInWithCredential(credential).await()

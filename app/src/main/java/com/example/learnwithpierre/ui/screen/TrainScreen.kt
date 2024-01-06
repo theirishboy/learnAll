@@ -39,7 +39,6 @@ import com.example.learnwithpierre.DeckViewTopAppBar
 import com.example.learnwithpierre.LearnAllTopAppBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.dao.FlashCard
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import java.time.LocalDateTime
 
@@ -54,10 +53,10 @@ fun TrainScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
-    viewModel: TrainViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    trainViewModel: TrainViewModel = viewModel()
 ) {
-    val currentQuestion = viewModel.currentQuestion
-    val currentProgress = viewModel.trainUiScore.toFloat()
+    val currentQuestion = trainViewModel.currentQuestion
+    val currentProgress = trainViewModel.trainUiScore.toFloat()
     if (currentProgress >= 1f) {
         navigateBack()
     }
@@ -72,16 +71,16 @@ fun TrainScreen(
 
             TrainBody(
                 currentQuestion = currentQuestion,
-                trainUiState = viewModel.trainUiState,
-                onValueChange = { updatedUiState -> viewModel.updateUiState(updatedUiState) },
+                trainUiState = trainViewModel.trainUiState,
+                onValueChange = { updatedUiState -> trainViewModel.updateUiState(updatedUiState) },
                 progressFactor = currentProgress,
                 updateScore = { flashCard, answerQuality ->
-                    viewModel.updateFlashCard(
+                    trainViewModel.updateFlashCard(
                         flashCard,
                         answerQuality
                     )
                 },
-                nextQuestion = { viewModel.nextQuestion() },
+                nextQuestion = { trainViewModel.nextQuestion() },
                 modifier = modifier
                     .padding(innerPadding)
             )

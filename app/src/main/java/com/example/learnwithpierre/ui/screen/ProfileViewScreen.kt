@@ -39,9 +39,9 @@ import com.example.learnwithpierre.NavigationBottomBar
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.model.AuthState
 import com.example.learnwithpierre.model.DataProvider
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
+import kotlinx.coroutines.Job
 
 object ProfileViewDestination : NavigationDestination {
     override val route = "trainScreen"
@@ -73,12 +73,8 @@ fun ProfileViewScreen(authViewModel: AuthViewModel = viewModel(),
         // FirebaseUser.getIdToken() instead.
         val uid = it.uid
     }
-
-    DataProvider.updateAuthState(currentUser)
-    Log.e("","We reach the Screen")
-
     if (DataProvider.authState != AuthState.SignedOut) {
-        Log.e("","We reach the Screen")
+        Log.e("","We reach the ProfilScreen")
         Scaffold(
             topBar = { LearnAllTopAppBar(title = "Profil", canNavigateBack = false) },
             bottomBar = { NavigationBottomBar(navigateToHomeScreen, navigateToTraining, {}, 2) }
@@ -115,7 +111,7 @@ fun ProfileViewScreen(authViewModel: AuthViewModel = viewModel(),
 private fun ProfileViewScreenBody(
     it: PaddingValues,
     authState: AuthState,
-    authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    authViewModel: AuthViewModel,
     openLoginDialog: () -> Unit,
     name: String?,
     email: String?
@@ -129,13 +125,15 @@ private fun ProfileViewScreenBody(
     ) {
         Spacer(modifier = Modifier.padding(25.dp))
         if (authState != AuthState.SignedIn) {
+            var info = ""
+            if (authState == AuthState.Authenticated) info = "You're sign in anonymously"
         Row(
             modifier = Modifier
                 .padding(5.dp)
                 .fillMaxWidth()
         ) {
                 Text(
-                    text = "Please connect to show this page",
+                    text = "Please connect to show this page $info",
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.labelLarge,
                     fontSize = 15.sp,
@@ -177,7 +175,6 @@ private fun ProfileViewScreenBody(
                 .padding(10.dp), verticalAlignment = Alignment.Bottom
         ) {
             Button(
-
                 onClick = {
                     if (authState != AuthState.SignedIn) openLoginDialog()
                     else authViewModel.signOut()
@@ -220,12 +217,12 @@ private fun ProfileViewScreenBody(
 @Composable
 fun ProfilViewScreenPreview(){
     LearnWithPierreTheme {
-        ProfileViewScreenBody(
-            PaddingValues(5.dp),
-            authState = AuthState.SignedOut,
-            openLoginDialog = {},
-            name = "name",
-            email = "email",
-        )
+//        ProfileViewScreenBody(
+//            PaddingValues(5.dp),
+//            authState = AuthState.SignedOut,
+//            openLoginDialog = {},
+//            name = "name",
+//            email = "email",
+//        )
     }
 }

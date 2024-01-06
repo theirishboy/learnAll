@@ -50,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
-import com.example.learnwithpierre.ui.AppViewModelProvider
 import com.example.learnwithpierre.ui.manageData.CardUiState
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
@@ -68,7 +67,7 @@ fun CardEntryScreen(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navigateToAllCards: () -> Unit,
     navigateToTraining: () -> Unit,
-    viewModel: CardEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: CardEntryViewModel = viewModel()
 ) {
     val selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Save","Train","Data")
