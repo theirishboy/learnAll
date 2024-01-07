@@ -40,7 +40,7 @@ Technologies Used:
  
  <table>
   <tr>
-    <td></td> Profile Screen with google Sign In</td>
+    <td> Profile Screen with google Sign In</td>
      <td>Deck creation and visualization</td>
   </tr>
   <tr>
