@@ -23,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnwithpierre.R
 import com.example.learnwithpierre.TopAppBarAddCardScreen
@@ -78,8 +76,7 @@ private fun OneCardScreen(
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-
-            topBar = { TopAppBarAddCardScreen(dismissOnBackPress, onSavePress = updateCardFunc, title = "a definir") }
+            topBar = { TopAppBarAddCardScreen(dismissOnBackPress, onSavePress = updateCardFunc, title = "Modify Card") }
         ) {
 
                 paddingValue ->

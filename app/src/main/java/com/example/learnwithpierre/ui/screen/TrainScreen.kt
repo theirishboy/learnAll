@@ -102,7 +102,7 @@ fun TrainBody(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     )
     var hasAnswer by remember { mutableStateOf(false) }
-    var topTitle by remember { mutableStateOf("A quoi correspond  ? :") }
+    var topTitle by remember { mutableStateOf("what does this match witch ?") }
     var contentFirstCard by remember { mutableStateOf("") }
     var canChangeAnswer by remember { mutableStateOf(true) }
     contentFirstCard =  if (currentQuestion.isRecto )currentQuestion.recto else currentQuestion.verso
@@ -143,7 +143,7 @@ fun TrainBody(
             }
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(text = " Votre réponse :",
+            Text(text = "What are your thoughts ? :",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold))
@@ -187,11 +187,11 @@ fun TrainBody(
                     modifier = Modifier.fillMaxWidth(),
                     shape =  RoundedCornerShape(15.dp),
                 ) {
-                    Text("Valider")
+                    Text("Validate")
                 }
             }
         }else{
-            topTitle = "ça correspond à"
+            topTitle = "It match with"
             contentFirstCard = if (currentQuestion.isRecto )currentQuestion.verso else currentQuestion.recto
             canChangeAnswer = false
             ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion) { hasAnswer = false }

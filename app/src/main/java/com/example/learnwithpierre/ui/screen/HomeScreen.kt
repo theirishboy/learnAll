@@ -248,7 +248,7 @@ fun DisplayAddButton(addNewDeck : (Deck) -> Unit, modifier: Modifier = Modifier)
 fun ButtonText(modifier: Modifier = Modifier, text : String) {
     Row(modifier = modifier){
         Text(text = text)
-        Icon(imageVector = Icons.Default.Add, contentDescription = "Add new deck")
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Create new deck")
     }
 
 }
@@ -307,7 +307,7 @@ fun AddDeckDialog(onDismiss: () -> Unit, onConfirm: (String,String) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    "Add New Deck",
+                    "Create New Deck",
                 )
                 OutlinedTextField(
                     value = deckName,
