@@ -2,8 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/LearnAllApp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/LearnEveryThing" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/LearnWithPierre" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/LearnAllApp" vcs="" />
+    <mapping directory="$PROJECT_DIR$/LearnEveryThing" vcs="" />
+    <mapping directory="$PROJECT_DIR$/LearnWithPierre" vcs="" />
   </component>
 </project>

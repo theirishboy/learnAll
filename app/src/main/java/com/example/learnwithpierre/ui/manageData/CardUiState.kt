@@ -1,42 +1,47 @@
 package com.example.learnwithpierre.ui.manageData
 
-import com.example.learnwithpierre.dao.Data
-import java.util.Date
+import com.example.learnwithpierre.dao.FlashCard
+import java.time.LocalDateTime
 
-data class DataUiState(
-    val id: Int = 0,
+data class CardUiState(
+    val cardId: Long = 0,
+    val deckId: Long = 1,
     val recto: String = "",
     val verso: String = "",
     val category: String = "",
     val isRecto: Boolean = false,
     val score: Int = 0,
-    val date: Date = Date("11/05/2022"),
+    val date: LocalDateTime = LocalDateTime.now(),
+    val dateTraining: LocalDateTime = LocalDateTime.now(),
     val actionEnabled: Boolean = false
 
 )
 
 /**
- * Extension function to convert [DataUiState] to [Item]. If the value of [DataUiState.price] is
+ * Extension function to convert [CardUiState] to [Item]. If the value of [CardUiState.price] is
  * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
- * [DataUiState] is not a valid [Int], then the quantity will be set to 0
+ * [CardUiState] is not a valid [Int], then the quantity will be set to 0
  */
-fun DataUiState.toData(): Data = Data(
-    id = id,
+fun CardUiState.toData(): FlashCard = FlashCard(
+    cardId = cardId,
+    deckId = deckId,
     recto = recto,
     verso = verso,
     category = category,
     isRecto = isRecto,
     score = score,
     dateModification = date,
+    dateTraining = dateTraining
 
 )
 
 /**
- * Extension function to convert [Item] to [DataUiState]
+ * Extension function to convert [Item] to [CardUiState]
  */
 //add a function the data type to allow every member of type data to be change to DataUiState.
-fun Data.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiState(
-    id = id,
+fun FlashCard.toDataUiState(actionEnabled: Boolean = false): CardUiState = CardUiState(
+    cardId = cardId,
+    deckId = deckId,
     recto = recto,
     verso = verso,
     category = category,
@@ -47,6 +52,6 @@ fun Data.toDataUiState(actionEnabled: Boolean = false): DataUiState = DataUiStat
 )
 
 //Check that nothing is missing
-fun DataUiState.isValid() : Boolean {
+fun CardUiState.isValid() : Boolean {
     return recto.isNotBlank() && verso.isNotBlank() && category.isNotBlank()
 }
