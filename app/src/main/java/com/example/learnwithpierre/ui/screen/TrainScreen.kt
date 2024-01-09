@@ -103,6 +103,7 @@ fun TrainBody(
     )
     var hasAnswer by remember { mutableStateOf(false) }
     var topTitle by remember { mutableStateOf("what does this match witch ?") }
+    var midInformation by remember { mutableStateOf("What are your thoughts ? :") }
     var contentFirstCard by remember { mutableStateOf("") }
     var canChangeAnswer by remember { mutableStateOf(true) }
     contentFirstCard =  if (currentQuestion.isRecto )currentQuestion.recto else currentQuestion.verso
@@ -180,6 +181,7 @@ fun TrainBody(
         }
         if(!hasAnswer){
             topTitle = "Find what match with"
+            midInformation = "What are your thoughts ?"
             canChangeAnswer = true
             Row{
                 Button(
@@ -192,6 +194,7 @@ fun TrainBody(
             }
         }else{
             topTitle = "It match with"
+            midInformation = "Evaluate your answer !"
             contentFirstCard = if (currentQuestion.isRecto )currentQuestion.verso else currentQuestion.recto
             canChangeAnswer = false
             ShowAnswer(modifier, updateScore, currentQuestion, nextQuestion) { hasAnswer = false }

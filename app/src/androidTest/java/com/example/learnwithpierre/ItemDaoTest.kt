@@ -7,6 +7,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.learnwithpierre.dao.FlashCard
 import com.example.learnwithpierre.dao.FlashCardDao
 import com.example.learnwithpierre.dao.CardDatabase
+import com.example.learnwithpierre.dao.Deck
+import com.example.learnwithpierre.dao.DeckDao
+import com.example.learnwithpierre.dao.User
+import com.example.learnwithpierre.dao.UserDao
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.flow.first
@@ -22,7 +26,10 @@ import java.time.LocalDateTime
 class ItemDaoTest {
 
     private lateinit var flashCardDao: FlashCardDao
-    private lateinit var carddatabase: CardDatabase
+    private lateinit var userDao: UserDao
+    private lateinit var deckDao: DeckDao
+    private lateinit var cardDao: FlashCardDao
+    private lateinit var cardDatabase: CardDatabase
     private var item1 = FlashCard(1, 1,"Apples", "Pear", false,"fruit",1, LocalDateTime.now())
     private var item2 = FlashCard(2, 1,"Bananas", "Peach", false,"fruit",1, LocalDateTime.now())
 
@@ -31,21 +38,31 @@ class ItemDaoTest {
         val context: Context = ApplicationProvider.getApplicationContext()
         // Using an in-memory database because the information stored here disappears when the
         // process is killed.
-        carddatabase = Room.inMemoryDatabaseBuilder(context, CardDatabase::class.java)
+        cardDatabase = Room.inMemoryDatabaseBuilder(context, CardDatabase::class.java)
             // Allowing main thread queries, just for testing.
             .allowMainThreadQueries()
             .build()
-        flashCardDao = carddatabase.CardDao()
+        userDao = cardDatabase.UserDao()
+        deckDao = cardDatabase.DeckDao()
+        flashCardDao = cardDatabase.CardDao()
+        runBlocking {
+            initDaoForCard()
+        }
     }
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        carddatabase.close()
+    private suspend fun initDaoForCard() {
+        userDao.insert(User(1,"testUserDaoName","fake"))
+        deckDao.insertDeck(Deck(1,1,"testDeckName","empty description"))
     }
     private suspend fun addTwoItemsToDb() {
         flashCardDao.insert(item1)
         flashCardDao.insert(item2)
     }
+    @After
+    @Throws(IOException::class)
+    fun closeDb() {
+        cardDatabase.close()
+    }
+
     @Test
     @Throws(Exception::class)
     fun daoGetAllItems_returnsAllItemsFromDB() = runBlocking {

@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class DeckRepositoryOffline @Inject constructor(private val deckDao: DeckDao): DeckRepository {
-    override suspend fun getDeck(deckId: Long): Deck = deckDao.getDeck(deckId)
+    override suspend fun getDeck(deckId: Long): Deck = deckDao.getDeckById(deckId)
     override suspend fun insertDeck(deck: Deck) = deckDao.insertDeck(deck)
     override suspend fun updateDeck(deck: Deck) = deckDao.updateDeck(deck)
     override suspend fun deleteDeck(deck: Deck) = deckDao.deleteDeck(deck)

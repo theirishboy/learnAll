@@ -2,16 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddCardDialogPreview">
-        <State />
-      </entry>
-      <entry key="OneDeckViewScreenPreview">
-        <State />
-      </entry>
-      <entry key="ProfilViewScreenPreview">
-        <State />
-      </entry>
-      <entry key="TrainScreenPreview">
+      <entry key="DeckDaoTest">
         <State />
       </entry>
       <entry key="app">
@@ -29,6 +20,18 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-01-07T09:48:08.819433Z" />
         </State>
+      </entry>
+      <entry key="testDeleteDeck()">
+        <State />
+      </entry>
+      <entry key="testDeleteDeckById()">
+        <State />
+      </entry>
+      <entry key="testGetAllDeckFromAUser()">
+        <State />
+      </entry>
+      <entry key="testGetDeckById()">
+        <State />
       </entry>
     </value>
   </component>
