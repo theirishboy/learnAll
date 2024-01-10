@@ -32,7 +32,7 @@ fun LearnAllNavHost(
 ) {
     val authViewModel = hiltViewModel<AuthViewModel>()
     val currentUser = authViewModel.currentUser.collectAsState().value
-    DataProvider.updateAuthState(currentUser)
+    authViewModel.dataProvider.updateAuthState(currentUser)
 
     NavHost(
         navController = navController,

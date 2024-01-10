@@ -41,6 +41,7 @@ import com.example.learnwithpierre.model.AuthState
 import com.example.learnwithpierre.model.DataProvider
 import com.example.learnwithpierre.ui.navigation.NavigationDestination
 import com.example.learnwithpierre.ui.theme.LearnWithPierreTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 
 object ProfileViewDestination : NavigationDestination {
@@ -56,7 +57,8 @@ fun ProfileViewScreen(authViewModel: AuthViewModel = viewModel(),
                       navigateToTraining: () -> Unit,){
     Log.e("","We enter the Screen")
 
-    val authState = DataProvider.authState
+    val dataProvider = authViewModel.dataProvider
+    val authState = dataProvider.authState
     val currentUser = authViewModel.currentUser.collectAsState().value
     val openLoginDialog = remember { mutableStateOf(false) }
     var name : String? = null
@@ -73,7 +75,7 @@ fun ProfileViewScreen(authViewModel: AuthViewModel = viewModel(),
         // FirebaseUser.getIdToken() instead.
         val uid = it.uid
     }
-    if (DataProvider.authState != AuthState.SignedOut) {
+    if (dataProvider.authState != AuthState.SignedOut) {
         Log.e("","We reach the ProfilScreen")
         Scaffold(
             topBar = { LearnAllTopAppBar(title = "Profil", canNavigateBack = false) },

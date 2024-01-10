@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.auth.FirebaseUser
+import javax.inject.Inject
+import javax.inject.Singleton
 
 enum class AuthState {
     Authenticated, // Anonymously authenticated in Firebase.
@@ -11,7 +13,8 @@ enum class AuthState {
     SignedOut; // Not authenticated in Firebase.
 }
 
-object DataProvider {
+@Singleton
+class DataProvider @Inject constructor() {
 
     // 1.
     var anonymousSignInResponse by mutableStateOf<FirebaseSignInResponse>(Response.Success(null))

@@ -1,14 +1,9 @@
-package com.example.learnwithpierre
+package com.example.learnwithpierre.dao
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.learnwithpierre.dao.CardDatabase
-import com.example.learnwithpierre.dao.DeckDao
-import com.example.learnwithpierre.dao.FlashCardDao
-import com.example.learnwithpierre.dao.User
-import com.example.learnwithpierre.dao.UserDao
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.After

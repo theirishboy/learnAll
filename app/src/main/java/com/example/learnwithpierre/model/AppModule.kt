@@ -11,6 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -58,4 +59,12 @@ class AppModule {
                 .build()
         )
         .build()
+
+
+    @Provides
+    @Singleton
+    @Named("dataProvider")
+    fun provideDataProvider(): DataProvider {
+        return DataProvider()
+    }
 }

@@ -42,6 +42,7 @@ fun LoginScreen(
     authViewModel: AuthViewModel,
     loginState: MutableState<Boolean>? = null
 ) {
+    val dataProvider = authViewModel.dataProvider
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             try {
@@ -111,7 +112,7 @@ fun LoginScreen(
                 )
             }
 
-            if (DataProvider.authState == AuthState.SignedOut) {
+            if (dataProvider.authState == AuthState.SignedOut) {
                 Button(
                     onClick = {
                         authViewModel.signInAnonymously()
@@ -130,7 +131,7 @@ fun LoginScreen(
         }
     }
 
-    when (val anonymousResponse = DataProvider.anonymousSignInResponse) {
+    when (val anonymousResponse = dataProvider.anonymousSignInResponse) {
         is Response.Loading -> {
             Log.i("Login:AnonymousSignIn", "Loading")
             AuthLoginProgressIndicator()
@@ -142,7 +143,7 @@ fun LoginScreen(
             Log.e("Login:AnonymousSignIn", "${anonymousResponse.e}")
         }
     }
-    when(val oneTapSignInResponse = DataProvider.oneTapSignInResponse) {
+    when(val oneTapSignInResponse = dataProvider.oneTapSignInResponse) {
         // 1.
         is Response.Loading ->  {
             Log.i("Login:OneTap", "Loading")
@@ -159,7 +160,7 @@ fun LoginScreen(
         }
     }
 
-    when (val signInWithGoogleResponse = DataProvider.googleSignInResponse) {
+    when (val signInWithGoogleResponse = dataProvider.googleSignInResponse) {
         // 1.
         is Response.Loading -> {
             Log.i("Login:GoogleSignIn", "Loading")

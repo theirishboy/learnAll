@@ -22,6 +22,7 @@ import javax.inject.Named
 
 class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
                                              private var oneTapClient: SignInClient,
+                                             private val dataProvider: DataProvider,
                                              @Named("signInRequest") private var signInRequest: BeginSignInRequest,
                                              @Named("signUpRequest") private var signUpRequest: BeginSignInRequest,
 ): AuthRepository {
@@ -52,7 +53,7 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
     override suspend fun signOut(): SignOutResponse {
         return try {
             auth.signOut()
-            DataProvider.updateAuthState(null)
+            dataProvider.updateAuthState(null)
             Response.Success(true)
         }
         catch (e: java.lang.Exception) {
@@ -98,7 +99,7 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
         return try {
             val authResult = auth.signInWithCredential(credential).await()
             Log.i(TAG, "User: ${authResult?.user?.uid}")
-            DataProvider.updateAuthState(authResult?.user)
+            dataProvider.updateAuthState(authResult?.user)
             Response.Success(authResult)
         }
         catch (error: Exception) {
@@ -111,7 +112,7 @@ class AuthRepositoryImpl @Inject constructor(private val auth: FirebaseAuth,
         return try {
             val authResult = auth.currentUser?.linkWithCredential(credential)?.await()
             Log.i(TAG, "User: ${authResult?.user?.uid}")
-            DataProvider.updateAuthState(authResult?.user)
+            dataProvider.updateAuthState(authResult?.user)
             Response.Success(authResult)
         }
         catch (error: Exception) {
