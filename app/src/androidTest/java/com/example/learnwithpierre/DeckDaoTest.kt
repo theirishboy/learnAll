@@ -12,7 +12,6 @@ import com.example.learnwithpierre.dao.FlashCardDao
 import com.example.learnwithpierre.dao.User
 import com.example.learnwithpierre.dao.UserDao
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -21,7 +20,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.time.LocalDateTime
-import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class DeckDaoTest {
